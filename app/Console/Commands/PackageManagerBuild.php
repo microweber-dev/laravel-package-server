@@ -173,7 +173,7 @@ class PackageManagerBuild extends Command
 
         }
 
-        
+
         return $packageVersion;
     }
 
