@@ -11,6 +11,11 @@ class PackagesController extends Controller
 
     public function index() {
 
+
+        if (is_file('packages.json')) {
+            unlink('packages.json');
+        }
+
         $packages = $this->_getCompiledPackageJson();
 
         return [

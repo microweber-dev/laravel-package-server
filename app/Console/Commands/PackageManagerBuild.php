@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
 class PackageManagerBuild extends Command
@@ -42,22 +43,6 @@ class PackageManagerBuild extends Command
      */
     public function handle()
     {
-        $process = new Process([
-            'php',
-            'vendor/composer/satis/bin/satis',
-            'build',
-            './satis.json',
-            $this->outputDir,
-            '--stats'
-        ]);
-        $process->setTimeout(3600);
-        $process->run();
-
-        if (!$process->isSuccessful()) {
-            throw new ProcessFailedException($process);
-        }
-        $process->getOutput();
-
         $packageFiles = $this->_readPackageFiles();
         if (!empty($packageFiles)) {
             foreach ($packageFiles as $file) {
@@ -71,6 +56,7 @@ class PackageManagerBuild extends Command
         $preparedPackages = [];
         $content = file_get_contents($file);
         $package = json_decode($content, true);
+
         if (isset($package['packages']) && !empty($package['packages'])) {
             foreach ($package['packages'] as $packageKey=>$packageVersions) {
 
