@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="0e50f6d2-0596-4deb-9e0f-e9b24eeb7525" name="packages-satis.microweberapi.com" url="http://packages-satis.microweberapi.com">
+        <fileTransfer host="packages-satis.microweberapi.com" port="22339" rootFolder="/home/packagessatismic" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="22339" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
