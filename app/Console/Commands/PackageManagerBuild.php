@@ -129,6 +129,16 @@ class PackageManagerBuild extends Command
             $finder->files()->in($metaFolder)->name(['readme.md','README.md','screenshot.png','screenshot.jpg','screenshot.jpeg','screenshot.gif']);
             if ($finder->hasResults()) {
                 foreach ($finder as $file) {
+
+                    // Parse mark down
+                    if ($file->getExtension() == 'md') {
+                        $parseDown = new \Parsedown();
+                        $parseDownHtml = $parseDown->text($file->getContents());
+                        if ($parseDownHtml) {
+                            file_put_contents($file->getRealPath(), $parseDownHtml);
+                        }
+                    }
+
                     $packageVersion['extra']['_meta'][$file->getFilenameWithoutExtension()] = $metaFolderPublicUrl . $file->getFilename();
                 }
             }
