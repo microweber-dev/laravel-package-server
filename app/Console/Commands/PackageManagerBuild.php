@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
 
 class PackageManagerBuild extends Command
@@ -21,6 +23,8 @@ class PackageManagerBuild extends Command
      */
     protected $description = 'Package manager build/rebuild.';
 
+    protected $outputDir = 'public/compiled_packages';
+
     /**
      * Create a new command instance.
      *
@@ -38,16 +42,15 @@ class PackageManagerBuild extends Command
      */
     public function handle()
     {
-        $outputDir = 'public/compiled_packages';
-
         $process = new Process([
             'php',
             'vendor/composer/satis/bin/satis',
             'build',
             './satis.json',
-            $outputDir,
+            $this->outputDir,
             '--stats'
         ]);
+        $process->setTimeout(3600);
         $process->run();
 
         if (!$process->isSuccessful()) {
@@ -55,10 +58,10 @@ class PackageManagerBuild extends Command
         }
         $process->getOutput();
 
-        $packageFiles = $this->_readPackageFiles($outputDir);
+        $packageFiles = $this->_readPackageFiles();
         if (!empty($packageFiles)) {
             foreach ($packageFiles as $file) {
-                $this->_preparePackage($outputDir .'/'. $file);
+                $this->_preparePackage($this->outputDir .'/'. $file);
             }
         }
     }
@@ -93,16 +96,91 @@ class PackageManagerBuild extends Command
 
     private function _preparePackageMedia($packageVersion) {
 
-        $packageVersion['xwd123'] = 'fwafwafwawfa';
-        $packageVersion['fawfwa'] = '3'; 
+        $filesystem = new Filesystem();
 
+        $distShasum = $packageVersion['dist']['shasum'];
+        $distUrl = $packageVersion['dist']['url'];
+        $distUrlParsed = parse_url($distUrl);
+        $packageMainUrl = $distUrlParsed['scheme'] . '://'. $distUrlParsed['host'] . '/';
+
+        if ($distUrlParsed['path']) {
+
+            $distZip = $this->outputDir . $distUrlParsed['path'];
+            if (!$filesystem->exists($distZip)) {
+                return $packageVersion;
+            }
+
+            // Create Meta Folder
+            $metaFolder = dirname($this->outputDir) . '/git_meta/' . $distShasum . '/';
+            $metaFolderPublicUrl = $packageMainUrl . 'git_meta/' . $distShasum . '/';
+            if (!$filesystem->exists($metaFolder)) {
+                $filesystem->mkdir($metaFolder);
+            }
+
+            // Unzio package
+            $zip = new \ZipArchive();
+            $zip->open($distZip);
+            $zip->extractTo($metaFolder);
+            $zip->close();
+
+
+            // Set extra
+            $finder = new Finder();
+            $finder->files()->in($metaFolder)->name(['readme.md','README.md','screenshot.png','screenshot.jpg','screenshot.jpeg','screenshot.gif']);
+            if ($finder->hasResults()) {
+                foreach ($finder as $file) {
+                    $packageVersion['extra']['_meta'][$file->getFilenameWithoutExtension()] = $metaFolderPublicUrl . $file->getFilename();
+                }
+            }
+
+            // Remove all files without media files
+            $finder = new Finder();
+            $finder->files()->in($metaFolder)->notName(['*.md', '*.jpg', '*.gif', '*.jpeg', '*.bmp', '*.png', '*.svg', '*.mp4', '*.mov', '*.avi']);
+            if ($finder->hasResults()) {
+                foreach ($finder as $file) {
+                    $filesystem->remove($file->getRealPath());
+                    continue;
+                }
+            }
+
+
+            // Remove all empty folders
+            $filesForDelete = [];
+            $finder = new Finder();
+            $finder->files()->in($metaFolder)->directories();
+            if ($finder->hasResults()) {
+                foreach ($finder as $folder) {
+                    // Check folder files
+                    if (!$filesystem->exists($folder->getRealPath())) {
+                        continue;
+                    }
+
+                    $checkFolder = new Finder();
+                    $checkFolder->files()->in($folder->getRealPath());
+                    if (!$checkFolder->hasResults()) {
+                        // Delete empty folder
+                        $filesForDelete[] = $folder->getRealPath();
+                        continue;
+                    }
+                }
+            }
+
+            if (!empty($filesForDelete)) {
+                foreach ($filesForDelete as $fileForDelete) {
+                    $filesystem->remove($fileForDelete);
+                }
+            }
+
+        }
+
+        
         return $packageVersion;
     }
 
-    private function _readPackageFiles($outputDir) {
+    private function _readPackageFiles() {
 
         $files = [];
-        $content = file_get_contents($outputDir . '/packages.json');
+        $content = file_get_contents($this->outputDir . '/packages.json');
         $packages = json_decode($content, true);
 
         if (isset($packages['includes']) && !empty($packages['includes'])) {
