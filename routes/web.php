@@ -11,10 +11,16 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', function () {
+    $file = 'compiled_packages/index.html';
+    if (is_file($file)) {
+        echo file_get_contents($file);
+    } else {
+        return view('welcome');
+    }
+});
+
+Route::get('packages.json', 'PackagesController@index');
+Route::get('home', 'HomeController@index')->name('home');
