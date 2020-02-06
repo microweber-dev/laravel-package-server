@@ -6,15 +6,7 @@ use Illuminate\Http\Request;
 
 class PackagesController extends Controller
 {
-
-    protected $compiledPackageFolder = 'compiled_packages/'; // dont forget /
-
     public function index() {
-
-
-        if (is_file('packages.json')) {
-            unlink('packages.json');
-        }
 
         $packages = $this->_getCompiledPackageJson();
 
@@ -27,12 +19,12 @@ class PackagesController extends Controller
     private function _getCompiledPackageJson()
     {
         $packages = [];
-        $compiledPackages = $this->_jsonDecodeFile($this->compiledPackageFolder  . 'packages.json');
+        $compiledPackages = $this->_jsonDecodeFile( 'original-packages.json');
         if ($compiledPackages) {
             foreach ($compiledPackages as $compiledPackage) {
                 if (is_array($compiledPackage)) {
                     foreach ($compiledPackage as $package=>$packageSha) {
-                        $getPackages = $this->_jsonDecodeFile($this->compiledPackageFolder . $package);
+                        $getPackages = $this->_jsonDecodeFile($package);
                         if ($getPackages['packages']) {
                             $packages = array_merge($packages, $getPackages['packages']);
                         }

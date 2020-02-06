@@ -24,7 +24,7 @@ class PackageManagerBuild extends Command
      */
     protected $description = 'Package manager build/rebuild.';
 
-    protected $outputDir = 'public/compiled_packages';
+    protected $outputDir = 'public';
 
     /**
      * Create a new command instance.
@@ -63,7 +63,7 @@ class PackageManagerBuild extends Command
                 $preparedPackageVerions = [];
                 foreach ($packageVersions as $packageVersionKey=>$packageVersion) {
 
-                    if ($packageVersionKey == 'dev-master') {
+                    if (strpos($packageVersionKey, 'dev') !== false) {
                         continue;
                     }
 
@@ -176,7 +176,7 @@ class PackageManagerBuild extends Command
     private function _readPackageFiles() {
 
         $files = [];
-        $content = file_get_contents($this->outputDir . '/packages.json');
+        $content = file_get_contents($this->outputDir . '/original-packages.json');
         $packages = json_decode($content, true);
 
         if (isset($packages['includes']) && !empty($packages['includes'])) {
