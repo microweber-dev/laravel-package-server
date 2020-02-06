@@ -97,8 +97,8 @@ class PackageManagerBuild extends Command
             }
 
             // Create Meta Folder
-            $metaFolder = dirname($this->outputDir) . '/git_meta/' . $distShasum . '/';
-            $metaFolderPublicUrl = $packageMainUrl . 'git_meta/' . $distShasum . '/';
+            $metaFolder = dirname($this->outputDir) . '/meta/' . $distShasum . '/';
+            $metaFolderPublicUrl = $packageMainUrl . 'meta/' . $distShasum . '/';
             if (!$filesystem->exists($metaFolder)) {
                 $filesystem->mkdir($metaFolder);
             }

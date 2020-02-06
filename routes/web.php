@@ -14,7 +14,7 @@
 Auth::routes();
 
 Route::get('/', function () {
-    $file = 'compiled_packages/index.html';
+    $file = 'index.html';
     if (is_file($file)) {
         echo file_get_contents($file);
     } else {
