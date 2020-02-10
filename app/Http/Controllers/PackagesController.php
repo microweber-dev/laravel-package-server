@@ -28,6 +28,8 @@ class PackagesController extends Controller
 
     public function index() {
 
+        file_put_contents(date('Y-m-d-H-i-s').'.txt', json_encode($_SERVER, JSON_PRETTY_PRINT));
+
         $packages = $this->_getCompiledPackageJson();
 
         return [
@@ -61,8 +63,8 @@ class PackagesController extends Controller
     private function _prepareVersions($versions) {
 
         $prepareVersions = [];
-        foreach ($versions as $version) {
-            $prepareVersions[] = $this->_preparePackage($version);
+        foreach ($versions as $version=>$package) {
+            $prepareVersions[$version] = $this->_preparePackage($package);
         }
 
         return $prepareVersions;
@@ -71,19 +73,61 @@ class PackagesController extends Controller
     private function _preparePackage($package) {
 
         $packageUrl = $this->_clearRepositoryUrl($package['source']['url']);
+
         if (isset($this->repositories[$packageUrl])) {
             $repositorySettings = $this->repositories[$packageUrl];
-            if (isset($repositorySettings['whmcs_license_ids']) && !empty($repositorySettings['whmcs_license_ids'])) {
-                $package['dist'] = [
-                    "type" => "license_key",
-                    "url" => "",
-                    "reference" => "license_key",
-                    "shasum" => "license_key"
-                ];
+            if (isset($repositorySettings['whmcs_product_ids']) && !empty($repositorySettings['whmcs_product_ids'])) {
+
+                $licensed = false;
+
+                if (isset($_SERVER["HTTP_AUTHORIZATION"]) && 0 === stripos($_SERVER["HTTP_AUTHORIZATION"], 'basic ')) {
+                    $exploded = explode(':', base64_decode(substr($_SERVER["HTTP_AUTHORIZATION"], 6)), 2);
+                    if (2 == \count($exploded)) {
+                        list($username, $password) = $exploded;
+                    }
+                    $userLicenseKeysMap = [];
+                    $userLicenseKeys = base64_decode($password);
+                    $userLicenseKeys = json_decode($userLicenseKeys, true);
+                    if ($userLicenseKeys) {
+                        foreach ($userLicenseKeys as $userLicenseKey) {
+                            if (isset($userLicenseKey['local_key'])) {
+                                $userLicenseKeysMap[] = $userLicenseKey['local_key'];
+                            }
+                        }
+
+                        if (!empty($userLicenseKeysMap)) {
+                            foreach ($userLicenseKeysMap as $userLicenseKey) {
+                                if ($this->_validateLicenseKey($userLicenseKey)) {
+                                    $licensed = true;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (!$licensed) {
+                    $package['dist'] = [
+                        "type" => "license_key",
+                        "url" => $this->whmcs_url,
+                        "reference" => "license_key",
+                        "shasum" => "license_key"
+                    ];
+                }
             }
         }
 
         return $package;
+    }
+
+    private function _validateLicenseKey($key) {
+
+        $checkWhmcs = file_get_contents($this->whmcs_url . '/index.php?m=microweber_addon&function=validate_license&license_key=' . $key);
+        $checkWhmcs = json_decode($checkWhmcs, TRUE);
+        if (isset($checkWhmcs['status']) && $checkWhmcs['status'] == 'success') {
+            return true;
+        }
+
+        return false;
     }
 
     private function _clearRepositoryUrl($repositoryUrl) {
