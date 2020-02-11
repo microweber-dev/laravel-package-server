@@ -12,6 +12,7 @@ namespace App\Http\Controllers;
 use App\SatisManager;
 use Composer\Satis\Satis;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 
 class RepositoryController extends Controller
 {
@@ -62,7 +63,7 @@ class RepositoryController extends Controller
             return redirect(route('home'));
         }
 
-        $this->satis->updateOrNewRepository([
+        $this->satis->saveRepository([
            'whmcs_product_ids'=>$request->input('whmcs_product_ids'),
            'url'=>$request->input('url'),
            'type'=>$request->input('type'),
@@ -70,6 +71,20 @@ class RepositoryController extends Controller
         $this->satis->save();
 
         return redirect(route('home'));
+    }
+
+    public function build()
+    {
+        $log = '';
+
+       /* $log .= Artisan::call('package-manager:change-satis-schema');
+        $log .= execCmd('vendor/composer/satis/bin/satis build ./satis.json public --stats -n');
+        $log .= execCmd('mv public/packages.json public/original-packages.json');
+        $log .= Artisan::call('package-manager:build');*/
+
+        return view('repository.build', [
+            'log' => $log
+        ]);
     }
 
     public function delete(Request $request)

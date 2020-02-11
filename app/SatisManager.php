@@ -48,21 +48,15 @@ class SatisManager
         }
     }
 
-    public function updateOrNewRepository($data)
+    public function saveRepository($data)
     {
-       $repositoryKey = $this->getRepositoryKeyByUrl($data['url']);
+        $this->deleteRepositoryByUrl($data['url']);
 
-        $repositoryData = [
+        $this->repositories[] = [
             'type'=>$data['type'],
              'url'=>$data['url'],
              'whmcs_product_ids'=>$data['whmcs_product_ids'],
        ];
-
-       if ($repositoryKey) {
-           $this->repositories[$repositoryKey] = $repositoryData;
-       } else {
-           $this->repositories[] = $repositoryData;
-       }
 
     }
 
@@ -71,17 +65,6 @@ class SatisManager
         foreach ($this->repositories as $repository) {
             if ($repository['url'] == $url) {
                 return $repository;
-            }
-        }
-
-        return false;
-    }
-
-    public function getRepositoryKeyByUrl($url) {
-
-        foreach ($this->repositories as $repositoryKey=>$repository) {
-            if ($repository['url'] == $url) {
-                return $repositoryKey;
             }
         }
 

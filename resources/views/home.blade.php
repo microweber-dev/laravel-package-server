@@ -15,36 +15,44 @@
                 <div class="card-header">Repositories</div>
 
                 <div class="card-body">
+                    <div class="table-responsive">
 
-                    @foreach($repositories as $repository)
+                        <table class="table">
+                        @foreach($repositories as $repository)
 
-                        <div class="row repobox">
-                            <div class="col-md-8">
-                                <a href="{{ $repository['url'] }}" target="_blank">{{ $repository['url'] }}</a> <br />
-                                @if(isset($repository['whmcs_product_ids']))
-                                    <span style="color: #666">WHMCS Product Ids:  {{ $repository['whmcs_product_ids'] }}</span>
-                                @endif
-                            </div>
-                            <div class="col-md-4 text-right">
-                            <a href="edit-repo?url={{ $repository['url']  }}" class="btn btn-outline-success"><i class="fa fa-pen"></i> Edit</a>
-                            <a href="delete-repo?url={{ $repository['url']  }}" class="btn btn-outline-danger"><i class="fa fa-times"></i> Delete</a>
-                             </div>
-                         </div>
 
-                    @endforeach
+                                <tr>
+                                    <td>
+                                    <a href="edit-repo?url={{ $repository['url'] }}">{{ $repository['url'] }}</a> <br />
+                                    @if(isset($repository['whmcs_product_ids']))
+                                        <span style="color: #666">WHMCS Product Ids:  {{ $repository['whmcs_product_ids'] }}</span>
+                                    @endif
+                                    </td>
+                                    <td class="text-right">
+                                    <a href="edit-repo?url={{ $repository['url']  }}" class="btn btn-sm btn-outline-success"><i class="fa fa-pen"></i> Edit</a>
+                                    <a href="delete-repo?url={{ $repository['url']  }}" class="btn btn-sm btn-outline-danger"><i class="fa fa-times"></i> Delete</a>
+                                    </td>
+                                </tr>
 
+                        @endforeach
+                        </table>
+
+                    </div>
                 </div>
             </div>
         </div>
+
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">Action</div>
 
                 <div class="card-body">
-                    <a href="{{ route('add-repo') }}" class="btn btn-success btn-block"><i class="fa fa-plus"></i> Add New Repository</a>
+                    <a href="{{ route('add-repo') }}" class="btn btn-outline-primary btn-block"><i class="fa fa-plus"></i> Add New Repository</a>
+                    <a href="{{ route('build-repo') }}" class="btn btn-outline-success btn-block"><i class="fa fa-rocket"></i> Build Packages</a>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 @endsection

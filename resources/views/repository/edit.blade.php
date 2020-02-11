@@ -29,22 +29,25 @@
                                 <!-- Text input-->
                                 <div class="form-group">
                                     <label class="control-label" for="url">Url</label>
-                                        <input id="url" name="url" value="{{ $url  }}" type="text"  required="required"  placeholder="Repository url.." class="form-control input-md">
+                                        <input id="url" name="url" value="{{ $url  }}" @if(!empty($url)) disabled="disabled" @endif type="text"  required="required"  placeholder="Repository url.." class="form-control input-md">
                                         <i class="help-block">Pate your repository URL.</i>
                                 </div>
 
                                 <!-- Textarea -->
                                 <div class="form-group">
                                     <label class="control-label" for="textarea">WHMCS Product Ids</label>
-                                    <textarea class="form-control" id="textarea" required="required"  name="whmcs_product_ids">{{ $whmcs_product_ids  }}</textarea>
+                                    <textarea class="form-control" id="textarea" name="whmcs_product_ids">{{ $whmcs_product_ids  }}</textarea>
                                     <i class="help-block">Fill the product ids eperated with coma.</i>
                                 </div>
 
                                 <!-- Button -->
                                 <div class="form-group">
+
+                                    <a href="{{ route('home') }}" class="btn btn-outline-primary"><i class="fa fa-arrow-left"></i> Back</a>
+
                                     <button id="save" name="save" class="btn btn-success"><i class="fa fa-save"></i> Save repository</button>
 
-                                    <a href="delete-repo?url={{ $url  }}" class="btn btn-outline-danger"><i class="fa fa-times"></i> Delete repository</a>
+                                    <a href="delete-repo?url={{ $url  }}" class="btn btn-outline-danger" style="float:right"><i class="fa fa-times"></i> Delete repository</a>
 
                                 </div>
 

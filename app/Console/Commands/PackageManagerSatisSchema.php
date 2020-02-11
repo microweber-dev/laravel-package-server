@@ -38,8 +38,9 @@ class PackageManagerSatisSchema extends Command
     public function handle()
     {
         // Ovewrite satis chema json
-        $overwriteSatisSchemaFile = 'vendor/composer/satis/res/satis-schema.json';
-        $satisSchemaFile = 'satis-schema.json';
+        $overwriteSatisSchemaFile = base_path() . '/vendor/composer/satis/res/satis-schema.json';
+        $satisSchemaFile = base_path() . '/satis-schema.json';
+
 
         $satisSchemaContent = file_get_contents($satisSchemaFile);
         if ($satisSchemaContent) {
@@ -47,8 +48,8 @@ class PackageManagerSatisSchema extends Command
         }
 
         // Overwrite index twig
-        $overwriteTwigFile = 'vendor/composer/satis/views/index.html.twig';
-        $twigFile = 'resources/views/satis_layouts/index.html.twig';
+        $overwriteTwigFile = base_path() . '/vendor/composer/satis/views/index.html.twig';
+        $twigFile = base_path() . '/resources/views/satis_layouts/index.html.twig';
 
         $twigFileContent = file_get_contents($twigFile);
         if ($twigFileContent) {
@@ -56,8 +57,8 @@ class PackageManagerSatisSchema extends Command
         }
 
         // Overwrite package twig
-        $overwriteTwigFile = 'vendor/composer/satis/views/package.html.twig';
-        $twigFile = 'resources/views/satis_layouts/package.html.twig';
+        $overwriteTwigFile = base_path() . '/vendor/composer/satis/views/package.html.twig';
+        $twigFile = base_path() . '/resources/views/satis_layouts/package.html.twig';
 
         $twigFileContent = file_get_contents($twigFile);
         if ($twigFileContent) {
