@@ -48,7 +48,7 @@ class SatisManager
         }
     }
 
-    public function addNewRepository($data)
+    public function updateOrNewRepository($data)
     {
        $repositoryKey = $this->getRepositoryKeyByUrl($data['url']);
 
@@ -66,6 +66,17 @@ class SatisManager
 
     }
 
+    public function getRepositoryByUrl($url) {
+
+        foreach ($this->repositories as $repository) {
+            if ($repository['url'] == $url) {
+                return $repository;
+            }
+        }
+
+        return false;
+    }
+
     public function getRepositoryKeyByUrl($url) {
 
         foreach ($this->repositories as $repositoryKey=>$repository) {
@@ -75,6 +86,20 @@ class SatisManager
         }
 
         return false;
+    }
+
+    public function deleteRepositoryByUrl($url)
+    {
+        foreach ($this->repositories as $repositoryKey=>$repository) {
+            if ($repository['url'] == $url) {
+                unset($this->repositories[$repositoryKey]);
+            }
+        }
+    }
+
+    public function getRepositories()
+    {
+        return $this->repositories;
     }
 
     public function save()

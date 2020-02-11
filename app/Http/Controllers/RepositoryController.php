@@ -23,6 +23,9 @@ class RepositoryController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+
+        $this->satis = new SatisManager();
+        $this->satis->load('../satis.json');
     }
 
     /**
@@ -30,21 +33,51 @@ class RepositoryController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function edit(Request $request)
     {
-        return view('repository.add');
+        $url = '';
+        $whmcsProductIds = '';
+        $type = '';
+
+        $repositoryData = $this->satis->getRepositoryByUrl($request->input('url'));
+        if ($repositoryData) {
+            $url = $repositoryData['url'];
+            if (isset($repositoryData['whmcs_product_ids'])) {
+                $whmcsProductIds = $repositoryData['whmcs_product_ids'];
+            }
+            $type = $repositoryData['type'];
+        }
+
+        return view('repository.edit', [
+            'url' => $url,
+            'whmcs_product_ids' => $whmcsProductIds,
+            'type' => $type
+        ]);
     }
 
-    public function add(Request $request)
+    public function save(Request $request)
     {
-        $satis = new SatisManager();
-        $satis->load('../satis.json');
-        $satis->addNewRepository([
+        $repoUrl = $request->input('url');
+        if (empty($repoUrl)) {
+            return redirect(route('home'));
+        }
+
+        $this->satis->updateOrNewRepository([
            'whmcs_product_ids'=>$request->input('whmcs_product_ids'),
            'url'=>$request->input('url'),
            'type'=>$request->input('type'),
         ]);
-        $satis->save();
+        $this->satis->save();
+
+        return redirect(route('home'));
+    }
+
+    public function delete(Request $request)
+    {
+        $this->satis->deleteRepositoryByUrl($request->input('url'));
+        $this->satis->save();
+
+        return redirect(route('home'));
 
     }
 

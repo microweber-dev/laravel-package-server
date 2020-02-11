@@ -19,6 +19,16 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <style>
+        .repobox {
+            border:1px solid #dfdfdf;
+            margin: 0px;
+            margin-bottom: 10px;
+            padding-top: 15px;
+            padding-bottom: 15px;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -34,7 +44,9 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('home') }}">{{ __('Home') }}</a>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
