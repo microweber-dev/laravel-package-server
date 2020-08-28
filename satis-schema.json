@@ -18,6 +18,10 @@
             "description": "Homepage URL for the Repository.",
             "format": "uri"
         },
+        "whmcs_product_ids": {
+            "type": "string",
+            "description": "WHMCS product ids for the Repository."
+        },
         "whmcs_url": {
             "type": "string",
             "description": "WHMCS URL for the Repository.",

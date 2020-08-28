@@ -21,7 +21,7 @@
                                 <!-- Select Basic -->
                                 <div class="form-group">
                                     <label class="control-label" for="selectbasic">Repository Type</label>
-                                    <select id="selectbasic" name="selectbasic" required="required" class="form-control">
+                                    <select id="selectbasic" name="type" required="required" class="form-control">
                                         <option value="vcs">VCS</option>
                                     </select>
                                 </div>
