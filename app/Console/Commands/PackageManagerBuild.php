@@ -112,7 +112,7 @@ class PackageManagerBuild extends Command
 
             // Set extra
             $finder = new Finder();
-            $finder->files()->in($metaFolder)->name(['readme.md','README.md','screenshot.png','screenshot.jpg','screenshot.jpeg','screenshot.gif']);
+            $finder->files()->in($metaFolder)->name(['*.png','*.svg','*.jpg','readme.md','README.md','screenshot.png','screenshot.jpg','screenshot.jpeg','screenshot.gif']);
             if ($finder->hasResults()) {
                 foreach ($finder as $file) {
 
