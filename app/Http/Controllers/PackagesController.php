@@ -113,6 +113,10 @@ class PackagesController extends Controller
                         "shasum" => "license_key"
                     ];
                 }
+
+
+                $package['license_ids'] = $repositorySettings['whmcs_product_ids'];
+
             }
         }
 
