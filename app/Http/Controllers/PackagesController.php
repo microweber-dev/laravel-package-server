@@ -28,7 +28,7 @@ class PackagesController extends Controller
 
     public function index() {
 
-        file_put_contents(date('Y-m-d-H-i-s').'.txt', json_encode($_SERVER, JSON_PRETTY_PRINT));
+        //file_put_contents(date('Y-m-d-H-i-s').'.txt', json_encode($_SERVER, JSON_PRETTY_PRINT));
 
         $packages = $this->_getCompiledPackageJson();
 
