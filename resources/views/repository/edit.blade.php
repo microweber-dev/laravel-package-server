@@ -33,12 +33,27 @@
                                         <i class="help-block">Pate your repository URL.</i>
                                 </div>
 
-                                <!-- Textarea -->
+<!--                                &lt;!&ndash; Textarea &ndash;&gt;
                                 <div class="form-group">
                                     <label class="control-label" for="textarea">WHMCS Product Ids</label>
                                     <textarea class="form-control" id="textarea" name="whmcs_product_ids">{{ $whmcs_product_ids  }}</textarea>
                                     <i class="help-block">Fill the product ids eperated with coma.</i>
-                                </div>
+                                </div>-->
+
+                                    <hr />
+                                    <h5>
+                                        Purchased Plan Requirements To Access This Repository
+                                    </h5>
+                                    <p>Select the following WHMCS plans to access this repository</p>
+
+                                    @if(!empty($whmcs_products_types))
+                                        @foreach($whmcs_products_types as $whmcs_product_type_name=>$whmcs_product_type)
+                                            <b>{{ucfirst($whmcs_product_type_name)}}</b> <br />
+                                            @foreach($whmcs_product_type as $whmcs_product)
+                                               <label><input type="checkbox" name="whmcs_product" value="" /> {{$whmcs_product['name']}}  </label> <br />
+                                            @endforeach
+                                        @endforeach
+                                    @endif
 
                                 <!-- Button -->
                                 <div class="form-group">

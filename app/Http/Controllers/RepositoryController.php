@@ -49,8 +49,19 @@ class RepositoryController extends Controller
             $type = $repositoryData['type'];
         }
 
+        $whmcsProductsTypes = [];
+        $getWhmcsProducts = \Whmcs::GetProducts();
+
+        if (isset($getWhmcsProducts['products']['product'])) {
+            $whmcsProducts = $getWhmcsProducts['products']['product'];
+            foreach($whmcsProducts as $whmcsProduct) {
+                $whmcsProductsTypes[$whmcsProduct['type']][] = $whmcsProduct;
+            }
+        }
+
         return view('repository.edit', [
             'url' => $url,
+            'whmcs_products_types' => $whmcsProductsTypes,
             'whmcs_product_ids' => $whmcsProductIds,
             'type' => $type
         ]);
