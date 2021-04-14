@@ -29,7 +29,7 @@ class WhmcsController extends Controller
         $whmcsUsername = $envEditor->getValue('WHMCS_USERNAME');
         $whmcsPassword = $envEditor->getValue('WHMCS_PASSWORD');
 
-        $whmcsUrl = '';
+       $whmcsUrl = '';
         $parsed = parse_url($whmcsApiUrl);
         if (isset($parsed['scheme'])) {
             $whmcsUrl .= $parsed['scheme'].'://';
@@ -48,12 +48,32 @@ class WhmcsController extends Controller
         ]);
     }
 
+
+    public function getConnectionStatus()
+    {
+        try {
+            $checkConnection = \Whmcs::GetProducts();
+        } catch (\Exception $e) {
+            return ['error'=> $e->getMessage()];
+        }
+
+        if (empty($checkConnection)) {
+            return ['error'=>'Something went wrong. Can\'t connect to the WHMCS.'];
+        }
+
+        if (isset($checkConnection['result']) && $checkConnection['result'] == 'error') {
+            return ['error'=>$checkConnection['message']];
+        }
+
+        return ['success'=>'Connection with WHMCS is successfully.'];
+    }
+
     public function save(Request $request) {
 
         $envPath = app()->environmentFilePath();
         $envEditor = \DotenvEditor::load($envPath);
 
-        $envEditor->setKey('WHMCS_API_URL', $request->post('whmcs_url').'/include')->save();
+        $envEditor->setKey('WHMCS_API_URL', $request->post('whmcs_url') . '/includes')->save();
         $envEditor->setKey('WHMCS_AUTH_TYPE', $request->post('whmcs_auth_type'))->save();
 
         $envEditor->setKey('WHMCS_API_IDENTIFIER', $request->post('whmcs_api_identifier'))->save();

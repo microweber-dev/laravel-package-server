@@ -2,9 +2,19 @@
 
 @section('content')
 
-    <script src="//code.jquery.com/jquery-1.11.3.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
+
+            $.post("{{ route('configure-whmcs-connection-status') }}")
+            .done(function(data) {
+                if (data.success) {
+                    $('.js-connection-status').html('<div class="alert alert-success"><i class="fa fa-check"></i> '+data.success+'</div>');
+                }
+                if (data.error) {
+                    $('.js-connection-status').html('<div class="alert alert-danger"><i class="fa fa-times"></i> '+data.error+'</div>');
+                }
+            });
+
             $('.js-whmcs-auth-type').change(function() {
                 var authType = $(this).val();
                 toggleAuthType(authType);
@@ -28,6 +38,9 @@
                 <div class="card">
                     <div class="card-header">Configure WHMCS</div>
                     <div class="card-body">
+
+                        <div class="js-connection-status"></div>
+
                         <form method="POST" action="{{ route('configure-whmcs-save')}}">
                             @csrf
                             <div class="form-group row">
