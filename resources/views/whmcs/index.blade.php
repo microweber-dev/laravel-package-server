@@ -29,6 +29,7 @@
                     <div class="card-header">Configure WHMCS</div>
                     <div class="card-body">
                         <form method="POST" action="{{ route('configure-whmcs-save')}}">
+                            @csrf
                             <div class="form-group row">
                                 <label for="text" class="col-4 col-form-label">WHMCS URL</label>
                                 <div class="col-8">

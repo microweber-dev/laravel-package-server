@@ -28,7 +28,7 @@ class WhmcsController extends Controller
 
     public function save(Request $request) {
 
-        dd($request);
+        dd($request->all());
 
     }
 }
