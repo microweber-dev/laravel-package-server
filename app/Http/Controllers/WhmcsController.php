@@ -7,11 +7,6 @@ use Illuminate\Http\Request;
 
 class WhmcsController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('auth');
@@ -24,6 +19,10 @@ class WhmcsController extends Controller
      */
     public function index()
     {
+        $invoice = \Whmcs::GetProducts();
+
+        dd($invoice);
+
         return view('whmcs.index');
     }
 }

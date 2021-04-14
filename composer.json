@@ -10,7 +10,6 @@
     "require": {
         "php": "^7.2",
         "composer/satis": "^1.0",
-        "darthsoup/laravel-whmcs": "^0.3.0",
         "erusev/parsedown": "^1.7",
         "fideloper/proxy": "^4.0",
         "laravel/framework": "^6.2",
