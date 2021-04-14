@@ -30,6 +30,7 @@
                             }
                             getLog();
                         </script>
+                    <b>Process Log</b>
                         <div class="js-package-manager-build-log">
                             Loading..
                         </div>
