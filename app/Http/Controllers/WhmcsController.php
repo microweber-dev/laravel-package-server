@@ -25,4 +25,10 @@ class WhmcsController extends Controller
 
         return view('whmcs.index');
     }
+
+    public function save(Request $request) {
+
+        dd($request);
+
+    }
 }
