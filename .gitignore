@@ -10,3 +10,11 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+ghh/adminer.php
+ghh/database.sqlite
+.idea/webServers.xml
+.idea/sshConfigs.xml
+.idea/packages-satis.microweberapi.com.iml
+.idea/modules.xml
+.idea/deployment.xml
+.idea/workspace.xml
