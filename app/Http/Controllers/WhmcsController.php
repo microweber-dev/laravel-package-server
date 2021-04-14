@@ -19,16 +19,49 @@ class WhmcsController extends Controller
      */
     public function index()
     {
-      /*  $invoice = \Whmcs::GetProducts();
+        $envPath = app()->environmentFilePath();
+        $envEditor = \DotenvEditor::load($envPath);
 
-        dd($invoice);*/
+        $whmcsApiUrl = $envEditor->getValue('WHMCS_API_URL');
+        $whmcsAuthType = $envEditor->getValue('WHMCS_AUTH_TYPE');
+        $whmcsApiIdentifier = $envEditor->getValue('WHMCS_API_IDENTIFIER');
+        $whmcsApiSecret = $envEditor->getValue('WHMCS_API_SECRET');
+        $whmcsUsername = $envEditor->getValue('WHMCS_USERNAME');
+        $whmcsPassword = $envEditor->getValue('WHMCS_PASSWORD');
 
-        return view('whmcs.index');
+        $whmcsUrl = '';
+        $parsed = parse_url($whmcsApiUrl);
+        if (isset($parsed['scheme'])) {
+            $whmcsUrl .= $parsed['scheme'].'://';
+        }
+        if (isset($parsed['host'])) {
+            $whmcsUrl .= $parsed['host'];
+        }
+
+        return view('whmcs.index',[
+            'whmcs_url' => $whmcsUrl,
+            'whmcs_auth_type' => $whmcsAuthType,
+            'whmcs_api_identifier' => $whmcsApiIdentifier,
+            'whmcs_api_secret' => $whmcsApiSecret,
+            'whmcs_username' => $whmcsUsername,
+            'whmcs_password' => $whmcsPassword,
+        ]);
     }
 
     public function save(Request $request) {
 
-        dd($request->all());
+        $envPath = app()->environmentFilePath();
+        $envEditor = \DotenvEditor::load($envPath);
 
+        $envEditor->setKey('WHMCS_API_URL', $request->post('whmcs_url').'/include')->save();
+        $envEditor->setKey('WHMCS_AUTH_TYPE', $request->post('whmcs_auth_type'))->save();
+
+        $envEditor->setKey('WHMCS_API_IDENTIFIER', $request->post('whmcs_api_identifier'))->save();
+        $envEditor->setKey('WHMCS_API_SECRET', $request->post('whmcs_api_secret'))->save();
+
+        $envEditor->setKey('WHMCS_USERNAME', $request->post('whmcs_username'))->save();
+        $envEditor->setKey('WHMCS_PASSWORD', $request->post('whmcs_password'))->save();
+
+        return redirect(route('configure-whmcs'));
     }
 }

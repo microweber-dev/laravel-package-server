@@ -166,7 +166,7 @@ return [
          * Package Service Providers...
          */
         DarthSoup\Whmcs\WhmcsServiceProvider::class,
-
+        Jackiedo\DotenvEditor\DotenvEditorServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -226,7 +226,8 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'Whmcs' => DarthSoup\Whmcs\Facades\Whmcs::class
+        'Whmcs' => DarthSoup\Whmcs\Facades\Whmcs::class,
+        'DotenvEditor' => Jackiedo\DotenvEditor\Facades\DotenvEditor::class
     ],
 
 ];
