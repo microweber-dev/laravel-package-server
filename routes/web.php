@@ -34,3 +34,5 @@ Route::post('edit-repo', 'RepositoryController@save');
 Route::get('build-repo', 'RepositoryController@build')->name('build-repo');
 
 Route::get('delete-repo', 'RepositoryController@delete');
+
+Route::get('configure-whmcs', 'WhmcsController@index')->name('configure-whmcs');
