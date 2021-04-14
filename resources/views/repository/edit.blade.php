@@ -57,6 +57,7 @@
                     </div>
                 </div>
             </div>
+            @include('sidebar')
         </div>
     </div>
 @endsection
