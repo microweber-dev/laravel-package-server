@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\PackageManagerBuildJob;
 use App\SatisManager;
 use Illuminate\Http\Request;
 
@@ -70,6 +71,8 @@ class WhmcsController extends Controller
 
     public function save(Request $request) {
 
+        PackageManagerBuildJob::dispatch();
+
         $envPath = app()->environmentFilePath();
         $envEditor = \DotenvEditor::load($envPath);
 
@@ -82,6 +85,6 @@ class WhmcsController extends Controller
         $envEditor->setKey('WHMCS_USERNAME', $request->post('whmcs_username'))->save();
         $envEditor->setKey('WHMCS_PASSWORD', $request->post('whmcs_password'))->save();
 
-        return redirect(route('configure-whmcs'));
+        //return redirect(route('configure-whmcs'));
     }
 }

@@ -167,6 +167,8 @@ return [
          */
         DarthSoup\Whmcs\WhmcsServiceProvider::class,
         Jackiedo\DotenvEditor\DotenvEditorServiceProvider::class,
+        Queueworker\SansDaemon\SansDaemonServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
