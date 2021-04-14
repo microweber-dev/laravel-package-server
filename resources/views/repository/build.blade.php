@@ -11,7 +11,9 @@
                     @if ($show_log == '1')
                         <style>
                             .js-package-manager-build-log {
-                                color: #d2d2d2;background: #000000; padding: 5px;
+                               max-height:400px;
+                                overflow-x:hidden;
+                                overflow-y:scroll;
                             }
                         </style>
                         <script>
@@ -23,7 +25,7 @@
                             function getLog() {
                                 $.get("build-packages-output.log")
                                     .done(function(data) {
-                                        $('.js-package-manager-build-log').html(data);
+                                        $('.js-package-manager-build-log').html('<pre>' + data + '</pre>');
                                     });
                             }
                             getLog();
