@@ -85,6 +85,6 @@ class WhmcsController extends Controller
         $envEditor->setKey('WHMCS_USERNAME', $request->post('whmcs_username'))->save();
         $envEditor->setKey('WHMCS_PASSWORD', $request->post('whmcs_password'))->save();
 
-        //return redirect(route('configure-whmcs'));
+        return redirect(route('configure-whmcs'));
     }
 }

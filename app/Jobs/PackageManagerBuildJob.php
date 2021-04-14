@@ -29,6 +29,8 @@ class PackageManagerBuildJob implements ShouldQueue
      */
     public function handle()
     {
-        
+        $outputLog = shell_exec(base_path() .'/build-packages.sh');
+
+        echo $outputLog;
     }
 }
