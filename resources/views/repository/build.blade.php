@@ -11,7 +11,7 @@
                     @if ($show_log == '1')
                         <style>
                             .js-package-manager-build-log {
-                               max-height:400px;
+                               max-height:500px;
                                 overflow-x:hidden;
                                 overflow-y:scroll;
                             }
@@ -20,17 +20,25 @@
                             $(document).ready(function() {
                                 setInterval(function(){
                                     getLog();
-                                }, 1000);
+                                }, 2000);
                             });
+                            newLog = '';
+                            oldLog = '';
                             function getLog() {
                                 $.get("build-packages-output.log")
                                     .done(function(data) {
-                                        $('.js-package-manager-build-log').html('<pre>' + data + '</pre>');
+                                        newLog = data;
+                                        newLog = data;
                                     });
+                                if (oldLog != newLog) {
+                                    oldLog = newLog;
+                                    $('.js-package-manager-build-log').html('<pre>' + newLog + '</pre>');
+                                    $(".js-package-manager-build-log").animate({scrollTop: $('.js-package-manager-build-log').prop("scrollHeight")}, 1000);
+                                }
                             }
                             getLog();
                         </script>
-                    <b>Process Log</b>
+                        <b>Process Log</b>
                         <div class="js-package-manager-build-log">
                             Loading..
                         </div>
