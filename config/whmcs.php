@@ -25,7 +25,7 @@ return [
 
     'auth_type' =>  env('WHMCS_AUTH_TYPE', 'api'),
 
-    'apiurl' => env('WHMCS_API_URL', 'https://members.microweber.com/includes'),
+    'apiurl' => env('WHMCS_API_URL', 'YOUR_WHMCS_URL'),
 
     'api' => [
         'identifier' => env('WHMCS_API_IDENTIFIER', 'YOUR_API_IDENTIFIER'),

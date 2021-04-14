@@ -19,9 +19,9 @@ class WhmcsController extends Controller
      */
     public function index()
     {
-        $invoice = \Whmcs::GetProducts();
+      /*  $invoice = \Whmcs::GetProducts();
 
-        dd($invoice);
+        dd($invoice);*/
 
         return view('whmcs.index');
     }
