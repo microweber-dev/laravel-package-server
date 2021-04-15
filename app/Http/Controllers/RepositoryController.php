@@ -9,6 +9,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Jobs\PackageManagerBuildJob;
 use App\SatisManager;
 use Composer\Satis\Satis;
 use Illuminate\Http\Request;
@@ -84,18 +85,21 @@ class RepositoryController extends Controller
         return redirect(route('home'));
     }
 
-    public function build()
+    public function build(Request $request)
     {
-        $log = '';
-
-       /* $log .= Artisan::call('package-manager:change-satis-schema');
-        $log .= execCmd('vendor/composer/satis/bin/satis build ./satis.json public --stats -n');
-        $log .= execCmd('mv public/packages.json public/original-packages.json');
-        $log .= Artisan::call('package-manager:build');*/
-
         return view('repository.build', [
-            'log' => $log
+            'show_log' => $request->get('show_log', 0)
         ]);
+    }
+
+    public function buildRun()
+    {
+
+        @unlink(base_path() . '/public/build-packages-output.log');
+
+        PackageManagerBuildJob::dispatch();
+
+        return redirect(route('build-repo'). '?show_log=1');
     }
 
     public function delete(Request $request)

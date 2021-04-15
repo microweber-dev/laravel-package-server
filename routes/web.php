@@ -32,6 +32,7 @@ Route::get('edit-repo', 'RepositoryController@edit')->name('edit-repo');
 Route::post('edit-repo', 'RepositoryController@save');
 
 Route::get('build-repo', 'RepositoryController@build')->name('build-repo');
+Route::get('build-repo-run', 'RepositoryController@buildRun')->name('build-repo-run');
 
 Route::get('delete-repo', 'RepositoryController@delete');
 

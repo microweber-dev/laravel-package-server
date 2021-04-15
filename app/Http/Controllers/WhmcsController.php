@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\PackageManagerBuildJob;
 use App\SatisManager;
 use Illuminate\Http\Request;
 
@@ -69,6 +70,8 @@ class WhmcsController extends Controller
     }
 
     public function save(Request $request) {
+
+        PackageManagerBuildJob::dispatch();
 
         $envPath = app()->environmentFilePath();
         $envEditor = \DotenvEditor::load($envPath);
