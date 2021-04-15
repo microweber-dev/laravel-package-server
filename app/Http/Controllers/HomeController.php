@@ -31,6 +31,18 @@ class HomeController extends Controller
 
         $builded = new BuildedRepositories();
         $builded = $builded->get();
+        if (!empty($builded) && !empty($repositories)) {
+            foreach($repositories as &$repository) {
+                $repository['build_info'] = false;
+                foreach ($builded as $repositoryName => $repositoryVersions) {
+                    if (strpos($repository['url'], $repositoryName) !== false) {
+                        $lastVersion = end($repositoryVersions);
+                        $repository['build_info'] = $lastVersion;
+                        break;
+                    }
+                }
+            }
+        }
 
         return view('home', [
             'repositories' => $repositories
