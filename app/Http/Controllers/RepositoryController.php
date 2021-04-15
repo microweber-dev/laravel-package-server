@@ -90,8 +90,13 @@ class RepositoryController extends Controller
             return redirect(route('home'));
         }
 
+        $productIds = '';
+        if (is_array($request->input('whmcs_product_ids'))) {
+            $productIds = implode(',', $request->input('whmcs_product_ids'));
+        }
+
         $this->satis->saveRepository([
-           'whmcs_product_ids'=>implode(',', $request->input('whmcs_product_ids')),
+           'whmcs_product_ids'=>$productIds,
            'url'=>$request->input('url'),
            'category'=>$request->input('category'),
            'type'=>$request->input('type'),
