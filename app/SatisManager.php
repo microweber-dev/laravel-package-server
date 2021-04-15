@@ -17,8 +17,14 @@ class SatisManager
     public $homepage;
     public $whmcs_url;
     public $satis_file;
+    public $builded_repositories;
 
     public $repositories = [];
+
+    public function __construct()
+    {
+        $this->builded_repositories = $this->getBuildedRepositories();
+    }
 
     public function setName($name) {
         $this->name = $name;
@@ -33,10 +39,12 @@ class SatisManager
     }
 
     public function load($file) {
+
         $satis = file_get_contents($file);
         if (!$satis) {
             throw new \Exception('Can\'t load satis file');
         }
+
         $satis = json_decode($satis, true);
         if (!$satis) {
             throw new \Exception('Can\'t decode satis file');
@@ -46,6 +54,12 @@ class SatisManager
 
         foreach ($satis as $key=>$value) {
            $this->$key = $value;
+        }
+
+        if (isset($this->repositories)) {
+            foreach($this->repositories as &$repository) {
+                $repository = $this->getRepositoryByUrl($repository['url']);
+            }
         }
     }
 
@@ -65,6 +79,17 @@ class SatisManager
 
         foreach ($this->repositories as $repository) {
             if ($repository['url'] == $url) {
+
+                $repository['build_info'] = false;
+
+                foreach ($this->builded_repositories as $repositoryName=>$repositoryVersions) {
+                    if (strpos($url, $repositoryName) !== false) {
+                        $lastVersion = end($repositoryVersions);
+                        $repository['build_info'] = $lastVersion;
+                        break;
+                    }
+                }
+
                 return $repository;
             }
         }

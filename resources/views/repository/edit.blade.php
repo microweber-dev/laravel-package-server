@@ -43,7 +43,7 @@
                                 <b>Preview</b>
                                     <div class="row">
                                         <img src="{{ $preview_image }}" class="col-md-12" />
-                                        
+
                                     </div>
                                 @endif
 
