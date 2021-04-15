@@ -82,11 +82,13 @@ class SatisManager
 
                 $repository['build_info'] = false;
 
-                foreach ($this->builded_repositories as $repositoryName=>$repositoryVersions) {
-                    if (strpos($url, $repositoryName) !== false) {
-                        $lastVersion = end($repositoryVersions);
-                        $repository['build_info'] = $lastVersion;
-                        break;
+                if (isset($this->builded_repositories)) {
+                    foreach ($this->builded_repositories as $repositoryName => $repositoryVersions) {
+                        if (strpos($url, $repositoryName) !== false) {
+                            $lastVersion = end($repositoryVersions);
+                            $repository['build_info'] = $lastVersion;
+                            break;
+                        }
                     }
                 }
 
