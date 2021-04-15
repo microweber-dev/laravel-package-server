@@ -110,7 +110,6 @@ class RepositoryController extends Controller
 
     public function buildRun()
     {
-
         @unlink(base_path() . '/public/build-packages-output.log');
 
         PackageManagerBuildJob::dispatch();

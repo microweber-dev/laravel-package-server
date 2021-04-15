@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\BuildedRepositories;
 use App\SatisManager;
 use Illuminate\Http\Request;
 
@@ -27,6 +28,9 @@ class HomeController extends Controller
         $satis = new SatisManager();
         $satis->load('../satis.json');
         $repositories = $satis->getRepositories();
+
+        $builded = new BuildedRepositories();
+        $builded = $builded->get();
 
         return view('home', [
             'repositories' => $repositories

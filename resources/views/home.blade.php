@@ -27,13 +27,13 @@
                     <div class="card-header">
                         <a href="edit-repo?url={{ $repository['url'] }}">{{ $repository['url'] }}</a>
 
-                        @if($repository['build_info'])
+                        @if(isset($repository['build_info']))
                         <label class="badge badge-success">Version: {{$repository['build_info']['version']}}</label>
                         @endif
                     </div>
                     <div class="card-body">
 
-                    @if($repository['build_info'])
+                        @if(isset($repository['build_info']))
 
                            <h5> {{$repository['build_info']['description']}} </h5>
 
