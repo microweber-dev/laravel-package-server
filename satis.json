@@ -23,11 +23,6 @@
             "url": "git@github.com:microweber\/update.git",
             "whmcs_product_ids": ""
         },
-        "89": {
-            "type": "vcs",
-            "url": "git@github.com:microweber-modules\/calendar.git",
-            "whmcs_product_ids": ""
-        },
         "90": {
             "type": "vcs",
             "url": "git@github.com:microweber-modules\/tags.git",
@@ -83,16 +78,6 @@
             "url": "git@github.com:microweber-modules\/pricing_table.git",
             "whmcs_product_ids": ""
         },
-        "101": {
-            "type": "vcs",
-            "url": "git@bitbucket.org:mw-internal\/white_label.git",
-            "whmcs_product_ids": ""
-        },
-        "102": {
-            "type": "vcs",
-            "url": "git@gitlab.com:mw-internal\/template-bamboo.git",
-            "whmcs_product_ids": "173344"
-        },
         "103": {
             "type": "vcs",
             "url": "git@github.com:microweber-modules\/video.git",
@@ -111,7 +96,7 @@
         "106": {
             "type": "vcs",
             "url": "git@gitlab.com:mw-internal\/template-active.git",
-            "whmcs_product_ids": "173337"
+            "whmcs_product_ids": ""
         },
         "107": {
             "type": "vcs",
@@ -121,47 +106,62 @@
         "108": {
             "type": "vcs",
             "url": "git@gitlab.com:mw-internal\/template-theplace.git",
-            "whmcs_product_ids": "173337,173340,39,173346,18"
+            "whmcs_product_ids": ""
         },
         "109": {
             "type": "vcs",
             "url": "https:\/\/github.com\/microweber-deps\/composer-installers-extender.git",
-            "whmcs_product_ids": "19,32,39"
+            "whmcs_product_ids": ""
         },
         "110": {
             "type": "vcs",
             "url": "git@gitlab.com:mw-internal\/template-wedding.git",
-            "whmcs_product_ids": "1,19,32,10,11,28,29,9,173336,17,39,173346"
+            "whmcs_product_ids": "" 
         },
         "111": {
             "type": "vcs",
             "url": "git@github.com:microweber-modules\/multilanguage.git",
-            "whmcs_product_ids": "1,19,32,10,11"
+            "whmcs_product_ids": ""
         },
         "112": {
             "type": "vcs",
             "url": "https:\/\/github.com\/microweber-deps\/laravel-tagging",
-            "whmcs_product_ids": "173337,173340,173343"
+            "whmcs_product_ids": ""
         },
         "113": {
             "type": "vcs",
             "url": "https:\/\/github.com\/microweber-deps\/recurr",
-            "whmcs_product_ids": "1,32,15,31"
+            "whmcs_product_ids": ""
         },
         "114": {
             "type": "vcs",
             "url": "https:\/\/github.com\/ramsey\/uuid",
-            "whmcs_product_ids": "1,19"
+            "whmcs_product_ids": ""
         },
         "115": {
             "type": "vcs",
             "url": "git@github.com:microweber-modules\/videos-playlist.git",
             "whmcs_product_ids": ""
         },
-        "116": {
+        "118": {
+            "type": "vcs",
+            "url": "git@bitbucket.org:mw-internal\/white_label.git",
+            "whmcs_product_ids": ""
+        },
+        "119": {
+            "type": "vcs",
+            "url": "git@github.com:microweber-modules\/calendar.git",
+            "whmcs_product_ids": ""
+        },
+        "120": {
             "type": "vcs",
             "url": "https:\/\/github.com\/microweber-templates\/new-world.git",
-            "whmcs_product_ids": "15,31,21"
+            "whmcs_product_ids": ""
+        },
+        "121": {
+            "type": "vcs",
+            "url": "git@gitlab.com:mw-internal\/template-bamboo.git",
+            "whmcs_product_ids": ""
         }
     },
     "config": {
