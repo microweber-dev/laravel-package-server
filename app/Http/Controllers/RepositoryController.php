@@ -38,16 +38,24 @@ class RepositoryController extends Controller
     public function edit(Request $request)
     {
         $url = '';
-        $whmcsProductIds = '';
+        $whmcsProductIds = [];
         $type = '';
+        $category = '';
+        $previewImage = false;
 
         $repositoryData = $this->satis->getRepositoryByUrl($request->input('url'));
         if ($repositoryData) {
+
             $url = $repositoryData['url'];
+            $type = $repositoryData['type'];
+
             if (isset($repositoryData['whmcs_product_ids'])) {
                 $whmcsProductIds = explode(',', $repositoryData['whmcs_product_ids']);
             }
-            $type = $repositoryData['type'];
+
+            if (isset($repositoryData['category'])) {
+                $category = $repositoryData['category'];
+            }
         }
 
         $whmcsProductsTypes = [];
@@ -64,6 +72,7 @@ class RepositoryController extends Controller
             'url' => $url,
             'whmcs_products_types' => $whmcsProductsTypes,
             'whmcs_product_ids' => $whmcsProductIds,
+            'category' => $category,
             'type' => $type
         ]);
     }
@@ -78,6 +87,7 @@ class RepositoryController extends Controller
         $this->satis->saveRepository([
            'whmcs_product_ids'=>implode(',', $request->input('whmcs_product_ids')),
            'url'=>$request->input('url'),
+           'category'=>$request->input('category'),
            'type'=>$request->input('type'),
         ]);
         $this->satis->save();

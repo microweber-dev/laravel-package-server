@@ -26,6 +26,21 @@
                                     </select>
                                 </div>
 
+                                <!-- Select Basic -->
+                                <div class="form-group">
+                                    <label class="control-label" for="selectbasic2">Category</label>
+                                    <select id="selectbasic2" name="category" required="required" class="form-control">
+                                        <option value="themes">Themes</option>
+                                        <option value="modules">Modules</option>
+                                        <option value="packages">Packages</option>
+                                    </select>
+                                </div>
+
+                                @if($previewImage)
+                                <b>Preview</b>
+                                    <img src="{{ $previewImage }}" class="img-responsive" />
+                                @endif
+
                                 <!-- Text input-->
                                 <div class="form-group">
                                     <label class="control-label" for="url">Url</label>

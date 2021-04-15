@@ -11,7 +11,6 @@ namespace App;
 
 class SatisManager
 {
-
     public $name;
     public $homepage;
     public $whmcs_url;
