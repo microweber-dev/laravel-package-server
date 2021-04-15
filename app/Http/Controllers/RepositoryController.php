@@ -50,6 +50,10 @@ class RepositoryController extends Controller
             $url = $repositoryData['url'];
             $type = $repositoryData['type'];
 
+            if (isset($repositoryData['build_info']['extra']['_meta']['screenshot'])) {
+                $previewImage = $repositoryData['build_info']['extra']['_meta']['screenshot'];
+            }
+
             if (isset($repositoryData['whmcs_product_ids'])) {
                 $whmcsProductIds = explode(',', $repositoryData['whmcs_product_ids']);
             }
