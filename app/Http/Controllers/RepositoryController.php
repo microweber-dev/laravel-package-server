@@ -44,7 +44,19 @@ class RepositoryController extends Controller
         $previewImage = false;
 
         $repositoryData = $this->satis->getRepositoryByUrl($request->input('url'));
+        $buildedRepositories = $this->satis->getBuildedRepositories();
+
         if ($repositoryData) {
+
+            foreach ($buildedRepositories as $repositoryName=>$repositoryVersions) {
+                if (strpos($repositoryData['url'], $repositoryName) !== false) {
+                    $lastVersion = end($repositoryVersions);
+                    if (isset($lastVersion['extra']['_meta']['screenshot'])) {
+                        $previewImage = $lastVersion['extra']['_meta']['screenshot'];
+                    }
+                    break;
+                }
+            }
 
             $url = $repositoryData['url'];
             $type = $repositoryData['type'];
@@ -73,6 +85,7 @@ class RepositoryController extends Controller
             'whmcs_products_types' => $whmcsProductsTypes,
             'whmcs_product_ids' => $whmcsProductIds,
             'category' => $category,
+            'preview_image' => $previewImage,
             'type' => $type
         ]);
     }

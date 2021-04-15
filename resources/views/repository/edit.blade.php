@@ -36,9 +36,15 @@
                                     </select>
                                 </div>
 
-                                @if($previewImage)
+                                @if($preview_image)
+                                <h5>
+                                    Repostiroy Details
+                                </h5>
                                 <b>Preview</b>
-                                    <img src="{{ $previewImage }}" class="img-responsive" />
+                                    <div class="row">
+                                        <img src="{{ $preview_image }}" class="col-md-12" />
+                                        
+                                    </div>
                                 @endif
 
                                 <!-- Text input-->
