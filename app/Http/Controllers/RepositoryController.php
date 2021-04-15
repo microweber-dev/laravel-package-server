@@ -45,7 +45,7 @@ class RepositoryController extends Controller
         if ($repositoryData) {
             $url = $repositoryData['url'];
             if (isset($repositoryData['whmcs_product_ids'])) {
-                $whmcsProductIds = $repositoryData['whmcs_product_ids'];
+                $whmcsProductIds = explode(',', $repositoryData['whmcs_product_ids']);
             }
             $type = $repositoryData['type'];
         }
@@ -76,7 +76,7 @@ class RepositoryController extends Controller
         }
 
         $this->satis->saveRepository([
-           'whmcs_product_ids'=>$request->input('whmcs_product_ids'),
+           'whmcs_product_ids'=>implode(',', $request->input('whmcs_product_ids')),
            'url'=>$request->input('url'),
            'type'=>$request->input('type'),
         ]);
