@@ -42,8 +42,9 @@
                                 </h5>
                                 <b>Preview</b>
                                     <div class="row">
-                                        <img src="{{ $preview_image }}" class="col-md-12" />
-
+                                        <div class="thumbnail" style="max-height:300px;overflow:hidden;">
+                                            <img src="{{ $preview_image }}" class="col-md-12" />
+                                        </div>
                                     </div>
                                 @endif
 

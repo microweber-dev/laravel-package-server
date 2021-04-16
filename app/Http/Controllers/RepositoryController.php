@@ -9,6 +9,7 @@
 namespace App\Http\Controllers;
 
 
+use App\BuildedRepositories;
 use App\Jobs\PackageManagerBuildJob;
 use App\SatisManager;
 use Composer\Satis\Satis;
@@ -49,6 +50,9 @@ class RepositoryController extends Controller
 
             $url = $repositoryData['url'];
             $type = $repositoryData['type'];
+
+            $builded = new BuildedRepositories();
+            $repositoryData['build_info'] = $builded->getBuildInfoByUrl($url);
 
             if (isset($repositoryData['build_info']['extra']['_meta']['screenshot'])) {
                 $previewImage = $repositoryData['build_info']['extra']['_meta']['screenshot'];

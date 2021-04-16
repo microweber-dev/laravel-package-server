@@ -30,17 +30,10 @@ class HomeController extends Controller
         $repositories = $satis->getRepositories();
 
         $builded = new BuildedRepositories();
-        $builded = $builded->get();
-        if (!empty($builded) && !empty($repositories)) {
+
+        if (!empty($repositories)) {
             foreach($repositories as &$repository) {
-                $repository['build_info'] = false;
-                foreach ($builded as $repositoryName => $repositoryVersions) {
-                    if (strpos($repository['url'], $repositoryName) !== false) {
-                        $lastVersion = end($repositoryVersions);
-                        $repository['build_info'] = $lastVersion;
-                        break;
-                    }
-                }
+                $repository['build_info'] = $builded->getBuildInfoByUrl($repository['url']);
             }
         }
 

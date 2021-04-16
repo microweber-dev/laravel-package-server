@@ -19,20 +19,23 @@ class SatisManager
     public $satis_file;
     public $repositories = [];
 
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = $name;
     }
 
-    public function setHomepage($url) {
+    public function setHomepage($url)
+    {
         $this->homepage = $url;
     }
 
-    public function setWhmcsUrl($url) {
+    public function setWhmcsUrl($url)
+    {
         $this->whmcs_url = $url;
     }
 
-    public function load($file) {
-
+    public function load($file)
+    {
         $satis = file_get_contents($file);
         if (!$satis) {
             throw new \Exception('Can\'t load satis file');
@@ -45,15 +48,9 @@ class SatisManager
 
         $this->satis_file = $file;
 
-        foreach ($satis as $key=>$value) {
-           $this->$key = $value;
+        foreach ($satis as $key => $value) {
+            $this->$key = $value;
         }
-
-    /*    if (isset($this->repositories)) {
-            foreach($this->repositories as &$repository) {
-                $repository = $this->getRepositoryByUrl($repository['url']);
-            }
-        }*/
     }
 
     public function saveRepository($data)
@@ -61,15 +58,14 @@ class SatisManager
         $this->deleteRepositoryByUrl($data['url']);
 
         $this->repositories[] = [
-            'type'=>$data['type'],
-             'url'=>$data['url'],
-             'whmcs_product_ids'=>$data['whmcs_product_ids'],
-       ];
-
+            'type' => $data['type'],
+            'url' => $data['url'],
+            'whmcs_product_ids' => $data['whmcs_product_ids'],
+        ];
     }
 
-    public function getRepositoryByUrl($url) {
-
+    public function getRepositoryByUrl($url)
+    {
         foreach ($this->repositories as $repository) {
             if ($repository['url'] == $url) {
                 return $repository;
@@ -81,7 +77,7 @@ class SatisManager
 
     public function deleteRepositoryByUrl($url)
     {
-        foreach ($this->repositories as $repositoryKey=>$repository) {
+        foreach ($this->repositories as $repositoryKey => $repository) {
             if ($repository['url'] == $url) {
                 unset($this->repositories[$repositoryKey]);
             }
@@ -95,7 +91,9 @@ class SatisManager
 
     public function save()
     {
-        $save = (array) $this;
+        $save = (array)$this;
+
+        ksort($save['repositories']);
 
         unset($save['satis_file']);
 

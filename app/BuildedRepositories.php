@@ -12,6 +12,19 @@ use Symfony\Component\Finder\Finder;
 
 class BuildedRepositories
 {
+    public function getBuildInfoByUrl($url)
+    {
+        $build_info = false;
+        foreach ($this->get() as $repositoryName => $repositoryVersions) {
+            if (strpos($url, $repositoryName) !== false) {
+                $build_info = end($repositoryVersions);
+                break;
+            }
+        }
+
+        return $build_info;
+    }
+
     public function get()
     {
         $builded = [];
