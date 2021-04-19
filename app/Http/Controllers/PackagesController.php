@@ -80,19 +80,12 @@ class PackagesController extends Controller
 
                 $licensed = false;
 
-               // file_put_contents(time().'.txt', json_encode($_SERVER, true, JSON_PRETTY_PRINT));
-
                 if (isset($_SERVER["HTTP_AUTHORIZATION"]) && (strpos(strtolower($_SERVER["HTTP_AUTHORIZATION"]),'basic') !== false)) {
 
-                    $exploded = explode(':', base64_decode(substr($_SERVER["HTTP_AUTHORIZATION"], 6)), 2);
-                    if (2 == \count($exploded)) {
-                        list($username, $password) = $exploded;
-                    }
-
-                    $userLicenseKeysMap = [];
-                    $userLicenseKeys = base64_decode($password);
+                    $userLicenseKeys = base64_decode(substr($_SERVER["HTTP_AUTHORIZATION"], 6));
                     $userLicenseKeys = json_decode($userLicenseKeys, true);
 
+                    $userLicenseKeysMap = [];
                     if ($userLicenseKeys) {
                         foreach ($userLicenseKeys as $userLicenseKey) {
                             if (isset($userLicenseKey['local_key'])) {
