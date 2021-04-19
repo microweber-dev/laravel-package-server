@@ -14,14 +14,19 @@ class BuildedRepositories
 {
     public function getBuildInfoByUrl($url)
     {
-        $buildInfo = false;
+        $buildInfo = [
+            'version'=>'--',
+            'type'=>'--',
+            'name'=>'--',
+            'description'=>'--',
+        ];
         $repositoryLastVersions = [];
         foreach ($this->get() as $repositoryName => $repositoryVersions) {
             $repositoryLastVersions[] = end($repositoryVersions);
         }
 
         foreach($repositoryLastVersions as $repository) {
-            if ($repository['source']['url'] == $url) {
+            if (isset($repository['source']['url']) && $repository['source']['url'] == $url) {
                 $buildInfo = $repository;
                 break;
             }
