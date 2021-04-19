@@ -9,6 +9,7 @@
 namespace App\Http\Controllers;
 
 
+use App\BuildedRepositories;
 use App\Jobs\PackageManagerBuildJob;
 use App\SatisManager;
 use Composer\Satis\Satis;
@@ -38,16 +39,32 @@ class RepositoryController extends Controller
     public function edit(Request $request)
     {
         $url = '';
-        $whmcsProductIds = '';
+        $whmcsProductIds = [];
         $type = '';
+        $category = '';
+        $previewImage = false;
 
         $repositoryData = $this->satis->getRepositoryByUrl($request->input('url'));
+
         if ($repositoryData) {
+
             $url = $repositoryData['url'];
-            if (isset($repositoryData['whmcs_product_ids'])) {
-                $whmcsProductIds = $repositoryData['whmcs_product_ids'];
-            }
             $type = $repositoryData['type'];
+
+            $builded = new BuildedRepositories();
+            $repositoryData['build_info'] = $builded->getBuildInfoByUrl($url);
+
+            if (isset($repositoryData['build_info']['extra']['_meta']['screenshot'])) {
+                $previewImage = $repositoryData['build_info']['extra']['_meta']['screenshot'];
+            }
+
+            if (isset($repositoryData['whmcs_product_ids'])) {
+                $whmcsProductIds = explode(',', $repositoryData['whmcs_product_ids']);
+            }
+
+            if (isset($repositoryData['category'])) {
+                $category = $repositoryData['category'];
+            }
         }
 
         $whmcsProductsTypes = [];
@@ -64,6 +81,8 @@ class RepositoryController extends Controller
             'url' => $url,
             'whmcs_products_types' => $whmcsProductsTypes,
             'whmcs_product_ids' => $whmcsProductIds,
+            'category' => $category,
+            'preview_image' => $previewImage,
             'type' => $type
         ]);
     }
@@ -75,9 +94,15 @@ class RepositoryController extends Controller
             return redirect(route('home'));
         }
 
+        $productIds = '';
+        if (is_array($request->input('whmcs_product_ids'))) {
+            $productIds = implode(',', $request->input('whmcs_product_ids'));
+        }
+
         $this->satis->saveRepository([
-           'whmcs_product_ids'=>$request->input('whmcs_product_ids'),
+           'whmcs_product_ids'=>$productIds,
            'url'=>$request->input('url'),
+           'category'=>$request->input('category'),
            'type'=>$request->input('type'),
         ]);
         $this->satis->save();
@@ -94,7 +119,6 @@ class RepositoryController extends Controller
 
     public function buildRun()
     {
-
         @unlink(base_path() . '/public/build-packages-output.log');
 
         PackageManagerBuildJob::dispatch();

@@ -27,8 +27,8 @@ class PackagesController extends Controller
     }
 
     public function index() {
-
-        //file_put_contents(date('Y-m-d-H-i-s').'.txt', json_encode($_SERVER, JSON_PRETTY_PRINT));
+/*
+        file_put_contents(date('Y-m-d-H-i-s').'.txt', json_encode($_SERVER, JSON_PRETTY_PRINT));*/
 
         $packages = $this->_getCompiledPackageJson();
 
@@ -80,14 +80,21 @@ class PackagesController extends Controller
 
                 $licensed = false;
 
-                if (isset($_SERVER["HTTP_AUTHORIZATION"]) && 0 === stripos($_SERVER["HTTP_AUTHORIZATION"], 'basic ')) {
-                    $exploded = explode(':', base64_decode(substr($_SERVER["HTTP_AUTHORIZATION"], 6)), 2);
-                    if (2 == \count($exploded)) {
-                        list($username, $password) = $exploded;
-                    }
-                    $userLicenseKeysMap = [];
-                    $userLicenseKeys = base64_decode($password);
+                if (isset($_SERVER["HTTP_AUTHORIZATION"]) && (strpos(strtolower($_SERVER["HTTP_AUTHORIZATION"]),'basic') !== false)) {
+
+                    $userLicenseKeys = base64_decode(substr($_SERVER["HTTP_AUTHORIZATION"], 6));
+
+                /*    if (strpos($userLicenseKeys, ':') !== false) {
+                        $exploded = explode(':', $userLicenseKeys, 2);
+                        if (2 == \count($exploded)) {
+                            list($username, $password) = $exploded;
+                            $userLicenseKeys = $password; 
+                        }
+                    }*/
+
                     $userLicenseKeys = json_decode($userLicenseKeys, true);
+
+                    $userLicenseKeysMap = [];
                     if ($userLicenseKeys) {
                         foreach ($userLicenseKeys as $userLicenseKey) {
                             if (isset($userLicenseKey['local_key'])) {
@@ -113,7 +120,6 @@ class PackagesController extends Controller
                         "shasum" => "license_key"
                     ];
                 }
-
 
                 $package['license_ids'] = $repositorySettings['whmcs_product_ids'];
 

@@ -26,6 +26,28 @@
                                     </select>
                                 </div>
 
+                                <!-- Select Basic -->
+                                <div class="form-group">
+                                    <label class="control-label" for="selectbasic2">Category</label>
+                                    <select id="selectbasic2" name="category" required="required" class="form-control">
+                                        <option value="themes">Themes</option>
+                                        <option value="modules">Modules</option>
+                                        <option value="packages">Packages</option>
+                                    </select>
+                                </div>
+
+                                @if($preview_image)
+                                <h5>
+                                    Repostiroy Details
+                                </h5>
+                                <b>Preview</b>
+                                    <div class="row">
+                                        <div class="thumbnail" style="max-height:300px;overflow:hidden;">
+                                            <img src="{{ $preview_image }}" class="col-md-12" />
+                                        </div>
+                                    </div>
+                                @endif
+
                                 <!-- Text input-->
                                 <div class="form-group">
                                     <label class="control-label" for="url">Url</label>
@@ -33,27 +55,20 @@
                                         <i class="help-block">Pate your repository URL.</i>
                                 </div>
 
-<!--                                &lt;!&ndash; Textarea &ndash;&gt;
-                                <div class="form-group">
-                                    <label class="control-label" for="textarea">WHMCS Product Ids</label>
-                                    <textarea class="form-control" id="textarea" name="whmcs_product_ids">{{ $whmcs_product_ids  }}</textarea>
-                                    <i class="help-block">Fill the product ids eperated with coma.</i>
-                                </div>-->
+                                <hr />
+                                <h5>
+                                    Purchased Plan Requirements To Access This Repository
+                                </h5>
+                                <p>Select the following WHMCS plans to access this repository</p>
 
-                                    <hr />
-                                    <h5>
-                                        Purchased Plan Requirements To Access This Repository
-                                    </h5>
-                                    <p>Select the following WHMCS plans to access this repository</p>
-
-                                    @if(!empty($whmcs_products_types))
-                                        @foreach($whmcs_products_types as $whmcs_product_type_name=>$whmcs_product_type)
-                                            <b>{{ucfirst($whmcs_product_type_name)}}</b> <br />
-                                            @foreach($whmcs_product_type as $whmcs_product)
-                                               <label><input type="checkbox" name="whmcs_product" value="" /> {{$whmcs_product['name']}}  </label> <br />
-                                            @endforeach
+                                @if(!empty($whmcs_products_types))
+                                    @foreach($whmcs_products_types as $whmcs_product_type_name=>$whmcs_product_type)
+                                        <b>{{ucfirst($whmcs_product_type_name)}}</b> <br />
+                                        @foreach($whmcs_product_type as $whmcs_product)
+                                           <label><input @if(in_array($whmcs_product['pid'],$whmcs_product_ids)) checked="checked" @endif type="checkbox" name="whmcs_product_ids[]" value="{{$whmcs_product['pid']}}" /> {{$whmcs_product['name']}}  </label> <br />
                                         @endforeach
-                                    @endif
+                                    @endforeach
+                                @endif
 
                                 <!-- Button -->
                                 <div class="form-group">
