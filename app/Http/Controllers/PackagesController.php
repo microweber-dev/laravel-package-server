@@ -83,6 +83,15 @@ class PackagesController extends Controller
                 if (isset($_SERVER["HTTP_AUTHORIZATION"]) && (strpos(strtolower($_SERVER["HTTP_AUTHORIZATION"]),'basic') !== false)) {
 
                     $userLicenseKeys = base64_decode(substr($_SERVER["HTTP_AUTHORIZATION"], 6));
+
+                /*    if (strpos($userLicenseKeys, ':') !== false) {
+                        $exploded = explode(':', $userLicenseKeys, 2);
+                        if (2 == \count($exploded)) {
+                            list($username, $password) = $exploded;
+                            $userLicenseKeys = $password; 
+                        }
+                    }*/
+
                     $userLicenseKeys = json_decode($userLicenseKeys, true);
 
                     $userLicenseKeysMap = [];
