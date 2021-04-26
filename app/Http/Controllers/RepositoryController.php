@@ -68,7 +68,13 @@ class RepositoryController extends Controller
         }
 
         $whmcsProductsTypes = [];
-        $getWhmcsProducts = \Whmcs::GetProducts();
+        
+        try {
+            $getWhmcsProducts = \Whmcs::GetProducts();
+        } catch (\Exception $e) {
+            //
+            $getWhmcsProducts = [];
+        }
 
         if (isset($getWhmcsProducts['products']['product'])) {
             $whmcsProducts = $getWhmcsProducts['products']['product'];
