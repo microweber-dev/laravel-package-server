@@ -45,15 +45,13 @@ class SatisManager
             throw new \Exception('Can\'t load satis file');
         }
 
-        $satis = json_decode($satis, true);
-        if (!$satis) {
-            throw new \Exception('Can\'t decode satis file');
-        }
-
         $this->satis_file = $file;
 
-        foreach ($satis as $key => $value) {
-            $this->$key = $value;
+        $satis = json_decode($satis, true);
+        if (!empty($satis)) {
+            foreach ($satis as $key => $value) {
+                $this->$key = $value;
+            }
         }
     }
 
