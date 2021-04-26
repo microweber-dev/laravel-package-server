@@ -36,6 +36,10 @@ class SatisManager
 
     public function load($file)
     {
+        if (!is_file($file)) {
+            file_put_contents($file, json_encode([]));
+        }
+
         $satis = file_get_contents($file);
         if (!$satis) {
             throw new \Exception('Can\'t load satis file');
