@@ -21,14 +21,22 @@ class WhmcsController extends Controller
     public function index()
     {
         $envPath = app()->environmentFilePath();
-        $envEditor = \DotenvEditor::load($envPath);
-
-        $whmcsApiUrl = $envEditor->getValue('WHMCS_API_URL');
-        $whmcsAuthType = $envEditor->getValue('WHMCS_AUTH_TYPE');
-        $whmcsApiIdentifier = $envEditor->getValue('WHMCS_API_IDENTIFIER');
-        $whmcsApiSecret = $envEditor->getValue('WHMCS_API_SECRET');
-        $whmcsUsername = $envEditor->getValue('WHMCS_USERNAME');
-        $whmcsPassword = $envEditor->getValue('WHMCS_PASSWORD');
+        try {
+            $envEditor = \DotenvEditor::load($envPath);
+            $whmcsApiUrl = $envEditor->getValue('WHMCS_API_URL');
+            $whmcsAuthType = $envEditor->getValue('WHMCS_AUTH_TYPE');
+            $whmcsApiIdentifier = $envEditor->getValue('WHMCS_API_IDENTIFIER');
+            $whmcsApiSecret = $envEditor->getValue('WHMCS_API_SECRET');
+            $whmcsUsername = $envEditor->getValue('WHMCS_USERNAME');
+            $whmcsPassword = $envEditor->getValue('WHMCS_PASSWORD');
+        } catch (\Exception $e) {
+            $whmcsApiUrl = '';
+            $whmcsAuthType = '';
+            $whmcsApiIdentifier = '';
+            $whmcsApiSecret = '';
+            $whmcsUsername = '';
+            $whmcsPassword = '';
+        }
 
        $whmcsUrl = '';
         $parsed = parse_url($whmcsApiUrl);
