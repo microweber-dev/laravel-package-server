@@ -99,7 +99,7 @@ class SatisManager
 
         unset($save['satis_file']);
 
-        $save['name'] = 'microweber-packages';
+        $save['name'] = 'microweber/packages';
         $save['homepage'] = 'http://packages-satis.microweberapi.com/';
         $save['whmcs_url'] = 'http://members.microweber.com/';
 
