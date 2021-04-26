@@ -37,7 +37,7 @@ class SatisManager
     public function load($file)
     {
         if (!is_file($file)) {
-            file_put_contents($file, json_encode([]));
+            file_put_contents($file, json_encode(['name'=>'your packages']));
         }
 
         $satis = file_get_contents($file);
