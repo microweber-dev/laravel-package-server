@@ -99,6 +99,10 @@ class SatisManager
 
         unset($save['satis_file']);
 
+        $save['name'] = 'microweber-packages';
+        $save['homepage'] = 'microweber-packages';
+        $save['whmcs_url'] = 'microweber-packages';
+
         $encoded = json_encode($save, JSON_PRETTY_PRINT);
 
         file_put_contents($this->satis_file, $encoded);
