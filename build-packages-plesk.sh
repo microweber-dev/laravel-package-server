@@ -1,4 +1,4 @@
-php -d memory_limit=-1 artisan package-manager:change-satis-schema
-php -d memory_limit=-1 vendor/composer/satis/bin/satis build ./satis.json public --stats -n
+/opt/plesk/php/7.4/bin/php -d memory_limit=-1 artisan package-manager:change-satis-schema
+/opt/plesk/php/7.4/bin/php -d memory_limit=-1 vendor/composer/satis/bin/satis build ./satis.json public --stats -n
 mv public/packages.json public/original-packages.json
-php -d memory_limit=-1 artisan package-manager:build
+/opt/plesk/php/7.4/bin/php -d memory_limit=-1 artisan package-manager:build
