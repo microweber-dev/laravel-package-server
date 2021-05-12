@@ -84,6 +84,7 @@ class WhmcsController extends Controller
         $envPath = app()->environmentFilePath();
         $envEditor = \DotenvEditor::load($envPath);
 
+        $envEditor->setKey('WHMCS_URL', $request->post('whmcs_url'))->save();
         $envEditor->setKey('WHMCS_API_URL', $request->post('whmcs_url') . '/includes')->save();
         $envEditor->setKey('WHMCS_AUTH_TYPE', $request->post('whmcs_auth_type'))->save();
 

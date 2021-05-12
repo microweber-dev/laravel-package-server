@@ -99,22 +99,30 @@ class SatisManager
 
         unset($save['satis_file']);
 
-        $save['name'] = 'microweber/packages';
-        $save['homepage'] = 'http://packages-satis.microweberapi.com/';
-        $save['whmcs_url'] = 'http://members.microweber.com/';
+        $envPath = app()->environmentFilePath();
+        try {
+            $envEditor = \DotenvEditor::load($envPath);
+
+            $save['name'] = $envEditor->getValue('PACKAGE_MANAGER_NAME');
+            $save['homepage'] = $envEditor->getValue('PACKAGE_MANAGER_HOMEPAGE');
+            $save['whmcs_url'] = $envEditor->getValue('WHMCS_URL');
+
+        } catch (\Exception $e) {
+            $save['name'] = 'microweber/packages';
+            $save['homepage'] = 'http://packages-satis.microweberapi.com/';
+            $save['whmcs_url'] = 'http://members.microweber.com/';
+        }
+
+        $save['require-all'] = true;
+        $save['notify-batch'] = "https:\/\/installreport.services.microweberapi.com";
+        $save['archive'] = [
+            'directory'=>'dist',
+            'format'=>'zip',
+            'skip-dev'=>true,
+        ];
 
         $encoded = json_encode($save, JSON_PRETTY_PRINT);
 
         file_put_contents($this->satis_file, $encoded);
     }
-
-    /*
-    "require-all": true,
-    "notify-batch": "https:\/\/installreport.services.microweberapi.com",
-    "archive": {
-        "directory": "dist",
-        "format": "zip",
-        "skip-dev": true
-    }
-     */
 }
