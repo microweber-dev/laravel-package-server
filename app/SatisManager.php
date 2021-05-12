@@ -114,7 +114,7 @@ class SatisManager
         }
 
         $save['require-all'] = true;
-        $save['notify-batch'] = "https:\/\/installreport.services.microweberapi.com";
+        $save['notify-batch'] = "https://installreport.services.microweberapi.com";
         $save['archive'] = [
             'directory'=>'dist',
             'format'=>'zip',
