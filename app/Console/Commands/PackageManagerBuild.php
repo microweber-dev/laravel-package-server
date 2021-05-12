@@ -95,7 +95,13 @@ class PackageManagerBuild extends Command
             if (!$filesystem->exists($distZip)) {
                 return $packageVersion;
             }
-
+            
+            // Create Main Meta Folder
+            $mainMetaFolder = $this->outputDir . '/meta/';
+            if (!$filesystem->exists($mainMetaFolder)) {
+                $filesystem->mkdir($mainMetaFolder);
+            }
+            
             // Create Meta Folder
             $metaFolder = $this->outputDir . '/meta/' . $distShasum . '/';
             $metaFolderPublicUrl = $packageMainUrl . 'meta/' . $distShasum . '/';
