@@ -7,6 +7,8 @@
             <a href="{{ route('add-repo') }}" class="btn btn-outline-primary btn-block"><i class="fa fa-plus"></i> Add New Repository</a>
             <a href="{{ route('build-repo') }}" class="btn btn-outline-success btn-block"><i class="fa fa-rocket"></i> Build Packages</a>
             <a href="{{ route('configure-whmcs') }}" class="btn btn-outline-success btn-block"><i class="fa fa-cogs"></i> Configure WHMCS</a>
+            <a href="{{ route('configure') }}" class="btn btn-outline-success btn-block"><i class="fa fa-cogs"></i> Configure Package Manager</a>
         </div>
     </div>
 </div>
+

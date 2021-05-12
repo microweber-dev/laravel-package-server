@@ -108,4 +108,13 @@ class SatisManager
         file_put_contents($this->satis_file, $encoded);
     }
 
+    /*
+    "require-all": true,
+    "notify-batch": "https:\/\/installreport.services.microweberapi.com",
+    "archive": {
+        "directory": "dist",
+        "format": "zip",
+        "skip-dev": true
+    }
+     */
 }
