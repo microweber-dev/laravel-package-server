@@ -109,8 +109,8 @@ class SatisManager
 
         } catch (\Exception $e) {
             $save['name'] = 'microweber/packages';
-            $save['homepage'] = 'http://packages-satis.microweberapi.com/';
-            $save['whmcs_url'] = 'http://members.microweber.com/';
+            $save['homepage'] = 'https://packages-satis.microweberapi.com/';
+            $save['whmcs_url'] = 'https://members.microweber.com/';
         }
 
         $save['require-all'] = true;
