@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -29,6 +30,6 @@ class PackageManagerBuildJob implements ShouldQueue
      */
     public function handle()
     {
-        shell_exec(base_path() .'/build-packages.sh');
+        shell_exec(base_path() .'/build-packages.sh --env' . Helpers::getEnvName());
     }
 }
