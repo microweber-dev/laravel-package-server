@@ -26,7 +26,7 @@ class Helpers
 
     public static function setValuesToEnvConfig($config = 'app', $values)
     {
-        $overwriteConfig = \Config::get('package-manager');
+        $overwriteConfig = \Config::get($config);
         if (!empty($values)) {
             foreach ($values as $key=>$value) {
                 $overwriteConfig[$key] = $value;

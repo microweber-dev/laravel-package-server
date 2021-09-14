@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers;
 use App\Jobs\PackageManagerBuildJob;
 use App\SatisManager;
 use Illuminate\Http\Request;
@@ -20,15 +21,16 @@ class WhmcsController extends Controller
      */
     public function index()
     {
-        $envPath = app()->environmentFilePath();
         try {
-            $envEditor = \DotenvEditor::load($envPath);
-            $whmcsApiUrl = $envEditor->getValue('WHMCS_API_URL');
-            $whmcsAuthType = $envEditor->getValue('WHMCS_AUTH_TYPE');
-            $whmcsApiIdentifier = $envEditor->getValue('WHMCS_API_IDENTIFIER');
-            $whmcsApiSecret = $envEditor->getValue('WHMCS_API_SECRET');
-            $whmcsUsername = $envEditor->getValue('WHMCS_USERNAME');
-            $whmcsPassword = $envEditor->getValue('WHMCS_PASSWORD');
+            $packageManager = Helpers::getValuesFromEnvConfig('whmcs');
+
+            $whmcsApiUrl = $packageManager['whmcs_api_url'];
+            $whmcsAuthType = $packageManager['whmcs_auth_type'];
+            $whmcsApiIdentifier = $packageManager['whmcs_api_identifier'];
+            $whmcsApiSecret = $packageManager['whmcs_api_secret'];
+            $whmcsUsername = $packageManager['whmcs_username'];
+            $whmcsPassword = $packageManager['whmcs_password'];
+
         } catch (\Exception $e) {
             $whmcsApiUrl = '';
             $whmcsAuthType = '';
@@ -81,18 +83,18 @@ class WhmcsController extends Controller
 
         PackageManagerBuildJob::dispatch();
 
-        $envPath = app()->environmentFilePath();
-        $envEditor = \DotenvEditor::load($envPath);
+        $values = [];
+        $values['whmcs_url'] = $request->post('whmcs_url');
+        $values['whmcs_api_url'] = $request->post('whmcs_url') . '/includes';
+        $values['whmcs_auth_type'] = $request->post('whmcs_auth_type');
 
-        $envEditor->setKey('WHMCS_URL', $request->post('whmcs_url'))->save();
-        $envEditor->setKey('WHMCS_API_URL', $request->post('whmcs_url') . '/includes')->save();
-        $envEditor->setKey('WHMCS_AUTH_TYPE', $request->post('whmcs_auth_type'))->save();
+        $values['whmcs_api_identifier'] = $request->post('whmcs_api_identifier');
+        $values['whmcs_api_secret'] = $request->post('whmcs_api_secret');
 
-        $envEditor->setKey('WHMCS_API_IDENTIFIER', $request->post('whmcs_api_identifier'))->save();
-        $envEditor->setKey('WHMCS_API_SECRET', $request->post('whmcs_api_secret'))->save();
+        $values['whmcs_username'] = $request->post('whmcs_username');
+        $values['whmcs_password'] = $request->post('whmcs_password');
 
-        $envEditor->setKey('WHMCS_USERNAME', $request->post('whmcs_username'))->save();
-        $envEditor->setKey('WHMCS_PASSWORD', $request->post('whmcs_password'))->save();
+        Helpers::setValuesToEnvConfig('whmcs', $values);
 
         return redirect(route('configure-whmcs'));
     }
