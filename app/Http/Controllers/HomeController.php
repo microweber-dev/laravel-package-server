@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\BuildedRepositories;
+use App\Helpers;
 use App\SatisManager;
 use Illuminate\Http\Request;
 
@@ -25,8 +26,10 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $satisFile = Helpers::getEnvConfigDir() . 'satis.json';
+
         $satis = new SatisManager();
-        $satis->load('../satis.json');
+        $satis->load($satisFile);
         $repositories = $satis->getRepositories();
 
         $builded = new BuildedRepositories();

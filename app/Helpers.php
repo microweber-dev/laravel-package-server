@@ -13,4 +13,9 @@ class Helpers
 
         return $environment;
     }
+
+    public static function getEnvConfigDir()
+    {
+        return dirname(__DIR__) . '/config/' . self::getEnvName() . '/';
+    }
 }

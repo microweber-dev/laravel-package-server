@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Helpers;
 use Illuminate\Support\ServiceProvider;
+use PHPUnit\TextUI\Help;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $envName = Helpers::getEnvName();
-        $envConfigDir = dirname(dirname(__DIR__)) . '/config/' . $envName . '/';
+        $envConfigDir = Helpers::getEnvConfigDir();
         $packageServerConfig = @include($envConfigDir .DIRECTORY_SEPARATOR. 'package-server.php');
         if (isset($packageServerConfig['installed']) && $packageServerConfig['installed'] == 1) {
             $envConfigDirScan = scandir($envConfigDir);
