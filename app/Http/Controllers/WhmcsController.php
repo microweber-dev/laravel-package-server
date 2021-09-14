@@ -85,7 +85,7 @@ class WhmcsController extends Controller
 
         $values = [];
         $values['url'] = $request->post('whmcs_url');
-        $values['api_url'] = $request->post('whmcs_url') . '/includes';
+        $values['apiurl'] = $request->post('whmcs_url') . '/includes';
         $values['auth_type'] = $request->post('whmcs_auth_type');
 
         $values['api']['identifier'] = $request->post('whmcs_api_identifier');
