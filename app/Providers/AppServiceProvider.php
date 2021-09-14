@@ -16,7 +16,8 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $envConfigDir = Helpers::getEnvConfigDir();
-        $packageServerConfig = @include($envConfigDir .DIRECTORY_SEPARATOR. 'package-server.php');
+
+        $packageServerConfig = @include($envConfigDir .DIRECTORY_SEPARATOR. 'package-manager.php');
         if (isset($packageServerConfig['installed']) && $packageServerConfig['installed'] == 1) {
             $envConfigDirScan = scandir($envConfigDir);
             foreach ($envConfigDirScan as $envConfigFile) {

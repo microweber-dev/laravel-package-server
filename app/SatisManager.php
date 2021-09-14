@@ -99,13 +99,12 @@ class SatisManager
 
         unset($save['satis_file']);
 
-        $envPath = app()->environmentFilePath();
         try {
-            $envEditor = \DotenvEditor::load($envPath);
+            $packageManager =\Config::get('package-manager');
 
-            $save['name'] = $envEditor->getValue('PACKAGE_MANAGER_NAME');
-            $save['homepage'] = $envEditor->getValue('PACKAGE_MANAGER_HOMEPAGE');
-            $save['whmcs_url'] = $envEditor->getValue('WHMCS_URL');
+            $save['name'] = $packageManager['package_manager_name'];
+            $save['homepage'] = $packageManager['package_manager_homepage'];
+            $save['whmcs_url'] = $packageManager['whmcs_url'];
 
         } catch (\Exception $e) {
             $save['name'] = 'microweber/packages';
