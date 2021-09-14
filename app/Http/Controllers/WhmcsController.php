@@ -24,12 +24,12 @@ class WhmcsController extends Controller
         try {
             $packageManager = Helpers::getValuesFromEnvConfig('whmcs');
 
-            $whmcsApiUrl = $packageManager['whmcs_api_url'];
-            $whmcsAuthType = $packageManager['whmcs_auth_type'];
-            $whmcsApiIdentifier = $packageManager['whmcs_api_identifier'];
-            $whmcsApiSecret = $packageManager['whmcs_api_secret'];
-            $whmcsUsername = $packageManager['whmcs_username'];
-            $whmcsPassword = $packageManager['whmcs_password'];
+            $whmcsApiUrl = $packageManager['apiurl'];
+            $whmcsAuthType = $packageManager['auth_type'];
+            $whmcsApiIdentifier = $packageManager['api']['identifier'];
+            $whmcsApiSecret = $packageManager['api']['secret'];
+            $whmcsUsername = $packageManager['password']['username'];
+            $whmcsPassword = $packageManager['password']['password'];
 
         } catch (\Exception $e) {
             $whmcsApiUrl = '';
@@ -84,15 +84,15 @@ class WhmcsController extends Controller
         PackageManagerBuildJob::dispatch();
 
         $values = [];
-        $values['whmcs_url'] = $request->post('whmcs_url');
-        $values['whmcs_api_url'] = $request->post('whmcs_url') . '/includes';
-        $values['whmcs_auth_type'] = $request->post('whmcs_auth_type');
+        $values['url'] = $request->post('whmcs_url');
+        $values['api_url'] = $request->post('whmcs_url') . '/includes';
+        $values['auth_type'] = $request->post('whmcs_auth_type');
 
-        $values['whmcs_api_identifier'] = $request->post('whmcs_api_identifier');
-        $values['whmcs_api_secret'] = $request->post('whmcs_api_secret');
+        $values['api']['identifier'] = $request->post('whmcs_api_identifier');
+        $values['api']['secret'] = $request->post('whmcs_api_secret');
 
-        $values['whmcs_username'] = $request->post('whmcs_username');
-        $values['whmcs_password'] = $request->post('whmcs_password');
+        $values['password']['username'] = $request->post('whmcs_username');
+        $values['password']['password'] = $request->post('whmcs_password');
 
         Helpers::setValuesToEnvConfig('whmcs', $values);
 
