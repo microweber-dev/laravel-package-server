@@ -14,12 +14,10 @@
 Auth::routes();
 
 Route::get('/', function () {
-    $file = 'index.html';
-    if (is_file($file)) {
-        echo file_get_contents($file);
-    } else {
-        return view('welcome');
-    }
+
+
+    return view('welcome');
+
 });
 
 Route::get('packages.json', 'PackagesController@index');
