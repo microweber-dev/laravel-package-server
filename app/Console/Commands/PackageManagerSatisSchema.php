@@ -41,7 +41,6 @@ class PackageManagerSatisSchema extends Command
         $overwriteSatisSchemaFile = base_path() . '/vendor/composer/satis/res/satis-schema.json';
         $satisSchemaFile = base_path() . '/satis-schema.json';
 
-
         $satisSchemaContent = file_get_contents($satisSchemaFile);
         if ($satisSchemaContent) {
             file_put_contents($overwriteSatisSchemaFile, $satisSchemaContent);
@@ -64,6 +63,6 @@ class PackageManagerSatisSchema extends Command
         if ($twigFileContent) {
             file_put_contents($overwriteTwigFile, $twigFileContent);
         }
-        
+
     }
 }
