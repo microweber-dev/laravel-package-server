@@ -168,6 +168,7 @@ return [
         DarthSoup\Whmcs\WhmcsServiceProvider::class,
         Jackiedo\DotenvEditor\DotenvEditorServiceProvider::class,
         Queueworker\SansDaemon\SansDaemonServiceProvider::class,
+        RachidLaasri\LaravelInstaller\Providers\LaravelInstallerServiceProvider::class,
 
         /*
          * Application Service Providers...
