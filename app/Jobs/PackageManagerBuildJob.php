@@ -30,6 +30,6 @@ class PackageManagerBuildJob implements ShouldQueue
      */
     public function handle()
     {
-        shell_exec(base_path() .'/build-packages.sh --env' . Helpers::getEnvName());
+        shell_exec(base_path() .'/build-packages.sh -e ' . Helpers::getEnvName());
     }
 }
