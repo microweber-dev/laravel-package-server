@@ -15,7 +15,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $envName = Helpers::getEnvName();
         $envConfigDir = Helpers::getEnvConfigDir();
         $packageServerConfig = @include($envConfigDir .DIRECTORY_SEPARATOR. 'package-server.php');
         if (isset($packageServerConfig['installed']) && $packageServerConfig['installed'] == 1) {
@@ -26,10 +25,10 @@ class AppServiceProvider extends ServiceProvider
                     continue;
                 }
 
-                $envName = pathinfo($envConfigFile, PATHINFO_FILENAME);
+                $configName = pathinfo($envConfigFile, PATHINFO_FILENAME);
                 $envArray = include($envConfigDir . DIRECTORY_SEPARATOR . $envConfigFile);
 
-                \Config::set($envName, $envArray);
+                \Config::set($configName, $envArray);
             }
         }
     }

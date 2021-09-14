@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 
 
 use App\BuildedRepositories;
+use App\Helpers;
 use App\Jobs\PackageManagerBuildJob;
 use App\SatisManager;
 use Composer\Satis\Satis;
@@ -27,8 +28,10 @@ class RepositoryController extends Controller
     {
         $this->middleware('auth');
 
+        $satisFile = Helpers::getEnvConfigDir() . 'satis.json';
+
         $this->satis = new SatisManager();
-        $this->satis->load('../satis.json');
+        $this->satis->load($satisFile);
     }
 
     /**
