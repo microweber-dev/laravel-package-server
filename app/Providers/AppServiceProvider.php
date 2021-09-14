@@ -26,8 +26,9 @@ class AppServiceProvider extends ServiceProvider
                 }
 
                 $configName = pathinfo($envConfigFile, PATHINFO_FILENAME);
+                ob_start();
                 $envArray = include($envConfigDir . DIRECTORY_SEPARATOR . $envConfigFile);
-
+                ob_clean();
                 \Config::set($configName, $envArray);
             }
         }
