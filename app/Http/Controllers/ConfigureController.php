@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers;
 use App\Jobs\PackageManagerBuildJob;
 use Illuminate\Http\Request;
 
@@ -19,11 +20,10 @@ class ConfigureController extends Controller
      */
     public function index()
     {
-        $envPath = app()->environmentFilePath();
         try {
-            $envEditor = \DotenvEditor::load($envPath);
-            $packageManagerName = $envEditor->getValue('PACKAGE_MANAGER_NAME');
-            $packageManagerHomepage = $envEditor->getValue('PACKAGE_MANAGER_HOMEPAGE');
+            $packageManager = Helpers::getValuesFromEnvConfig('package-manager');
+            $packageManagerName = $packageManager['package_manager_name'];
+            $packageManagerHomepage = $packageManager['package_manager_homepage'];
         } catch (\Exception $e) {
             $packageManagerHomepage = '';
             $packageManagerName = '';
@@ -39,11 +39,11 @@ class ConfigureController extends Controller
 
         PackageManagerBuildJob::dispatch();
 
-        $envPath = app()->environmentFilePath();
-        $envEditor = \DotenvEditor::load($envPath);
+        $values = [];
+        $values['package_manager_name'] = $request->post('package_manager_name');
+        $values['package_manager_homepage'] = $request->post('package_manager_homepage');
 
-        $envEditor->setKey('PACKAGE_MANAGER_NAME', $request->post('package_manager_name'))->save();
-        $envEditor->setKey('PACKAGE_MANAGER_HOMEPAGE', $request->post('package_manager_homepage'))->save();
+        Helpers::setValuesToEnvConfig('package-manager', $values);
 
         return redirect(route('configure'));
     }
