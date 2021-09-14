@@ -14,9 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
         $envName = Helpers::getEnvName();
-
         $envConfigDir = dirname(dirname(__DIR__)) . '/config/' . $envName . '/';
         $envConfigDirScan = scandir($envConfigDir);
         foreach ($envConfigDirScan as $envConfigFile) {
