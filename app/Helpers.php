@@ -5,6 +5,12 @@ class Helpers
 {
     public static function getEnvName()
     {
-        return \Request::server("SERVER_NAME");
+        $environment = \Request::server("SERVER_NAME");
+
+        if (php_sapi_name() == 'cli') {
+            $environment = \App::environment();
+        }
+
+        return $environment;
     }
 }

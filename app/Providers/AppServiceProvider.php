@@ -16,17 +16,20 @@ class AppServiceProvider extends ServiceProvider
     {
         $envName = Helpers::getEnvName();
         $envConfigDir = dirname(dirname(__DIR__)) . '/config/' . $envName . '/';
-        $envConfigDirScan = scandir($envConfigDir);
-        foreach ($envConfigDirScan as $envConfigFile) {
+        $packageServerConfig = @include($envConfigDir .DIRECTORY_SEPARATOR. 'package-server.php');
+        if (isset($packageServerConfig['installed']) && $packageServerConfig['installed'] == 1) {
+            $envConfigDirScan = scandir($envConfigDir);
+            foreach ($envConfigDirScan as $envConfigFile) {
 
-            if($envConfigFile === '.' || $envConfigFile === '..') {
-                continue;
+                if ($envConfigFile === '.' || $envConfigFile === '..') {
+                    continue;
+                }
+
+                $envName = pathinfo($envConfigFile, PATHINFO_FILENAME);
+                $envArray = include($envConfigDir . DIRECTORY_SEPARATOR . $envConfigFile);
+
+                \Config::set($envName, $envArray);
             }
-
-            $envName = pathinfo($envConfigFile, PATHINFO_FILENAME);
-            $envArray = include($envConfigDir . DIRECTORY_SEPARATOR .  $envConfigFile);
-
-            \Config::set($envName, $envArray);
         }
     }
 
