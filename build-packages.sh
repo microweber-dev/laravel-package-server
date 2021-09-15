@@ -5,6 +5,10 @@ do
     esac
 done
 
+if ! [ -d "public/domains" ]; then
+    mkdir public/domains
+fi
+
 if ! [ -d "public/domains/$env" ]; then
     mkdir public/domains/$env
 fi
