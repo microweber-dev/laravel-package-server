@@ -5,26 +5,28 @@ do
     esac
 done
 
-if ! [ -d "public/$env" ]; then
-    mkdir public/$env
+if ! [ -d "public/domains/$env" ]; then
+    mkdir public/domains/$env
 fi
 
-if ! [ -d "public/$env/meta" ]; then
-    mkdir public/$env/meta
+if ! [ -d "public/domains/$env/meta" ]; then
+    mkdir public/domains/$env/meta
 fi
 
-if ! [ -d "public/$env/dist" ]; then
-    mkdir public/$env/dist
+if ! [ -d "public/domains/$env/dist" ]; then
+    mkdir public/domains/$env/dist
 fi
 
-if ! [ -d "public/$env/include" ]; then
-    mkdir public/$env/include
+if ! [ -d "public/domains/$env/include" ]; then
+    mkdir public/domains/$env/include
 fi
 
 #example
-#php -d memory_limit=-1 vendor/composer/satis/bin/satis build ./config/packages-bg.microweberapi.com/satis.json public/packages-bg.microweberapi.com --stats
+#php -d memory_limit=-1 vendor/composer/satis/bin/satis build ./config/packages-bg.microweberapi.com/satis.json public/domains/packages-bg.microweberapi.com --stats
 
-php -d memory_limit=-1 artisan package-manager:change-satis-schema --env $env </dev/null >public/$env/build-packages-output.log 2>public/$env/build-packages-output.error &
-php -d memory_limit=-1 vendor/composer/satis/bin/satis build ./config/$env/satis.json public/$env --stats -n </dev/null >public/$env/build-packages-output.log 2>public/$env/build-packages-output.error &
-mv public/$env/packages.json public/$env/original-packages.json </dev/null >public/$env/build-packages-output.log 2>public/$env/build-packages-output.error &
-php -d memory_limit=-1 artisan package-manager:build --env $env </dev/null >public/$env/build-packages-output.log 2>public/$env/build-packages-output.error &
+php -d memory_limit=-1 artisan package-manager:change-satis-schema --env $env </dev/null >public/domains/$env/build-packages-output.log 2>public/domains/$env/build-packages-output.error &
+php -d memory_limit=-1 vendor/composer/satis/bin/satis build ./config/$env/satis.json public/domains/$env --stats -n </dev/null >public/domains/$env/build-packages-output.log 2>public/domains/$env/build-packages-output.error &
+mv public/domains/$env/packages.json public/domains/$env/original-packages.json </dev/null >public/domains/$env/build-packages-output.log 2>public/domains/$env/build-packages-output.error &
+php -d memory_limit=-1 artisan package-manager:build --env $env </dev/null >public/domains/$env/build-packages-output.log 2>public/domains/$env/build-packages-output.error &
+
+
