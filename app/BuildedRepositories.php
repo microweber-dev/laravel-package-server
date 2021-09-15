@@ -29,7 +29,7 @@ class BuildedRepositories
 
             // git@gitlab.com:
             // https://gitlab.com/
-            
+
             if (isset($repository['source']['url'])) {
                 $sourceUrl = $repository['source']['url'];
                 $sourceUrl = str_replace('git@gitlab.com:', '', $sourceUrl);
@@ -51,15 +51,17 @@ class BuildedRepositories
 
         $buildedPackagesPath = base_path() . '/public/domains/'. Helpers::getEnvName() .'/include/';
 
-        $finder = new Finder();
-        $finder->files()->in($buildedPackagesPath)->name(['*.json']);
-        if ($finder->hasResults()) {
-            foreach ($finder as $file) {
-                $builded = json_decode($file->getContents(), true);
-                if (isset($builded['packages'])) {
-                    $builded = $builded['packages'];
+        if (is_dir($buildedPackagesPath)) {
+            $finder = new Finder();
+            $finder->files()->in($buildedPackagesPath)->name(['*.json']);
+            if ($finder->hasResults()) {
+                foreach ($finder as $file) {
+                    $builded = json_decode($file->getContents(), true);
+                    if (isset($builded['packages'])) {
+                        $builded = $builded['packages'];
+                    }
+                    break;
                 }
-                break;
             }
         }
 
