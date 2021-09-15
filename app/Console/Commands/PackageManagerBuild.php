@@ -96,20 +96,20 @@ class PackageManagerBuild extends Command
         $packageMainUrl = $distUrlParsed['scheme'] . '://'. $distUrlParsed['host'] . '/';
         if ($distUrlParsed['path']) {
 
-            $distZip = $this->outputDir .'/'. Helpers::getEnvName() . $distUrlParsed['path'];
+            $distZip = $this->outputDir .'/domains/'. Helpers::getEnvName() . $distUrlParsed['path'];
 
             if (!$filesystem->exists($distZip)) {
                 return $packageVersion;
             }
 
             // Create Main Meta Folder
-            $mainMetaFolder = $this->outputDir .'/'. Helpers::getEnvName() .  '/meta/';
+            $mainMetaFolder = $this->outputDir .'/domains/'. Helpers::getEnvName() .  '/meta/';
             if (!$filesystem->exists($mainMetaFolder)) {
                 $filesystem->mkdir($mainMetaFolder);
             }
 
             // Create Meta Folder
-            $metaFolder = $this->outputDir .'/'. Helpers::getEnvName() . '/meta/' . $distShasum . '/';
+            $metaFolder = $this->outputDir .'/domains/'. Helpers::getEnvName() . '/meta/' . $distShasum . '/';
             $metaFolderPublicUrl = $packageMainUrl . 'meta/' . $distShasum . '/';
             if (!$filesystem->exists($metaFolder)) {
                 $filesystem->mkdir($metaFolder);
@@ -187,13 +187,14 @@ class PackageManagerBuild extends Command
     private function _readPackageFiles() {
 
         $files = [];
-        $packagesFile = $this->outputDir .'/'. Helpers::getEnvName() . '/original-packages.json';
+        $packagesFile = dirname(dirname(dirname(__DIR__))) .'/'. $this->outputDir .'/domains/'. Helpers::getEnvName() . '/original-packages.json';
+
         $content = file_get_contents($packagesFile);
         $packages = json_decode($content, true);
 
         if (isset($packages['includes']) && !empty($packages['includes'])) {
             foreach ($packages['includes'] as $packageFile=>$package) {
-                $files[] = $this->outputDir .'/'. Helpers::getEnvName() .'/'. $packageFile;
+                $files[] = $this->outputDir .'/domains/'. Helpers::getEnvName() .'/'. $packageFile;
             }
         }
 
