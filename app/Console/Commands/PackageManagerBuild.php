@@ -47,7 +47,7 @@ class PackageManagerBuild extends Command
         $packageFiles = $this->_readPackageFiles();
         if (!empty($packageFiles)) {
             foreach ($packageFiles as $file) {
-                $this->_preparePackage($this->outputDir .'/'. $file);
+                $this->_preparePackage($file);
             }
         }
     }
@@ -183,12 +183,13 @@ class PackageManagerBuild extends Command
     private function _readPackageFiles() {
 
         $files = [];
-        $content = file_get_contents($this->outputDir .'/'. Helpers::getEnvName() . '/original-packages.json');
+        $packagesFile = $this->outputDir .'/'. Helpers::getEnvName() . '/original-packages.json';
+        $content = file_get_contents($packagesFile);
         $packages = json_decode($content, true);
-        
+
         if (isset($packages['includes']) && !empty($packages['includes'])) {
             foreach ($packages['includes'] as $packageFile=>$package) {
-                $files[] = $packageFile;
+                $files[] = $this->outputDir .'/'. Helpers::getEnvName() .'/'. $packageFile;
             }
         }
 
