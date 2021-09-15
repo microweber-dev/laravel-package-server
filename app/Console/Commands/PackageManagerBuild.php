@@ -189,6 +189,10 @@ class PackageManagerBuild extends Command
         $files = [];
         $packagesFile = dirname(dirname(dirname(__DIR__))) .'/'. $this->outputDir .'/domains/'. Helpers::getEnvName() . '/original-packages.json';
 
+        if (!is_file($packagesFile)) {
+            return false;
+        }
+
         $content = file_get_contents($packagesFile);
         $packages = json_decode($content, true);
 
