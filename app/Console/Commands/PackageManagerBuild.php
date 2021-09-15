@@ -48,7 +48,11 @@ class PackageManagerBuild extends Command
 
         if (!empty($packageFiles)) {
             foreach ($packageFiles as $file) {
-                $this->_preparePackage($file);
+                try {
+                    $this->_preparePackage($file);
+                } catch (\Exception $e) {
+                    echo $e->getMessage() . PHP_EOL;
+                }
             }
         }
     }
