@@ -27,6 +27,7 @@ fi
 
 #example
 #php -d memory_limit=-1 vendor/composer/satis/bin/satis build ./config/packages-bg.microweberapi.com/satis.json public/domains/packages-bg.microweberapi.com --stats
+#mv public/domains/packages-bg.microweberapi.com/packages.json public/domains/packages-bg.microweberapi.com/original-packages.json </dev/null >public/domains/packages-bg.microweberapi.com/build-packages-output.log 2>public/domains/packages-bg.microweberapi.com/build-packages-output.error &
 
 php -d memory_limit=-1 artisan package-manager:change-satis-schema --env $env </dev/null >public/domains/$env/build-packages-output.log 2>public/domains/$env/build-packages-output.error &
 php -d memory_limit=-1 vendor/composer/satis/bin/satis build ./config/$env/satis.json public/domains/$env --stats -n </dev/null >public/domains/$env/build-packages-output.log 2>public/domains/$env/build-packages-output.error &
