@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Helpers;
 use Illuminate\Console\Command;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -95,13 +96,13 @@ class PackageManagerBuild extends Command
             if (!$filesystem->exists($distZip)) {
                 return $packageVersion;
             }
-            
+
             // Create Main Meta Folder
             $mainMetaFolder = $this->outputDir . '/meta/';
             if (!$filesystem->exists($mainMetaFolder)) {
                 $filesystem->mkdir($mainMetaFolder);
             }
-            
+
             // Create Meta Folder
             $metaFolder = $this->outputDir . '/meta/' . $distShasum . '/';
             $metaFolderPublicUrl = $packageMainUrl . 'meta/' . $distShasum . '/';
@@ -182,9 +183,9 @@ class PackageManagerBuild extends Command
     private function _readPackageFiles() {
 
         $files = [];
-        $content = file_get_contents($this->outputDir . '/original-packages.json');
+        $content = file_get_contents($this->outputDir .'/'. Helpers::getEnvName() . '/original-packages.json');
         $packages = json_decode($content, true);
-
+        
         if (isset($packages['includes']) && !empty($packages['includes'])) {
             foreach ($packages['includes'] as $packageFile=>$package) {
                 $files[] = $packageFile;
