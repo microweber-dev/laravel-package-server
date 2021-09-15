@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers;
 use Illuminate\Http\Request;
 
 class PackagesController extends Controller
@@ -40,13 +41,17 @@ class PackagesController extends Controller
 
     private function _getCompiledPackageJson()
     {
+        $publicEnvFolder = dirname(dirname(dirname(__DIR__))).'/public/domains/'. Helpers::getEnvName();
+        $packagesFile = $publicEnvFolder . '/original-packages.json';
+
         $packages = [];
-        $compiledPackages = $this->_jsonDecodeFile('original-packages.json');
+        $compiledPackages = $this->_jsonDecodeFile($packagesFile);
         if ($compiledPackages) {
             foreach ($compiledPackages as $compiledPackage) {
                 if (is_array($compiledPackage)) {
                     foreach ($compiledPackage as $package=>$packageSha) {
-                        $getPackages = $this->_jsonDecodeFile($package);
+                        $packageFile = $publicEnvFolder .'/'. $package;
+                        $getPackages = $this->_jsonDecodeFile($packageFile);
                         if ($getPackages['packages']) {
                             foreach ($getPackages['packages'] as $packageName=>$packageVersions) {
                                 $packages[$packageName] = $this->_prepareVersions($packageVersions);
