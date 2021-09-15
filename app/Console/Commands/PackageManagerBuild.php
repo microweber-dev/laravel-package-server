@@ -45,6 +45,7 @@ class PackageManagerBuild extends Command
     public function handle()
     {
         $packageFiles = $this->_readPackageFiles();
+
         if (!empty($packageFiles)) {
             foreach ($packageFiles as $file) {
                 $this->_preparePackage($file);
