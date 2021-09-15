@@ -84,6 +84,7 @@ class PackageManagerBuild extends Command
 
         $encodeNewPackage = json_encode(['packages'=>$preparedPackages], JSON_PRETTY_PRINT);
         file_put_contents($file, $encodeNewPackage);
+        file_put_contents('public/domains/'.Helpers::getEnvName().'/packages.json', $encodeNewPackage);
     }
 
     private function _preparePackageMedia($packageVersion) {
