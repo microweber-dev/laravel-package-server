@@ -26,9 +26,19 @@ class BuildedRepositories
         }
 
         foreach($repositoryLastVersions as $repository) {
-            if (isset($repository['source']['url']) && $repository['source']['url'] == $url) {
-                $buildInfo = $repository;
-                break;
+
+            // git@gitlab.com:
+            // https://gitlab.com/
+            
+            if (isset($repository['source']['url'])) {
+                $sourceUrl = $repository['source']['url'];
+                $sourceUrl = str_replace('git@gitlab.com:', '', $sourceUrl);
+                $matchUrl = str_replace('https://gitlab.com/', '', $url);
+                $matchUrl = str_replace('http://gitlab.com/', '', $matchUrl);
+                if ($sourceUrl == $matchUrl) {
+                    $buildInfo = $repository;
+                    break;
+                }
             }
         }
 
@@ -39,7 +49,7 @@ class BuildedRepositories
     {
         $builded = [];
 
-        $buildedPackagesPath = base_path() . '/public/include/';
+        $buildedPackagesPath = base_path() . '/public/domains/'. Helpers::getEnvName() .'/include/';
 
         $finder = new Finder();
         $finder->files()->in($buildedPackagesPath)->name(['*.json']);

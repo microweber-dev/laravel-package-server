@@ -26,7 +26,6 @@
                 <div class="card">
                     <div class="card-header">
                         <a href="edit-repo?url={{ $repository['url'] }}">{{ $repository['url'] }}</a>
-
                         @if(isset($repository['build_info']))
                         <label class="badge badge-success">Version: {{$repository['build_info']['version']}}</label>
                         @endif
