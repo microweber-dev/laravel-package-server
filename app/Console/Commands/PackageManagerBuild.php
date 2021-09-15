@@ -94,22 +94,22 @@ class PackageManagerBuild extends Command
         $distUrl = $packageVersion['dist']['url'];
         $distUrlParsed = parse_url($distUrl);
         $packageMainUrl = $distUrlParsed['scheme'] . '://'. $distUrlParsed['host'] . '/';
-
         if ($distUrlParsed['path']) {
 
-            $distZip = $this->outputDir . $distUrlParsed['path'];
+            $distZip = $this->outputDir .'/'. Helpers::getEnvName() . $distUrlParsed['path'];
+
             if (!$filesystem->exists($distZip)) {
                 return $packageVersion;
             }
 
             // Create Main Meta Folder
-            $mainMetaFolder = $this->outputDir . '/meta/';
+            $mainMetaFolder = $this->outputDir .'/'. Helpers::getEnvName() .  '/meta/';
             if (!$filesystem->exists($mainMetaFolder)) {
                 $filesystem->mkdir($mainMetaFolder);
             }
 
             // Create Meta Folder
-            $metaFolder = $this->outputDir . '/meta/' . $distShasum . '/';
+            $metaFolder = $this->outputDir .'/'. Helpers::getEnvName() . '/meta/' . $distShasum . '/';
             $metaFolderPublicUrl = $packageMainUrl . 'meta/' . $distShasum . '/';
             if (!$filesystem->exists($metaFolder)) {
                 $filesystem->mkdir($metaFolder);
@@ -150,7 +150,6 @@ class PackageManagerBuild extends Command
                     continue;
                 }
             }
-
 
             // Remove all empty folders
             $filesForDelete = [];
