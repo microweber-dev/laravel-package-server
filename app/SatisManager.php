@@ -99,18 +99,20 @@ class SatisManager
 
         unset($save['satis_file']);
 
-        try {
-            $packageManager =\Config::get('package-manager');
 
-            $save['name'] = $packageManager['package_manager_name'];
-            $save['homepage'] = $packageManager['package_manager_homepage'];
+        $packageManager = \Config::get('package-manager');
+        $save['name'] = $packageManager['package_manager_name'];
+        $save['homepage'] = $packageManager['package_manager_homepage'] . '/domains/'.Helpers::getEnvName();
+
+        if (isset($packageManager['whmcs_url'])) {
             $save['whmcs_url'] = $packageManager['whmcs_url'];
-
-        } catch (\Exception $e) {
-            $save['name'] = 'microweber/packages';
-            $save['homepage'] = 'https://packages-satis.microweberapi.com/';
-            $save['whmcs_url'] = 'https://members.microweber.com/';
         }
+
+       /*
+        $save['name'] = 'microweber/packages';
+        $save['homepage'] = 'https://packages-satis.microweberapi.com/';
+        $save['whmcs_url'] = 'https://members.microweber.com/';
+       */
 
         $save['require-all'] = true;
         $save['notify-batch'] = "https://installreport.services.microweberapi.com";
