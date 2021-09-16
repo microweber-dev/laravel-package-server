@@ -18,6 +18,7 @@
                                     <div class="input-group">
                                         <input id="whmcs_url" name="package_manager_name" value="{{ $package_manager_name }}" placeholder="MyPackageMangaer" type="text" class="form-control">
                                     </div>
+                                    <small>Example: microweber/packages</small>
                                 </div>
                             </div>
 
@@ -27,6 +28,7 @@
                                     <div class="input-group">
                                         <input id="whmcs_url" name="package_manager_homepage" value="{{ $package_manager_homepage }}" placeholder="https://packages.yourwebsite.com" type="text" class="form-control">
                                     </div>
+                                    <small>Example: https://packages.microweberapi.com</small>
                                 </div>
                             </div>
 
