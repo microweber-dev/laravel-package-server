@@ -97,7 +97,7 @@ class PackageManagerBuild extends Command
         $packageMainUrl = $distUrlParsed['scheme'] . '://'. $distUrlParsed['host'] . '/';
         if ($distUrlParsed['path']) {
 
-            $distZip = 'public' . $distUrlParsed['path'];
+            $distZip = $this->outputDir . $distUrlParsed['path'];
 
             if (!$filesystem->exists($distZip)) {
                 return $packageVersion;
@@ -121,7 +121,6 @@ class PackageManagerBuild extends Command
             $zip->open($distZip);
             $zip->extractTo($metaFolder);
             $zip->close();
-
 
             // Set extra
             $finder = new Finder();
