@@ -97,7 +97,7 @@ class PackageManagerBuild extends Command
         $packageMainUrl = $distUrlParsed['scheme'] . '://'. $distUrlParsed['host'] . '/';
         if ($distUrlParsed['path']) {
 
-            $distZip = $this->outputDir .'/domains/'. Helpers::getEnvName() . $distUrlParsed['path'];
+            $distZip = 'public' . $distUrlParsed['path'];
 
             if (!$filesystem->exists($distZip)) {
                 return $packageVersion;
