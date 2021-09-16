@@ -15,8 +15,7 @@
         },
         "homepage": {
             "type": "string",
-            "description": "Homepage URL for the Repository.",
-            "format": "uri"
+            "description": "Homepage URL for the Repository."
         },
         "whmcs_product_ids": {
             "type": "string",
@@ -24,8 +23,7 @@
         },
         "whmcs_url": {
             "type": "string",
-            "description": "WHMCS URL for the Repository.",
-            "format": "uri"
+            "description": "WHMCS URL for the Repository."
         },
         "require": {
             "type": "object",

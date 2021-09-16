@@ -101,9 +101,11 @@ class SatisManager
 
 
         $packageManager = \Config::get('package-manager');
+
         $save['name'] = $packageManager['package_manager_name'];
         $save['homepage'] = $packageManager['package_manager_homepage'] . '/domains/'.Helpers::getEnvName();
 
+        $save['whmcs_url'] = '';
         if (isset($packageManager['whmcs_url'])) {
             $save['whmcs_url'] = $packageManager['whmcs_url'];
         }
