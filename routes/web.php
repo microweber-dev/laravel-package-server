@@ -15,7 +15,7 @@ Auth::routes();
 
 Route::get('/', function () {
 
-    $file = \App\Helpers::getEnvName() . '/index.html';
+    $file = 'domains/' . \App\Helpers::getEnvName() . '/index.html';
 
     if (is_file($file)) {
         echo file_get_contents($file);
