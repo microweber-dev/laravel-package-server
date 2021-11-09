@@ -45,7 +45,6 @@ class PackageManagerBuild extends Command
      */
     public function handle()
     {
-
         $domainsDir = $this->option('domains-dir');
         if (!empty($domainsDir)) {
             if (is_dir('public/' . $domainsDir)) {
