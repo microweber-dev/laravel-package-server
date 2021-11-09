@@ -134,8 +134,7 @@ if(isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])){
                         }
                     }
                 }
-
-               // $licensed = true;
+                
                 if (!$licensed) {
                     $package['dist'] = [
                         "type" => "license_key",
