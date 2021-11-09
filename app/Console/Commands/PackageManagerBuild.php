@@ -16,7 +16,7 @@ class PackageManagerBuild extends Command
      *
      * @var string
      */
-    protected $signature = 'package-manager:build';
+    protected $signature = 'package-manager:build {--domains-dir=domains}';
 
     /**
      * The console command description.
@@ -46,14 +46,13 @@ class PackageManagerBuild extends Command
     public function handle()
     {
 
-        $domainsDir = $this->argument('domains-dir');
+        $domainsDir = $this->option('domains-dir');
         if (!empty($domainsDir)) {
-            $this->domainsDir = $domainsDir;
+            if (is_dir('public/' . $domainsDir)) {
+                $this->domainsDir = $domainsDir;
+            }
         }
 
-       /* echo $this->domainsDir;
-        return;
-        */
         $packageFiles = $this->_readPackageFiles();
 
         if (!empty($packageFiles)) {
