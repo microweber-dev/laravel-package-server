@@ -26,6 +26,6 @@ if ! [ -d "public/domains/$env/include" ]; then
 fi
 
 php -d memory_limit=-1 artisan package-manager:change-satis-schema --env $env
-php -d memory_limit=-1 vendor/composer/satis/bin/satis build ./config/$env/satis.json public/domains/$env --stats -n
-mv public/domains/$env/packages.json public/domains/$env/original-packages.json
-php -d memory_limit=-1 artisan package-manager:build --env $env
+php -d memory_limit=-1 vendor/composer/satis/bin/satis build ./config/$env/satis.json public/domains-temp/$env --stats -n
+mv public/domains-temp/$env/packages.json public/domains-temp/$env/original-packages.json
+php -d memory_limit=-1 artisan package-manager:build --env $env --domains-dir domains-temp

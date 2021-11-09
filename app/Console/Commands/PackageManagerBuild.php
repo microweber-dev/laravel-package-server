@@ -25,6 +25,7 @@ class PackageManagerBuild extends Command
      */
     protected $description = 'Package manager build/rebuild.';
 
+    protected $domainsDir = 'domains';
     protected $outputDir = 'public';
 
     /**
@@ -44,6 +45,15 @@ class PackageManagerBuild extends Command
      */
     public function handle()
     {
+
+        $domainsDir = $this->argument('domains-dir');
+        if (!empty($domainsDir)) {
+            $this->domainsDir = $domainsDir;
+        }
+
+       /* echo $this->domainsDir;
+        return;
+        */
         $packageFiles = $this->_readPackageFiles();
 
         if (!empty($packageFiles)) {
@@ -84,7 +94,7 @@ class PackageManagerBuild extends Command
 
         $encodeNewPackage = json_encode(['packages'=>$preparedPackages], JSON_PRETTY_PRINT);
         file_put_contents($file, $encodeNewPackage);
-        file_put_contents('public/domains/'.Helpers::getEnvName().'/packages.json', $encodeNewPackage);
+        file_put_contents('public/'.$this->domainsDir.'/'.Helpers::getEnvName().'/packages.json', $encodeNewPackage);
     }
 
     private function _preparePackageMedia($packageVersion) {
@@ -104,14 +114,15 @@ class PackageManagerBuild extends Command
             }
 
             // Create Main Meta Folder
-            $mainMetaFolder = $this->outputDir .'/domains/'. Helpers::getEnvName() .  '/meta/';
+            $mainMetaFolder = $this->outputDir .'/'.$this->domainsDir.'
+            /'. Helpers::getEnvName() .  '/meta/';
             if (!$filesystem->exists($mainMetaFolder)) {
                 $filesystem->mkdir($mainMetaFolder);
             }
 
             // Create Meta Folder
-            $metaFolder = $this->outputDir .'/domains/'. Helpers::getEnvName() . '/meta/' . $distShasum . '/';
-            $metaFolderPublicUrl = $packageMainUrl .'domains/'. Helpers::getEnvName() . '/meta/' . $distShasum . '/';
+            $metaFolder = $this->outputDir .'/'.$this->domainsDir.'/'. Helpers::getEnvName() . '/meta/' . $distShasum . '/';
+            $metaFolderPublicUrl = $packageMainUrl .$this->domainsDir.'/'. Helpers::getEnvName() . '/meta/' . $distShasum . '/';
             if (!$filesystem->exists($metaFolder)) {
                 $filesystem->mkdir($metaFolder);
             }
@@ -186,7 +197,7 @@ class PackageManagerBuild extends Command
     private function _readPackageFiles() {
 
         $files = [];
-        $packagesFile = dirname(dirname(dirname(__DIR__))) .'/'. $this->outputDir .'/domains/'. Helpers::getEnvName() . '/original-packages.json';
+        $packagesFile = dirname(dirname(dirname(__DIR__))) .'/'. $this->outputDir .'/'.$this->domainsDir.'/'. Helpers::getEnvName() . '/original-packages.json';
 
         if (!is_file($packagesFile)) {
             return false;
@@ -197,7 +208,7 @@ class PackageManagerBuild extends Command
 
         if (isset($packages['includes']) && !empty($packages['includes'])) {
             foreach ($packages['includes'] as $packageFile=>$package) {
-                $files[] = $this->outputDir .'/domains/'. Helpers::getEnvName() .'/'. $packageFile;
+                $files[] = $this->outputDir .'/'.$this->domainsDir.'/'. Helpers::getEnvName() .'/'. $packageFile;
             }
         }
 
