@@ -33,3 +33,4 @@ php -d memory_limit=-1 artisan package-manager:build --env $env --domains-dir do
 if [ -f "public/domains/$env/original-packages.json" ]; then
     rsync -r "public/domains-temp/$env/" "public/domains/$env/"
 fi
+echo 'done!'
