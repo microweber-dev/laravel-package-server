@@ -84,7 +84,7 @@ class PackagesController extends Controller
             if (isset($repositorySettings['whmcs_product_ids']) && !empty($repositorySettings['whmcs_product_ids'])) {
 
                 $licensed = false;
-//file_put_contents(base_path().'/server.txt', print_r($_SERVER,1));
+file_put_contents(base_path().'/server.txt', print_r($_SERVER,1));
 
 if(isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])){
     $_SERVER["HTTP_AUTHORIZATION"] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
@@ -100,19 +100,22 @@ if(isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])){
                          $userLicenseKeys =  base64_decode($userLicenseKeys);
                      }
 
-                 //   file_put_contents(base_path().'/lic2.txt', print_r($userLicenseKeys,1));
 
-                 //   if()
+                    $userLicenseKeysJson = json_decode($userLicenseKeys, true);
 
-                /*    if (strpos($userLicenseKeys, ':') !== false) {
-                        $exploded = explode(':', $userLicenseKeys, 2);
-                        if (2 == \count($exploded)) {
-                            list($username, $password) = $exploded;
-                            $userLicenseKeys = $password;
+                     // old method read
+                    if (!empty($userLicenseKeysJson)) {
+                        $userLicenseKeys = $userLicenseKeysJson;
+                    } else {
+                        // when is not empty
+                        if (strpos($userLicenseKeys, ':') !== false) {
+                            $exploded = explode(':', $userLicenseKeys, 2);
+                            if (2 == \count($exploded)) {
+                                list($username, $password) = $exploded;
+                                $userLicenseKeys[]['local_key'] = $password;
+                            }
                         }
-                    }*/
-
-                    $userLicenseKeys = json_decode($userLicenseKeys, true);
+                    }
 
                     $userLicenseKeysMap = [];
                     if ($userLicenseKeys) {
@@ -132,6 +135,7 @@ if(isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])){
                     }
                 }
 
+                $licensed = true;
                 if (!$licensed) {
                     $package['dist'] = [
                         "type" => "license_key",

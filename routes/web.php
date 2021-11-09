@@ -19,6 +19,7 @@ Route::get('/', function () {
 
     if (is_file($file)) {
         echo file_get_contents($file);
+
     } else {
         return view('welcome');
     }
