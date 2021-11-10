@@ -30,7 +30,5 @@ php -d memory_limit=-1 vendor/composer/satis/bin/satis build ./config/$env/satis
 mv public/domains-temp/$env/packages.json public/domains-temp/$env/original-packages.json
 php -d memory_limit=-1 artisan package-manager:build --env $env --domains-dir domains-temp
 
-if [ -f "public/domains/$env/original-packages.json" ]; then
-    rsync -r "public/domains-temp/$env/" "public/domains/$env/"
-fi
+
 echo 'done!'

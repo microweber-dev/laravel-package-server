@@ -145,8 +145,9 @@ class PackageManagerBuild extends Command
                             file_put_contents($file->getRealPath(), $parseDownHtml);
                         }
                     }
-
-                    $packageVersion['extra']['_meta'][$file->getFilenameWithoutExtension()] = $metaFolderPublicUrl . $file->getFilename();
+                    if (is_file($file->getRealPath())) {
+                        $packageVersion['extra']['_meta'][$file->getFilenameWithoutExtension()] = $metaFolderPublicUrl . $file->getFilename();
+                    }
                 }
             }
 
