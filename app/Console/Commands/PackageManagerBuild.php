@@ -113,8 +113,7 @@ class PackageManagerBuild extends Command
             }
 
             // Create Main Meta Folder
-            $mainMetaFolder = $this->outputDir .'/'.$this->domainsDir.'
-            /'. Helpers::getEnvName() .  '/meta/';
+            $mainMetaFolder = $this->outputDir .'/'.$this->domainsDir.'/'. Helpers::getEnvName() .  '/meta/';
             if (!$filesystem->exists($mainMetaFolder)) {
                 $filesystem->mkdir($mainMetaFolder);
             }
