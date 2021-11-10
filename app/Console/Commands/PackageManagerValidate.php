@@ -88,13 +88,15 @@ class PackageManagerValidate extends Command
                         $notValidated++;
                     }
 
-                    foreach($packageVersion['extra']['_meta'] as $checkMeta) {
-                        if ($this->_remoteFileExists($checkMeta)) {
-                            $validated++;
-                        } else {
-                            $notValidated++;
+                    if (isset($packageVersion['extra']['_meta'])) {
+                        foreach ($packageVersion['extra']['_meta'] as $checkMeta) {
+                            if ($this->_remoteFileExists($checkMeta)) {
+                                $validated++;
+                            } else {
+                                $notValidated++;
+                            }
+                            $all++;
                         }
-                        $all++;
                     }
                 }
             }
