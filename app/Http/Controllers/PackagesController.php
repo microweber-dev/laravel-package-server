@@ -118,7 +118,7 @@ if(isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])){
                     }
 
                     $userLicenseKeysMap = [];
-                    if ($userLicenseKeys && !empty($userLicenseKeys)) {
+                    if ($userLicenseKeys && !empty($userLicenseKeys) && is_array($userLicenseKeys)) {
                         foreach ($userLicenseKeys as $userLicenseKey) {
                             if (isset($userLicenseKey['local_key'])) {
                                 $userLicenseKeysMap[] = $userLicenseKey['local_key'];
