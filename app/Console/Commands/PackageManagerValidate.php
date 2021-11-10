@@ -68,6 +68,9 @@ class PackageManagerValidate extends Command
 
     private function _validatePackage($file) {
 
+        $notValidated=0;
+        $validated=0;
+        $all=0;
         $content = file_get_contents($file);
         $package = json_decode($content, true);
 
@@ -78,11 +81,55 @@ class PackageManagerValidate extends Command
                         continue;
                     }
 
+                    $all++;
+                    if ($this->_remoteFileExists($packageVersion['dist']['url'])) {
+                        $validated++;
+                    } else {
+                        $notValidated++;
+                    }
 
-
+                    foreach($packageVersion['extra']['_meta'] as $checkMeta) {
+                        if ($this->_remoteFileExists($checkMeta)) {
+                            $validated++;
+                        } else {
+                            $notValidated++;
+                        }
+                        $all++;
+                    }
                 }
             }
         }
+
+        echo 'validated: ' . $validated . PHP_EOL;
+        echo 'notValidated: ' . $notValidated . PHP_EOL;
+        echo 'all: ' . $all . PHP_EOL;
+    }
+
+    private function _remoteFileExists($url) {
+
+        $curl = curl_init($url);
+
+        //don't fetch the actual page, you only want to check the connection is ok
+        curl_setopt($curl, CURLOPT_NOBODY, true);
+
+        //do request
+        $result = curl_exec($curl);
+
+        $ret = false;
+
+        //if request did not fail
+        if ($result !== false) {
+            //if request was ok, check response code
+            $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+            if ($statusCode == 200) {
+                $ret = true;
+            }
+        }
+
+        curl_close($curl);
+
+        return $ret;
     }
 
     private function _readPackageFiles() {
