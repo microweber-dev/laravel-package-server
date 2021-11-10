@@ -118,7 +118,7 @@ if(isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])){
                     }
 
                     $userLicenseKeysMap = [];
-                    if ($userLicenseKeys) {
+                    if ($userLicenseKeys && !empty($userLicenseKeys)) {
                         foreach ($userLicenseKeys as $userLicenseKey) {
                             if (isset($userLicenseKey['local_key'])) {
                                 $userLicenseKeysMap[] = $userLicenseKey['local_key'];
@@ -134,7 +134,7 @@ if(isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])){
                         }
                     }
                 }
-                
+
                 if (!$licensed) {
                     $package['dist'] = [
                         "type" => "license_key",
