@@ -37,11 +37,11 @@ if [ -f "public/domains/$env/packages.json" ]; then
     php -d memory_limit=-1 artisan package-manager:build --env $env
 fi
 
-validatePackageManager=$(php -d memory_limit=-1 artisan package-manager:validate --env $env)
-if [ $validatePackageManager != '1'];then
-echo "Validation not passed"
-exit
-fi
+#validatePackageManager=$(php -d memory_limit=-1 artisan package-manager:validate --env $env)
+#if [ $validatePackageManager == "1"];then
+#echo "Validation not passed"
+#exit
+#fi
 
 if [ -f "public/domains/$env/original-packages.json" ]; then
     echo 'remove old domain env...'
