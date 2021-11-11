@@ -33,8 +33,11 @@ class BuildedRepositories
             if (isset($repository['source']['url'])) {
                 $sourceUrl = $repository['source']['url'];
                 $sourceUrl = str_replace('git@gitlab.com:', '', $sourceUrl);
+                $sourceUrl = str_replace('git@github.com:', '', $sourceUrl);
                 $matchUrl = str_replace('https://gitlab.com/', '', $url);
                 $matchUrl = str_replace('http://gitlab.com/', '', $matchUrl);
+                $matchUrl = str_replace('http://github.com/', '', $matchUrl);
+                $matchUrl = str_replace('https://github.com/', '', $matchUrl);
                 if ($sourceUrl == $matchUrl) {
                     $buildInfo = $repository;
                     break;
@@ -49,7 +52,7 @@ class BuildedRepositories
     {
         $builded = [];
 
-        $buildedPackagesPath = base_path() . '/public/domains/'. Helpers::getEnvName() .'/include/';
+        $buildedPackagesPath = dirname(dirname(__DIR__)) . '/public_html/domains/'. Helpers::getEnvName() .'/include/';
 
         if (is_dir($buildedPackagesPath)) {
             $finder = new Finder();
