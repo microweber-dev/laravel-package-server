@@ -26,25 +26,25 @@ if ! [ -d "public/domains/$env/include" ]; then
 fi
 
 php -d memory_limit=-1 artisan package-manager:change-satis-schema --env $env
-php -d memory_limit=-1 vendor/composer/satis/bin/satis build ./config/$env/satis.json public/domains-temp/$env --stats -n
+php -d memory_limit=-1 vendor/composer/satis/bin/satis build ./config/$env/satis.json public/domains/$env --stats -n
 
-if [ -f "public/domains-temp/$env/packages.json" ]; then
-    mv public/domains-temp/$env/packages.json public/domains-temp/$env/original-packages.json
-    php -d memory_limit=-1 artisan package-manager:build --env $env --domains-dir domains-temp
+if [ -f "public/domains/$env/packages.json" ]; then
+    mv public/domains/$env/packages.json public/domains/$env/original-packages.json
+    php -d memory_limit=-1 artisan package-manager:build --env $env
 fi
 
-validatePackageManager=$(php -d memory_limit=-1 artisan package-manager:validate --env $env --domains-dir domains-temp)
-if [ $validatePackageManager == 1 ]
+validatePackageManager=$(php -d memory_limit=-1 artisan package-manager:validate --env $env)
+if [ $validatePackageManager != '1']
 then
 echo "Validation not passed"
-#exit
+exit
 fi
 
-if [ -f "public/domains-temp/$env/original-packages.json" ]; then
+if [ -f "public/domains/$env/original-packages.json" ]; then
     echo 'remove old domain env...'
-    rm -rf "public/domains/$env/"
+    rm -rf "../public_html/domains/$env/"
     echo 'move domain env...'
-    mv "public/domains-temp/$env/" "public/domains/$env/"
+    mv "public/domains/$env/" "../public_html/domains/$env/"
 fi
 
 echo 'done!'

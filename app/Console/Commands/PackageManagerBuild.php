@@ -16,7 +16,7 @@ class PackageManagerBuild extends Command
      *
      * @var string
      */
-    protected $signature = 'package-manager:build {--domains-dir=domains}';
+    protected $signature = 'package-manager:build';
 
     /**
      * The console command description.
@@ -36,6 +36,8 @@ class PackageManagerBuild extends Command
     public function __construct()
     {
         parent::__construct();
+
+        $this->outputDir = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . $this->outputDir;
     }
 
     /**
@@ -45,14 +47,6 @@ class PackageManagerBuild extends Command
      */
     public function handle()
     {
-        $domainsDir = $this->option('domains-dir');
-        $domainsDir = trim($domainsDir);
-        if (!empty($domainsDir)) {
-            if (is_dir('public/' . $domainsDir)) {
-                $this->domainsDir = $domainsDir;
-            }
-        }
-
         $packageFiles = $this->_readPackageFiles();
 
         if (!empty($packageFiles)) {
@@ -133,7 +127,7 @@ class PackageManagerBuild extends Command
 
             // Set extra
             $finder = new Finder();
-            $finder->files()->in($metaFolder)->name(['video.mp4', 'readme.md','README.md','screenshot.png','screenshot.jpg','screenshot.jpeg','screenshot.gif']);
+            $finder->files()->in($metaFolder)->name(['*.svg', 'video.mp4', 'readme.md','README.md','screenshot.png','screenshot.jpg','screenshot.jpeg','screenshot.gif']);
             if ($finder->hasResults()) {
                 foreach ($finder as $file) {
 
@@ -145,8 +139,10 @@ class PackageManagerBuild extends Command
                             file_put_contents($file->getRealPath(), $parseDownHtml);
                         }
                     }
-                    if (is_file($file->getRealPath())) {
-                        $packageVersion['extra']['_meta'][$file->getFilenameWithoutExtension()] = $metaFolderPublicUrl . $file->getFilename();
+                    if (file_exists($file->getRealPath())) {
+                        $realPathInside = $file->getRealPath();
+                        $realPathInside = str_replace($metaFolder,'', $realPathInside);
+                        $packageVersion['extra']['_meta'][$file->getFilenameWithoutExtension()] = $metaFolderPublicUrl . $realPathInside;
                     }
                 }
             }
@@ -196,7 +192,7 @@ class PackageManagerBuild extends Command
     private function _readPackageFiles() {
 
         $files = [];
-        $packagesFile = dirname(dirname(dirname(__DIR__))) .'/'. $this->outputDir .'/'.$this->domainsDir.'/'. Helpers::getEnvName() . '/original-packages.json';
+        $packagesFile = $this->outputDir .'/'.$this->domainsDir.'/'. Helpers::getEnvName() . '/original-packages.json';
 
         if (!is_file($packagesFile)) {
             return false;

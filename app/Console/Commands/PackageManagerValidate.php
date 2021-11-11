@@ -58,7 +58,7 @@ class PackageManagerValidate extends Command
         if (!empty($packageFiles)) {
             foreach ($packageFiles as $file) {
                 try {
-                    $this->_validatePackage($file);
+                    echo $this->_validatePackage($file);
                 } catch (\Exception $e) {
                     echo $e->getMessage() . PHP_EOL;
                 }
@@ -102,8 +102,8 @@ class PackageManagerValidate extends Command
             }
         }
 
-        echo '1';
-        return;
+        return '1';
+
         echo 'validated: ' . $validated . PHP_EOL;
         echo 'notValidated: ' . $notValidated . PHP_EOL;
         echo 'all: ' . $all . PHP_EOL;
