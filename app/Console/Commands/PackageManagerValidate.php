@@ -102,6 +102,8 @@ class PackageManagerValidate extends Command
             }
         }
 
+        echo '1';
+        return;
         echo 'validated: ' . $validated . PHP_EOL;
         echo 'notValidated: ' . $notValidated . PHP_EOL;
         echo 'all: ' . $all . PHP_EOL;
