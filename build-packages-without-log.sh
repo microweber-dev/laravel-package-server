@@ -38,8 +38,7 @@ if [ -f "public/domains/$env/packages.json" ]; then
 fi
 
 validatePackageManager=$(php -d memory_limit=-1 artisan package-manager:validate --env $env)
-if [ $validatePackageManager != '1']
-then
+if [ $validatePackageManager != '1'];then
 echo "Validation not passed"
 exit
 fi
