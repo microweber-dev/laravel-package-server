@@ -40,7 +40,6 @@ echo "Validation not passed"
 exit
 fi
 
-
 if [ -f "public/domains-temp/$env/original-packages.json" ]; then
     echo 'remove old domain env...'
     rm -rf "public/domains/$env/"
