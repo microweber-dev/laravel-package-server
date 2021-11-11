@@ -25,6 +25,10 @@ if ! [ -d "public/domains/$env/include" ]; then
     mkdir public/domains/$env/include
 fi
 
+if ! [ -d "../public_html/domains" ]; then
+    mkdir "../public_html/domains"
+fi
+
 php -d memory_limit=-1 artisan package-manager:change-satis-schema --env $env
 php -d memory_limit=-1 vendor/composer/satis/bin/satis build ./config/$env/satis.json public/domains/$env --stats -n
 
@@ -44,7 +48,7 @@ if [ -f "public/domains/$env/original-packages.json" ]; then
     echo 'remove old domain env...'
     rm -rf "../public_html/domains/$env/"
     echo 'move domain env...'
-    mv "public/domains/$env/" "../public_html/domains/$env/"
+    mv "public/domains/$env" "../public_html/domains/$env"
 fi
 
 echo 'done!'

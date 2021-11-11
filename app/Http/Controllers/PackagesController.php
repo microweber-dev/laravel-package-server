@@ -12,7 +12,7 @@ class PackagesController extends Controller
 
     public function __construct() {
 
-        $satis = file_get_contents('../satis.json');
+        $satis = file_get_contents(dirname(dirname(dirname(__DIR__))) . '/satis.json');
         $satis = json_decode($satis, true);
 
         if ($satis) {
@@ -41,7 +41,7 @@ class PackagesController extends Controller
 
     private function _getCompiledPackageJson()
     {
-        $publicEnvFolder = dirname(dirname(dirname(__DIR__))).'/public/domains/'. Helpers::getEnvName();
+        $publicEnvFolder = dirname(dirname(dirname(dirname(__DIR__)))).'/public_html/domains/'. Helpers::getEnvName();
         $packagesFile = $publicEnvFolder . '/original-packages.json';
 
         $packages = [];
