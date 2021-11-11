@@ -37,7 +37,7 @@ validatePackageManager=$(php -d memory_limit=-1 artisan package-manager:validate
 if [ $validatePackageManager == 1 ]
 then
 echo "Validation not passed"
-exit
+#exit
 fi
 
 if [ -f "public/domains-temp/$env/original-packages.json" ]; then
