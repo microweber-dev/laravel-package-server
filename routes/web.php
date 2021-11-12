@@ -26,7 +26,8 @@ Route::get('/', function () {
 
 });
 
-Route::get('packages.json', 'PackagesController@index');
+Route::get('packages.json', 'PackagesController@index')->name('packages-json');
+Route::get('packages.json/test', 'PackagesController@test');
 Route::get('home', 'HomeController@index')->name('home');
 
 Route::get('add-repo', 'RepositoryController@edit')->name('add-repo');

@@ -38,6 +38,26 @@ class PackagesController extends Controller
         ];
     }
 
+    public function test()
+    {
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, route('packages-json'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Authorization: Basic bGljZW5zZTpSVzUwWlhKd2NtbHpaV1EwWlRKbU16SmxOekk9',
+        ));
+
+        $contents = curl_exec($ch);
+        $packages = json_decode($contents, true);
+        if (!empty($packages)) {
+            $packages = $packages['packages']['mw-internal/white_label']['0.2']['dist'];
+            dump($packages);
+        } else {
+            echo $contents;
+        }
+    }
+
 
     private function _getCompiledPackageJson()
     {
@@ -81,45 +101,41 @@ class PackagesController extends Controller
 
         if (isset($this->repositories[$packageUrl])) {
             $repositorySettings = $this->repositories[$packageUrl];
+            $repositorySettings['whmcs_product_ids'] = 1;
             if (isset($repositorySettings['whmcs_product_ids']) && !empty($repositorySettings['whmcs_product_ids'])) {
 
                 $licensed = false;
-file_put_contents(base_path().'/server.txt', print_r($_SERVER,1));
+                 file_put_contents(base_path().'/server.txt', print_r($_SERVER,1));
 
-if(isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])){
-    $_SERVER["HTTP_AUTHORIZATION"] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
-}
+                if(isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])){
+                    $_SERVER["HTTP_AUTHORIZATION"] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+                }
 
                 if (isset($_SERVER["HTTP_AUTHORIZATION"]) && (strpos(strtolower($_SERVER["HTTP_AUTHORIZATION"]),'basic') !== false)) {
-                    file_put_contents(base_path().'/lic.txt', print_r((substr($_SERVER["HTTP_AUTHORIZATION"], 6)),1));
+
+                  ///  file_put_contents(base_path().'/lic.txt', print_r((substr($_SERVER["HTTP_AUTHORIZATION"], 6)),1));
 
                      $userLicenseKeys = base64_decode(substr($_SERVER["HTTP_AUTHORIZATION"], 6));
 
                      if(is_string($userLicenseKeys) and (strpos(strtolower($userLicenseKeys),'license:') !== false)){
-                         $userLicenseKeys =   substr($userLicenseKeys, 8);
+                         $userLicenseKeys =  substr($userLicenseKeys, 8);
                          $userLicenseKeys =  base64_decode($userLicenseKeys);
                      }
 
-
                     $userLicenseKeysJson = json_decode($userLicenseKeys, true);
 
+                    $userLicenseKeysForValidation = [];
                      // old method read
                     if (!empty($userLicenseKeysJson)) {
-                        $userLicenseKeys = $userLicenseKeysJson;
+                        $userLicenseKeysForValidation = $userLicenseKeysJson;
                     } else {
                         // when is not empty
-                        if (strpos($userLicenseKeys, ':') !== false) {
-                            $exploded = explode(':', $userLicenseKeys, 2);
-                            if (2 == \count($exploded)) {
-                                list($username, $password) = $exploded;
-                                $userLicenseKeys[]['local_key'] = $password;
-                            }
-                        }
+                        $userLicenseKeysForValidation[]['local_key'] = $userLicenseKeys;
                     }
 
                     $userLicenseKeysMap = [];
-                    if ($userLicenseKeys && !empty($userLicenseKeys) && is_array($userLicenseKeys)) {
-                        foreach ($userLicenseKeys as $userLicenseKey) {
+                    if ($userLicenseKeysForValidation && !empty($userLicenseKeysForValidation) && is_array($userLicenseKeysForValidation)) {
+                        foreach ($userLicenseKeysForValidation as $userLicenseKey) {
                             if (isset($userLicenseKey['local_key'])) {
                                 $userLicenseKeysMap[] = $userLicenseKey['local_key'];
                             }
@@ -133,6 +149,7 @@ if(isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])){
                             }
                         }
                     }
+
                 }
 
                 if (!$licensed) {
