@@ -101,7 +101,7 @@ class PackagesController extends Controller
 
         if (isset($this->repositories[$packageUrl])) {
             $repositorySettings = $this->repositories[$packageUrl];
-            $repositorySettings['whmcs_product_ids'] = 1;
+            //$repositorySettings['whmcs_product_ids'] = 1; 
             if (isset($repositorySettings['whmcs_product_ids']) && !empty($repositorySettings['whmcs_product_ids'])) {
 
                 $licensed = false;
