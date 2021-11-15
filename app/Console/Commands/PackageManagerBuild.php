@@ -97,7 +97,10 @@ class PackageManagerBuild extends Command
 
         $filesystem = new Filesystem();
 
-        $distShasum = Str::slug($packageVersion['name'] . '-v' . $packageVersion['version'], '-');
+        $distShasumName = $packageVersion['name'] . '-v' . $packageVersion['version'];
+        $distShasumName = str_replace('/', '-', $distShasumName);
+        $distShasum = Str::slug($distShasumName, '-');
+
         $distUrl = $packageVersion['dist']['url'];
         $distUrlParsed = parse_url($distUrl);
         $packageMainUrl = $distUrlParsed['scheme'] . '://'. $distUrlParsed['host'] . '/';
