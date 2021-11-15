@@ -99,7 +99,7 @@ class PackageManagerBuild extends Command
 
         $distShasumName = $packageVersion['name'];
         $distShasumName = str_replace('/', '-', $distShasumName);
-        $distShasum = Str::slug($distShasumName, '-') . '/v' . Str::slug($packageVersion['version'], '-');
+        $distShasum = Str::slug($distShasumName, '-') . '/' . Str::slug($packageVersion['version'], '-');
 
         $distUrl = $packageVersion['dist']['url'];
         $distUrlParsed = parse_url($distUrl);
