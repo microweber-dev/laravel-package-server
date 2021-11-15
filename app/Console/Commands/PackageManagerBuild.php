@@ -8,6 +8,8 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
+use Illuminate\Support\Str;
+
 
 class PackageManagerBuild extends Command
 {
@@ -92,9 +94,10 @@ class PackageManagerBuild extends Command
 
     private function _preparePackageMedia($packageVersion) {
 
+
         $filesystem = new Filesystem();
 
-        $distShasum = $packageVersion['dist']['shasum'];
+        $distShasum = Str::slug($packageVersion['name'] . '-v' . $packageVersion['version'], '-');
         $distUrl = $packageVersion['dist']['url'];
         $distUrlParsed = parse_url($distUrl);
         $packageMainUrl = $distUrlParsed['scheme'] . '://'. $distUrlParsed['host'] . '/';
