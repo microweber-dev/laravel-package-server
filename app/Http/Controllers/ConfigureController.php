@@ -25,19 +25,16 @@ class ConfigureController extends Controller
             $packageManager = Helpers::getValuesFromEnvConfig('package-manager');
             $packageManagerName = $packageManager['package_manager_name'];
             $packageManagerHomepage = $packageManager['package_manager_homepage'];
-            $packageManagerDomainAlias = $packageManager['package_manager_domain_alias'];
-            $packageManagerTemplatesDemoAlias = $packageManager['package_manager_templates_demo_alias'];
+            $packageManagerTemplatesDemoDomain = $packageManager['package_manager_templates_demo_domain'];
 
         } catch (\Exception $e) {
             $packageManagerHomepage = '';
             $packageManagerName = '';
-            $packageManagerDomainAlias = '';
-            $packageManagerTemplatesDemoAlias = '';
+            $packageManagerTemplatesDemoDomain = '';
         }
 
         return view('configure.index', [
-            'package_manager_domain_alias' => $packageManagerDomainAlias,
-            'package_manager_templates_demo_alias' => $packageManagerTemplatesDemoAlias,
+            'package_manager_templates_demo_domain' => $packageManagerTemplatesDemoDomain,
             'package_manager_name' => $packageManagerName,
             'package_manager_homepage' => $packageManagerHomepage
         ]);
@@ -50,8 +47,7 @@ class ConfigureController extends Controller
         $values = [];
         $values['package_manager_name'] = $request->post('package_manager_name');
         $values['package_manager_homepage'] = $request->post('package_manager_homepage');
-        $values['package_manager_domain_alias'] = $request->post('package_manager_domain_alias');
-        $values['package_manager_templates_demo_alias'] = $request->post('package_manager_templates_demo_alias');
+        $values['package_manager_templates_demo_domain'] = $request->post('package_manager_templates_demo_domain');
 
         Helpers::setValuesToEnvConfig('package-manager', $values);
 

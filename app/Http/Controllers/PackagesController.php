@@ -8,9 +8,12 @@ use Illuminate\Http\Request;
 class PackagesController extends Controller
 {
     private $whmcs_url = false;
+    private $packageManagerEnv = false;
     private $repositories = [];
 
     public function __construct() {
+
+        $this->packageManagerEnv = Helpers::getValuesFromEnvConfig('package-manager');
 
         $satis = file_get_contents(dirname(dirname(dirname(__DIR__))) . '/satis.json');
         $satis = json_decode($satis, true);
@@ -96,6 +99,17 @@ class PackagesController extends Controller
     }
 
     private function _preparePackage($package) {
+
+
+        if (isset($package['extra']['preview_url'])) {
+            if (!empty($this->packageManagerEnv['package_manager_templates_demo_domain'])) {
+                
+                $previewUrl = $package['extra']['preview_url'];
+                $previewUrl = str_replace('templates.microweber.com', $this->packageManagerEnv['package_manager_templates_demo_domain'], $previewUrl);
+
+                $package['extra']['preview_url'] = $previewUrl;
+            }
+        }
 
         $packageUrl = $this->_clearRepositoryUrl($package['source']['url']);
 

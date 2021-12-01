@@ -12,22 +12,11 @@
                         <form method="POST" action="{{ route('configure-save')}}">
                             @csrf
 
-
                             <div class="form-group row">
-                                <label for="domain_alias" class="col-4 col-form-label">Domain Alias</label>
+                                <label for="demo_domain" class="col-4 col-form-label">Templates Demo Domain</label>
                                 <div class="col-8">
                                     <div class="input-group">
-                                        <input id="domain_alias" name="package_manager_domain_alias" value="{{ $package_manager_domain_alias }}" placeholder="https://packages.yoursite.com" type="text" class="form-control">
-                                    </div>
-                                    <small>Example: https://packages.yoursite.com</small>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label for="demo_domain_alias" class="col-4 col-form-label">Templates Demo Domain Alias</label>
-                                <div class="col-8">
-                                    <div class="input-group">
-                                        <input id="demo_domain_alias" name="package_manager_templates_demo_alias" value="{{ $package_manager_templates_demo_alias }}" placeholder="https://packages.yoursite.com" type="text" class="form-control">
+                                        <input id="demo_domain" name="package_manager_templates_demo_domain" value="{{ $package_manager_templates_demo_domain }}" placeholder="https://packages.yoursite.com" type="text" class="form-control">
                                     </div>
                                     <small>Example: https://template.yoursite.com</small>
                                 </div>
