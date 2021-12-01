@@ -24,9 +24,8 @@ class AllowedIps
             if (!empty($allowedIps)) {
                 $isAllowed = false;
                 foreach ($allowedIps as $allowedIp) {
-                    $is = \Symfony\Component\HttpFoundation\IpUtils::checkIp($this->_userIp(), $allowedIp);
-                    if ($is) {
-                        $isAllowed = $is;
+                    if (strpos($this->_userIp(), $allowedIp) !== false) {
+                        $isAllowed = true;
                     }
                 }
                 if (!$isAllowed) {
