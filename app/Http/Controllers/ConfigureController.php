@@ -50,6 +50,8 @@ class ConfigureController extends Controller
         $values = [];
         $values['package_manager_name'] = $request->post('package_manager_name');
         $values['package_manager_homepage'] = $request->post('package_manager_homepage');
+        $values['package_manager_domain_alias'] = $request->post('package_manager_domain_alias');
+        $values['package_manager_templates_demo_alias'] = $request->post('package_manager_templates_demo_alias');
 
         Helpers::setValuesToEnvConfig('package-manager', $values);
 
