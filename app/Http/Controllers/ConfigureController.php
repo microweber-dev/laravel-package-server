@@ -21,15 +21,23 @@ class ConfigureController extends Controller
     public function index()
     {
         try {
+
             $packageManager = Helpers::getValuesFromEnvConfig('package-manager');
             $packageManagerName = $packageManager['package_manager_name'];
             $packageManagerHomepage = $packageManager['package_manager_homepage'];
+            $packageManagerDomainAlias = $packageManager['package_manager_domain_alias'];
+            $packageManagerTemplatesDemoAlias = $packageManager['package_manager_templates_demo_alias'];
+
         } catch (\Exception $e) {
             $packageManagerHomepage = '';
             $packageManagerName = '';
+            $packageManagerDomainAlias = '';
+            $packageManagerTemplatesDemoAlias = '';
         }
 
-        return view('configure.index',[
+        return view('configure.index', [
+            'package_manager_domain_alias' => $packageManagerDomainAlias,
+            'package_manager_templates_demo_alias' => $packageManagerTemplatesDemoAlias,
             'package_manager_name' => $packageManagerName,
             'package_manager_homepage' => $packageManagerHomepage
         ]);
