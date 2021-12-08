@@ -25,3 +25,8 @@ ghh/database.sqlite
 .ssh/authorized_keys2
 .ssh/authorized_keys
 .ssh.zip
+config/zonat-packages.microweberapi.com/satis.json
+config/private-packages.microweberapi.com/satis.json
+config/packages.microweberapi.com/satis.json
+config/packages-satis.microweberapi.com/satis.json
+config/packages-bg.microweberapi.com/satis.json
