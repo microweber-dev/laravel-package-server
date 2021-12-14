@@ -16,7 +16,9 @@ Auth::routes();
 use Laravel\Socialite\Facades\Socialite;
 
 Route::get('/auth/{driver}/redirect', function ($driver) {
-    return Socialite::driver($driver)->redirect();
+    return Socialite::driver($driver)
+        ->scopes(['read_api'])
+        ->redirect();
 })->name('auth.redirect');
 
 Route::get('/auth/{driver}/callback', 'GitSyncController@authCallback')->name('auth.callback');
