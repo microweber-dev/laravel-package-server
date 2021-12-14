@@ -19,12 +19,7 @@ Route::get('/auth/{driver}/redirect', function ($driver) {
     return Socialite::driver($driver)->redirect();
 })->name('auth.redirect');
 
-Route::get('/auth/{driver}/callback', function ($driver) {
-
-    $user = Socialite::driver($driver)->user();
-    dd($user);
-
-})->name('auth.callback');
+Route::get('/auth/{driver}/callback', 'GitSyncController@authCallback')->name('auth.callback');
 
 Route::middleware(['allowed_ips'])->group(function () {
 
