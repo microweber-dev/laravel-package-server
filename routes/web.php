@@ -13,6 +13,19 @@
 
 Auth::routes();
 
+use Laravel\Socialite\Facades\Socialite;
+
+Route::get('/auth/gitlab/redirect', function () {
+    return Socialite::driver('gitlab')->redirect();
+});
+
+Route::get('/auth/gitlab/callback', function () {
+
+    $user = Socialite::driver('gitlab')->user();
+    dd($user);
+
+});
+
 Route::middleware(['allowed_ips'])->group(function () {
 
     Route::get('/', function () {
