@@ -22,6 +22,7 @@ Route::get('/auth/{driver}/redirect', function ($driver) {
 })->name('auth.redirect');
 
 Route::get('/auth/{driver}/callback', 'GitSyncController@authCallback')->name('auth.callback');
+Route::post('/git-sync-save', 'GitSyncController@save')->name('gitsync.save');
 
 Route::middleware(['allowed_ips'])->group(function () {
 

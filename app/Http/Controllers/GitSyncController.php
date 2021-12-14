@@ -32,19 +32,47 @@ class GitSyncController extends Controller
         $this->middleware('auth');
     }
 
+    public function save(Request $request) {
+
+        $satisFile = Helpers::getEnvConfigDir() . 'satis.json';
+
+        $satis = new SatisManager();
+        $satis->load($satisFile);
+
+        $repositories = $request->post('repositories', false);
+        if (!empty($repositories)) {
+            foreach($repositories as $repository) {
+                if ($repository['import'] == '1') {
+                    $satis->saveRepository([
+                        'whmcs_product_ids' => [],
+                        'url' => $repository['url'],
+                        'category' => 'templates',
+                        'type' => ['VCS'],
+                    ]);
+                }
+            }
+            $satis->save();
+        }
+
+        return redirect(route('home'));
+    }
+
     public function authCallback(Request $request, $driver)
     {
         $user = Socialite::driver($driver)->user();
 
-        $client = new GitlabClient();
-        $client->authenticate($user->token, GitlabClient::AUTH_OAUTH_TOKEN);
+        $projects = [];
+        if ($driver == 'gitlab') {
+            $client = new GitlabClient();
+            $client->authenticate($user->token, GitlabClient::AUTH_OAUTH_TOKEN);
 
-        $pager = new GitlabResultPager($client);
-        $projects = $pager->fetchAll($client->projects(), 'all', [['membership' => true]]);
+            $pager = new GitlabResultPager($client);
+            $projects = $pager->fetchAll($client->projects(), 'all', [['membership' => true]]);
+        }
 
-        dd($projects);
-
-
+        return view('gitsync.callback', [
+            'projects' => $projects
+        ]);
     }
 
 }

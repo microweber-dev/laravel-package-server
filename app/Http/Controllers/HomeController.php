@@ -26,7 +26,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-
         $satisFile = Helpers::getEnvConfigDir() . 'satis.json';
 
         $satis = new SatisManager();
