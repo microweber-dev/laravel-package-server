@@ -10,5 +10,17 @@
             <a href="{{ route('configure') }}" class="btn btn-outline-success btn-block"><i class="fa fa-cogs"></i> Configure Package Manager</a>
         </div>
     </div>
+
+    <div class="card mt-4">
+        <div class="card-header">Repositories</div>
+
+        <div class="card-body">
+            <a href="{{ route('auth.redirect', 'gitlab') }}" class="btn btn-outline-primary btn-block">Gitlab Connect</a>
+            <a href="{{ route('auth.redirect', 'github') }}" class="btn btn-outline-primary btn-block">Github Connect</a>
+            <a href="{{ route('auth.redirect', 'bitbucket') }}" class="btn btn-outline-primary btn-block">Bitbucket Connect</a>
+        </div>
+    </div>
 </div>
+
+
 

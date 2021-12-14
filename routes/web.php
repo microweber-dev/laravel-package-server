@@ -15,13 +15,13 @@ Auth::routes();
 
 use Laravel\Socialite\Facades\Socialite;
 
-Route::get('/auth/gitlab/redirect', function () {
-    return Socialite::driver('gitlab')->redirect();
-});
+Route::get('/auth/{driver}/redirect', function ($driver) {
+    return Socialite::driver($driver)->redirect();
+})->name('auth.redirect');
 
-Route::get('/auth/gitlab/callback', function () {
+Route::get('/auth/{driver}/callback', function ($driver) {
 
-    $user = Socialite::driver('gitlab')->user();
+    $user = Socialite::driver($driver)->user();
     dd($user);
 
 });
