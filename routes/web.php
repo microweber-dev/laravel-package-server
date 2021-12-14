@@ -24,7 +24,7 @@ Route::get('/auth/{driver}/callback', function ($driver) {
     $user = Socialite::driver($driver)->user();
     dd($user);
 
-});
+})->name('auth.callback');
 
 Route::middleware(['allowed_ips'])->group(function () {
 
