@@ -42,9 +42,9 @@ class GitSyncController extends Controller
         $repositories = $request->post('repositories', false);
         if (!empty($repositories)) {
             foreach($repositories as $repository) {
-                if ($repository['import'] == '1') {
+                if (isset($repository['import']) && $repository['import'] == '1') {
                     $satis->saveRepository([
-                        'whmcs_product_ids' => [],
+                        'whmcs_product_ids' => '',
                         'url' => $repository['url'],
                         'category' => 'templates',
                         'type' => ['VCS'],

@@ -22,7 +22,7 @@
                                         <option value="{{$project['http_url_to_repo']}}">HTTPS</option>
                                     </select>
                                     <div class="custom-control custom-checkbox custom-control-inline">
-                                        <input name="repositories[{{$project['id']}}][import]" id="import_{{$project['id']}}" checked="checked" type="checkbox" class="custom-control-input" value="1">
+                                        <input name="repositories[{{$project['id']}}][import]" id="import_{{$project['id']}}" type="checkbox" class="custom-control-input" value="1">
                                         <label for="import_{{$project['id']}}" class="custom-control-label">Import</label>
                                     </div>
                                 </div>
