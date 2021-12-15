@@ -47,7 +47,7 @@ class GitSyncController extends Controller
                         'whmcs_product_ids' => '',
                         'url' => $repository['url'],
                         'category' => 'templates',
-                        'type' => ['VCS'],
+                        'type' => 'vcs',
                     ]);
                 }
             }
