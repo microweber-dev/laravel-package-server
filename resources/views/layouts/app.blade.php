@@ -55,6 +55,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('home') }}">{{ __('Home') }}</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('home') }}">{{ __('My Packages') }}</a>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
