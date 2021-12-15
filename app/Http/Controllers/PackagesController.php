@@ -15,7 +15,8 @@ class PackagesController extends Controller
 
         $this->packageManagerEnv = Helpers::getValuesFromEnvConfig('package-manager');
 
-        $satis = file_get_contents(dirname(dirname(dirname(__DIR__))) . '/satis.json');
+        $satisFile = Helpers::getEnvConfigDir() . 'satis.json';
+        $satis = file_get_contents($satisFile);
         $satis = json_decode($satis, true);
 
         if ($satis) {
@@ -103,7 +104,7 @@ class PackagesController extends Controller
 
         if (isset($package['extra']['preview_url'])) {
             if (!empty($this->packageManagerEnv['package_manager_templates_demo_domain'])) {
-                
+
                 $previewUrl = $package['extra']['preview_url'];
                 $previewUrl = str_replace('templates.microweber.com', $this->packageManagerEnv['package_manager_templates_demo_domain'], $previewUrl);
 
@@ -112,7 +113,7 @@ class PackagesController extends Controller
         }
 
         $packageUrl = $this->_clearRepositoryUrl($package['source']['url']);
-
+        
         if (isset($this->repositories[$packageUrl])) {
             $repositorySettings = $this->repositories[$packageUrl];
             //$repositorySettings['whmcs_product_ids'] = 1;
