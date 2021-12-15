@@ -153,11 +153,6 @@ class PackageManagerBuild extends Command
                 }
             }
 
-            $packageVersion['extra']['whmcs'] = [
-                'whmcs_url'=>Helpers::getValuesFromEnvConfig('whmcs.url'),
-             ///  'whmcs_product_ids'=>'',
-            ];
-
             // Remove all files without media files
             $finder = new Finder();
             $finder->files()->in($metaFolder)->notName(['*.md', '*.jpg', '*.gif', '*.jpeg', '*.bmp', '*.png', '*.svg', '*.mp4', '*.mov', '*.avi']);

@@ -20,7 +20,7 @@ class PackagesController extends Controller
         $satis = json_decode($satis, true);
 
         if ($satis) {
-            $this->whmcs_url = $satis['whmcs_url'];
+            $this->whmcs_url = Helpers::getValuesFromEnvConfig('whmcs.url');
             if (isset($satis['repositories'])) {
                 foreach ($satis['repositories'] as $repository) {
                     $repositoryUrl = $this->_clearRepositoryUrl($repository['url']);
@@ -112,8 +112,10 @@ class PackagesController extends Controller
             }
         }
 
+        $package['extra']['whmcs']['whmcs_url'] = $this->whmcs_url;
+
         $packageUrl = $this->_clearRepositoryUrl($package['source']['url']);
-        
+
         if (isset($this->repositories[$packageUrl])) {
             $repositorySettings = $this->repositories[$packageUrl];
             //$repositorySettings['whmcs_product_ids'] = 1;
@@ -177,6 +179,7 @@ class PackagesController extends Controller
                 }
 
                 $package['license_ids'] = $repositorySettings['whmcs_product_ids'];
+                $package['extra']['whmcs']['whmcs_product_ids'] = $repositorySettings['whmcs_product_ids'];
 
             }
         }
