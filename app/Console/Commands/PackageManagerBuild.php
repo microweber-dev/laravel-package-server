@@ -155,7 +155,7 @@ class PackageManagerBuild extends Command
 
             $packageVersion['extra']['whmcs'] = [
                 'whmcs_url'=>Helpers::getValuesFromEnvConfig('whmcs.url'),
-                'whmcs_product_ids'=>'', 
+             ///  'whmcs_product_ids'=>'',
             ];
 
             // Remove all files without media files
