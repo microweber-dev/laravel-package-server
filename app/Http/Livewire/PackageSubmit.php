@@ -34,7 +34,7 @@ class PackageSubmit extends Component
 
         dispatch(new ProcessPackageSubmit($createPackage));
 
-        return $this->redirect(route('dashboard'));
+     //   return $this->redirect(route('dashboard'));
 
     }
 }
