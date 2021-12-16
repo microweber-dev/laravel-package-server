@@ -1,29 +1,43 @@
 @props(['provider', 'createdAt' => null])
 
 <div>
-    <div class="pl-3 flex items-center justify-between">
-        <div class="flex items-center">
+    <div class="mt-4">
+        <div class="row">
             @switch($provider)
                 @case(JoelButcher\Socialstream\Providers::facebook())
-                    <x-facebook-icon class="h-6 w-6 mr-2" />
+                    <div class="col-md-2">
+                    <x-facebook-icon  />
+                    </div>
                     @break
                 @case(JoelButcher\Socialstream\Providers::google())
-                    <x-google-icon class="h-6 w-6 mr-2" />
+                <div class="col-md-2">
+                    <x-google-icon  />
+                </div>
                     @break
                 @case(JoelButcher\Socialstream\Providers::twitter())
-                    <x-twitter-icon class="h-6 w-6 mr-2" />
+                <div class="col-md-2">
+                    <x-twitter-icon  />
+                </div>
                     @break
                 @case(JoelButcher\Socialstream\Providers::linkedin())
-                    <x-linked-in-icon class="h-6 w-6 mr-2" />
+                <div class="col-md-2">
+                    <x-linked-in-icon  />
+                </div>
                     @break
                 @case(JoelButcher\Socialstream\Providers::github())
-                    <x-github-icon class="h-6 w-6 mr-2" />
+                <div class="col-md-2">
+                    <x-github-icon  />
+                </div>
                     @break
                 @case(JoelButcher\Socialstream\Providers::gitlab())
-                    <x-gitlab-icon class="h-6 w-6 mr-2" />
+                <div class="col-md-2">
+                    <x-gitlab-icon  />
+                </div>
                     @break
                 @case(JoelButcher\Socialstream\Providers::bitbucket())
-                    <x-bitbucket-icon class="h-6 w-6 mr-2" />
+                <div class="col-md-2">
+                    <x-bitbucket-icon  />
+                </div>
                     @break
                 @default
             @endswitch
