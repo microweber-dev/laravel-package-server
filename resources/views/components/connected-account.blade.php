@@ -1,41 +1,40 @@
 @props(['provider', 'createdAt' => null])
 
-<div>
-    <div class="mt-4">
+<div class="col-md-6 mt-4">
         <div class="row">
             @switch($provider)
                 @case(JoelButcher\Socialstream\Providers::facebook())
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                     <x-facebook-icon  />
                     </div>
                     @break
                 @case(JoelButcher\Socialstream\Providers::google())
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <x-google-icon  />
                 </div>
                     @break
                 @case(JoelButcher\Socialstream\Providers::twitter())
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <x-twitter-icon  />
                 </div>
                     @break
                 @case(JoelButcher\Socialstream\Providers::linkedin())
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <x-linked-in-icon  />
                 </div>
                     @break
                 @case(JoelButcher\Socialstream\Providers::github())
-                <div class="col-md-2">
-                    <x-github-icon  />
+                <div class="col-md-3">
+                    <x-github-icon />
                 </div>
                     @break
                 @case(JoelButcher\Socialstream\Providers::gitlab())
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <x-gitlab-icon  />
                 </div>
                     @break
                 @case(JoelButcher\Socialstream\Providers::bitbucket())
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <x-bitbucket-icon  />
                 </div>
                     @break
@@ -62,7 +61,6 @@
         <div>
             {{ $action }}
         </div>
-    </div>
 
     @error($provider.'_connect_error')
         <div class="text-sm font-semibold text-red-500 px-3 mt-2">
