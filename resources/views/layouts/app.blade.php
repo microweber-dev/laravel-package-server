@@ -37,7 +37,6 @@
         <!-- Page Content -->
         <main class="container my-5">
             {{ $header }}
-            <br />
             {{ $slot }}
         </main>
 
