@@ -17,16 +17,16 @@ class ProcessPackageSubmit implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $packageModel;
+    public $packageId;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Package $package)
+    public function __construct($packageId)
     {
-        $this->packageModel = $package;
+        $this->packageId = $packageId;
     }
 
     /**
@@ -36,9 +36,9 @@ class ProcessPackageSubmit implements ShouldQueue
      */
     public function handle()
     {
-        $repositoryId = $this->packageModel->id;
-        $repositoryUrl = $this->packageModel->repository_url;
-        $repositoryPath = storage_path() . '/repositories/' . $repositoryId;
+        $packageModel = Package::where('id', $this->packageId)->first();
+
+        $repositoryPath = storage_path() . '/repositories/' . $packageModel->id;
 
         if (is_dir($repositoryPath)) {
             File::deleteDirectory($repositoryPath);
@@ -48,22 +48,22 @@ class ProcessPackageSubmit implements ShouldQueue
      //   $gitWrapper->setPrivateKey(env('SSH_KEY_PATH'));
 
         try {
-            $git = $gitWrapper->cloneRepository($repositoryUrl, $repositoryPath, [
+            $git = $gitWrapper->cloneRepository($packageModel->repository_url, $repositoryPath, [
                 'verbose' => true,
                 'depth' => 1
             ]);
             $status = $git->status();
 
-            $this->packageModel->clone_status = 'success';
-            $this->packageModel->clone_log = $status;
-            $this->packageModel->is_cloned = 1;
-            $this->packageModel->save();
+            $packageModel->clone_status = 'success';
+            $packageModel->clone_log = $status;
+            $packageModel->is_cloned = 1;
+            $packageModel->save();
 
         } catch (\Exception $e) {
 
-            $this->packageModel->clone_status = 'failed';
-            $this->packageModel->clone_log = $e->getMessage();
-            $this->packageModel->save();
+            $packageModel->clone_status = 'failed';
+            $packageModel->clone_log = $e->getMessage();
+            $packageModel->save();
 
         }
     }

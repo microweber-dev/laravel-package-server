@@ -32,7 +32,7 @@ class PackageSubmit extends Component
         $createPackage->repository_url = $this->repository_url;
         $createPackage->save();
 
-        dispatch(new ProcessPackageSubmit($createPackage));
+        dispatch(new ProcessPackageSubmit($createPackage->id));
 
      //   return $this->redirect(route('dashboard'));
 
