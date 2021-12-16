@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Package;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 
@@ -9,16 +10,16 @@ class PackageSubmit extends Component
 {
     use AuthorizesRequests;
 
-    public $name;
+    public $repositoryUrl;
 
     protected $rules = [
-        'name' => 'required|min:6',
+        'repository_url' => 'required|url',
     ];
 
     public function render()
     {
         return view('livewire.package-submit', [
-            'name' => $this->name,
+            'repository_url' => $this->repositoryUrl,
         ]);
     }
 
@@ -26,8 +27,11 @@ class PackageSubmit extends Component
     {
         $this->validate();
 
+        $createPackage = new Package();
+        $createPackage->repository_url = $this->repositoryUrl;
+        $createPackage->save();
 
-        dump($this->name);
+        return $this->redirect(route('dashboard'));
 
     }
 }
