@@ -25,12 +25,19 @@
         <!-- Page Heading -->
         <header class="d-flex py-3 bg-white shadow-sm border-bottom">
             <div class="container">
-                {{ $header }}
+
+                <form method="post">
+                    <input type="text" class="form-control" placeholder="Search packages...">
+                </form>
+                <p>Microweber Packages is the official microweber cms composer repository. </p>
+
             </div>
         </header>
 
         <!-- Page Content -->
         <main class="container my-5">
+            {{ $header }}
+            <br />
             {{ $slot }}
         </main>
 

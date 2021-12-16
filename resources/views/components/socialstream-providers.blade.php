@@ -1,4 +1,5 @@
-<div class="p-4 text-center">
+<div class="p-4 pt-2 text-center">
+    <hr />
     <p>OR</p>
 <div class="row justify-content-center">
 
