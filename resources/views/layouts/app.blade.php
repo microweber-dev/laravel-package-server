@@ -25,12 +25,7 @@
         <!-- Page Heading -->
         <header class="d-flex py-3 bg-white shadow-sm border-bottom">
             <div class="container">
-
-                <form method="post">
-                    <input type="text" class="form-control" placeholder="Search packages...">
-                </form>
-                <p>Microweber Packages is the official microweber cms composer repository. </p>
-
+                @livewire('search-repositories')
             </div>
         </header>
 
