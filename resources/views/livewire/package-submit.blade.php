@@ -1,7 +1,7 @@
 <form wire:submit.prevent="submitPackage">
 
     <div class="form-control">
-    <input type="text" class="form-control" wire:model="repositoryUrl">
+    <input type="text" class="form-control" wire:model="repository_url">
     @error('repository_url')
     <span class="error">{{ $message }}</span>
     @enderror

@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Symplify\GitWrapper\GitWrapper;
 
@@ -35,17 +36,35 @@ class ProcessPackageSubmit implements ShouldQueue
      */
     public function handle()
     {
-        $repositoriesPath = storage_path() . '/repositories/'.Str::slug($this->packageModel->repository_url);
+        $repositoryId = $this->packageModel->id;
+        $repositoryUrl = $this->packageModel->repository_url;
+        $repositoryPath = storage_path() . '/repositories/' . $repositoryId;
+
+        if (is_dir($repositoryPath)) {
+            File::deleteDirectory($repositoryPath);
+        }
 
         $gitWrapper = new GitWrapper();
-        $gitWrapper->setPrivateKey(env('SSH_KEY_PATH'));
+     //   $gitWrapper->setPrivateKey(env('SSH_KEY_PATH'));
 
-        $git = $gitWrapper->cloneRepository($this->packageModel->repository_url, $repositoriesPath,[
-            'verbose'=>true,
-            'depth'=>1
-        ]);
+        try {
+            $git = $gitWrapper->cloneRepository($repositoryUrl, $repositoryPath, [
+                'verbose' => true,
+                'depth' => 1
+            ]);
+            $status = $git->status();
 
-        dump($git->status());
+            $this->packageModel->clone_status = 'success';
+            $this->packageModel->clone_log = $status;
+            $this->packageModel->is_cloned = 1;
+            $this->packageModel->save();
 
+        } catch (\Exception $e) {
+
+            $this->packageModel->clone_status = 'failed';
+            $this->packageModel->clone_log = $e->getMessage();
+            $this->packageModel->save();
+
+        }
     }
 }

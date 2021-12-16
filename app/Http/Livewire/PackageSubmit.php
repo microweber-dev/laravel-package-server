@@ -11,16 +11,16 @@ class PackageSubmit extends Component
 {
     use AuthorizesRequests;
 
-    public $repositoryUrl;
+    public $repository_url;
 
     protected $rules = [
-        'repositoryUrl' => 'required|url',
+        'repository_url' => 'required|url|unique:packages',
     ];
 
     public function render()
     {
         return view('livewire.package-submit', [
-            'repositoryUrl' => $this->repositoryUrl,
+            'repository_url' => $this->repository_url,
         ]);
     }
 
@@ -29,7 +29,7 @@ class PackageSubmit extends Component
         $this->validate();
 
         $createPackage = new Package();
-        $createPackage->repository_url = $this->repositoryUrl;
+        $createPackage->repository_url = $this->repository_url;
         $createPackage->save();
 
         dispatch(new ProcessPackageSubmit($createPackage));
