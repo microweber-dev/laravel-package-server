@@ -26,9 +26,10 @@ class PackageSubmit extends Component
 
     public function submitPackage()
     {
-        $this->validate();
+     //   $this->validate();
 
         $createPackage = new Package();
+        $createPackage->user_id = auth()->user()->id;
         $createPackage->repository_url = $this->repository_url;
         $createPackage->save();
 

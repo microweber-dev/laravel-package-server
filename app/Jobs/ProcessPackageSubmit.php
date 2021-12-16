@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Package;
+use App\RepositoryPathHelper;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -38,7 +39,7 @@ class ProcessPackageSubmit implements ShouldQueue
     {
         $packageModel = Package::where('id', $this->packageId)->first();
 
-        $repositoryPath = storage_path() . '/repositories/' . $packageModel->id;
+        $repositoryPath = RepositoryPathHelper::getRepositoriesClonePath($packageModel->id);
 
         if (is_dir($repositoryPath)) {
             File::deleteDirectory($repositoryPath);
@@ -58,6 +59,8 @@ class ProcessPackageSubmit implements ShouldQueue
             $packageModel->clone_log = $status;
             $packageModel->is_cloned = 1;
             $packageModel->save();
+
+            dispatch(new ProcessPackageSatis($packageModel->id));
 
         } catch (\Exception $e) {
 
