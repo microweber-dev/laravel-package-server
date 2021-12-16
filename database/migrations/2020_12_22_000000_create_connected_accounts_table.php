@@ -28,10 +28,16 @@ class CreateConnectedAccountsTable extends Migration
             $table->string('refresh_token', 1000)->nullable(); // OAuth2
             $table->dateTime('expires_at')->nullable(); // OAuth2
             $table->timestamps();
-
-            $table->index(['user_id', 'id']);
-            $table->index(['provider', 'provider_id']);
         });
+
+        try {
+            Schema::table('connected_accounts', function (Blueprint $table) {
+                $table->index(['user_id', 'id'], 'index');
+                $table->index(['provider', 'provider_id'], 'index');
+            });
+        } catch (Exception $e) {
+
+        }
     }
 
     /**
