@@ -51,7 +51,7 @@ class ProcessPackageSubmit implements ShouldQueue
         try {
             $git = $gitWrapper->cloneRepository($packageModel->repository_url, $repositoryPath, [
                 'verbose' => true,
-                'depth' => 1
+             //   'depth' => 1
             ]);
             $status = $git->status();
 

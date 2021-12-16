@@ -40,16 +40,25 @@ class ProcessPackageSatis implements ShouldQueue
         $packageModel = Package::where('id', $this->packageId)->first();
 
         $satisContent = [
+            'name'=>'microweber/packages',
+            'url'=>'https://github.com/',
             'repositories'=>[
                 [
-                    'type'=>'path',
+                    'type'=>'vcs',
                     'url'=>RepositoryPathHelper::getRepositoriesClonePath($packageModel->id),
                 ]
             ],
-            'require'=> [
+            'require-all'=> true,
+           /* 'require'=> [
                $packageModel->name =>'dev-master',
-            ]
+            ]*/
+             "archive" => [
+                "directory"=> "dist",
+                "format"=> "zip",
+                "skip-dev"=> true
+            ],
         ];
+
         $satisJson = json_encode($satisContent, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
         $saitsRepositoryPath = RepositoryPathHelper::getRepositoriesSatisPath($packageModel->id);
 
