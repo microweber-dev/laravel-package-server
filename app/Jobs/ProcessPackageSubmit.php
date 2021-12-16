@@ -35,8 +35,6 @@ class ProcessPackageSubmit implements ShouldQueue
     {
 
 
-        
-
         dump($this->packageModel->repository_url);
 
     }

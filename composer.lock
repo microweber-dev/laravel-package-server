@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "305bce924b8b62b43aafb94ef36de2c2",
+    "content-hash": "8f6700b11360f717cf1a33d5ed70721e",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -6419,6 +6419,63 @@
                 }
             ],
             "time": "2021-12-01T15:04:08+00:00"
+        },
+        {
+            "name": "symplify/git-wrapper",
+            "version": "v9.3.26",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symplify/git-wrapper.git",
+                "reference": "42b11a4c67142a61ff64021e2aaab7968ca3b076"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symplify/git-wrapper/zipball/42b11a4c67142a61ff64021e2aaab7968ca3b076",
+                "reference": "42b11a4c67142a61ff64021e2aaab7968ca3b076",
+                "shasum": ""
+            },
+            "require": {
+                "nette/utils": "^3.2",
+                "php": ">=7.3",
+                "symfony/event-dispatcher": "^4.4|^5.3",
+                "symfony/process": "^4.4|^5.3"
+            },
+            "require-dev": {
+                "ondram/ci-detector": "^4.0",
+                "phpunit/phpunit": "^9.5",
+                "psr/log": "^1.1",
+                "symplify/smart-file-system": "^9.3.26"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symplify\\GitWrapper\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A PHP wrapper around the Git command line utility.",
+            "keywords": [
+                "cli",
+                "git",
+                "git wrapper"
+            ],
+            "support": {
+                "source": "https://github.com/symplify/git-wrapper/tree/v9.3.26"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/rectorphp",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/tomasvotruba",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-06-12T13:23:38+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
