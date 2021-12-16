@@ -43,14 +43,14 @@ class ProcessPackageSatis implements ShouldQueue
             'repositories'=>[
                 [
                     'type'=>'path',
-                    'url'=>'',
+                    'url'=>RepositoryPathHelper::getRepositoriesClonePath($packageModel->id),
                 ]
             ],
             'require'=> [
-                'test:test'=>'dev-master',
+               $packageModel->name =>'dev-master',
             ]
         ];
-        $satisJson = json_encode($satisContent, JSON_PRETTY_PRINT);
+        $satisJson = json_encode($satisContent, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
         $saitsRepositoryPath = RepositoryPathHelper::getRepositoriesSatisPath($packageModel->id);
 
         file_put_contents($saitsRepositoryPath . 'satis.json', $satisJson);

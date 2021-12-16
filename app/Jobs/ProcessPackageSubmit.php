@@ -55,8 +55,16 @@ class ProcessPackageSubmit implements ShouldQueue
             ]);
             $status = $git->status();
 
+            $composerJsonFile = $repositoryPath . 'composer.json';
+            if (!is_file($composerJsonFile)) {
+                throw new \Exception('composer.json missing');
+            }
+
+            $openComposerJson = json_decode(file_get_contents($composerJsonFile));
+
             $packageModel->clone_status = 'success';
             $packageModel->clone_log = $status;
+            $packageModel->name = $openComposerJson->name;
             $packageModel->is_cloned = 1;
             $packageModel->save();
 
