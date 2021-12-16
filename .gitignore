@@ -30,3 +30,4 @@ config/private-packages.microweberapi.com/satis.json
 config/packages.microweberapi.com/satis.json
 config/packages-satis.microweberapi.com/satis.json
 config/packages-bg.microweberapi.com/satis.json
+/satis-builder/vendor/
