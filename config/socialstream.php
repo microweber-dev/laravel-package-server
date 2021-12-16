@@ -31,6 +31,9 @@ return [
 
     'providers' => [
         Providers::github(),
+        Providers::gitlab(),
+        Providers::bitbucket(),
+        Providers::google()
     ],
 
     /*
@@ -45,7 +48,7 @@ return [
     */
 
     'features' => [
-        // Features::createAccountOnFirstLogin(),
+        Features::createAccountOnFirstLogin(),
         // Features::generateMissingEmails(),
         Features::rememberSession(),
         Features::providerAvatars(),
