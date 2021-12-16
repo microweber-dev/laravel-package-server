@@ -31,7 +31,10 @@
 
         <!-- Page Content -->
         <main class="container my-5">
+            @if(isset($header))
             {{ $header }}
+            @endif
+
             {{ $slot }}
         </main>
 
