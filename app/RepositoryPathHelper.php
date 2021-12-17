@@ -13,7 +13,7 @@ class RepositoryPathHelper
 
         $path =  storage_path() . '/repositories/' . $id . '/';
         if (!is_dir($path)) {
-            mkdir($path,755,true);
+            mkdir($path,0755,true);
         }
         return $path;
     }
@@ -26,7 +26,7 @@ class RepositoryPathHelper
 
         $path =  storage_path() . '/repositories-satis/' . $id . '/';
         if (!is_dir($path)) {
-            mkdir($path,755,true);
+            mkdir($path,0755,true);
         }
         return $path;
     }
