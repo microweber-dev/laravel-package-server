@@ -118,8 +118,8 @@ class ProcessPackageSatis implements ShouldQueue
             $includedPackageContent = json_decode(file_get_contents($file), true);
 
             $preparedPackages = [];
-            if ( !empty($includedPackageContent)) {
-                foreach ($includedPackageContent as $packageKey=>$packageVersions) {
+            if ( !empty($includedPackageContent['packages'])) {
+                foreach ($includedPackageContent['packages'] as $packageKey=>$packageVersions) {
                     $preparedPackageVerions = [];
                     foreach ($packageVersions as $packageVersionKey=>$packageVersion) {
                         if (strpos($packageVersionKey, 'dev') !== false) {
@@ -134,6 +134,7 @@ class ProcessPackageSatis implements ShouldQueue
 
             $foundedPackages = array_merge($foundedPackages, $preparedPackages);
         }
+        
 
         $packageModel->package_json = json_encode($foundedPackages,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
         $packageModel->clone_log = $output;

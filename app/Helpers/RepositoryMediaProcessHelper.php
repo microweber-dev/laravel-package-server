@@ -23,22 +23,19 @@ class RepositoryMediaProcessHelper
 
             $distZip = $workDir . $distUrlParsed['path'];
 
-
-            dd($distZip);
-
             if (!$filesystem->exists($distZip)) {
                 return $packageVersion;
             }
 
             // Create Main Meta Folder
-            $mainMetaFolder = $this->outputDir .'/'.$this->domainsDir.'/'. Helpers::getEnvName() .  '/meta/';
+            $mainMetaFolder = $workDir.  '/meta/';
             if (!$filesystem->exists($mainMetaFolder)) {
                 $filesystem->mkdir($mainMetaFolder);
             }
 
             // Create Meta Folder
-            $metaFolder = $this->outputDir .'/'.$this->domainsDir.'/'. Helpers::getEnvName() . '/meta/' . $distShasum . '/';
-            $metaFolderPublicUrl = $packageMainUrl .'domains/'. Helpers::getEnvName() . '/meta/' . $distShasum . '/';
+            $metaFolder = $workDir . '/meta/' . $distShasum . '/';
+            $metaFolderPublicUrl = $packageMainUrl .'dist/meta/' . $distShasum . '/';
             if (!$filesystem->exists($metaFolder)) {
                 $filesystem->mkdir($metaFolder);
             }
