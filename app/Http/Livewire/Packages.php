@@ -13,13 +13,17 @@ class Packages extends Component
     use AuthorizesRequests;
     use WithPagination;
 
-    public string $repository_url;
-    public int $is_modal_open = 0;
+    public $keyword = '';
+    public $repository_url;
+    public $is_modal_open = 0;
 
     public function render()
     {
         $userId = auth()->user()->id;
-        $packages = Package::where('user_id', $userId)->paginate(15);
+        $packages = Package::where('user_id', $userId)
+            ->where('name', 'LIKE', "%$this->keyword%")
+            ->where('repository_url', 'LIKE', "%$this->keyword%")
+            ->paginate(15);
 
         return view('livewire.packages.index', compact('packages'));
 

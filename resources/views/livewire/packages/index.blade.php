@@ -4,7 +4,10 @@
         <div class="card mb-4">
             <div class="card-body row">
                 <div class="col-md-6">
-                @livewire('search-repositories')
+                    <div>
+                        <input wire:model="keyword" type="text" class="form-control" placeholder="Search packages...">
+                        <small>Microweber Packages is the official microweber cms composer repository. </small>
+                    </div>
                 </div>
                 <div class="col-md-4"></div>
                 <div class="col-md-2 justify-content-center">
