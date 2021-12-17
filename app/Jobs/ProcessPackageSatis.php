@@ -48,7 +48,7 @@ class ProcessPackageSatis implements ShouldQueue
 
         $satisContent = [
             'name'=>'microweber/packages',
-            'homepage'=>'https://example.com/',
+            'homepage'=>'https://example.com',
             'repositories'=>[
                 [
                     'type'=>'vcs',
