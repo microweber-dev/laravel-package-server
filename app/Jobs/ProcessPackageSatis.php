@@ -134,7 +134,6 @@ class ProcessPackageSatis implements ShouldQueue
 
             $foundedPackages = array_merge($foundedPackages, $preparedPackages);
         }
-        
 
         $packageModel->package_json = json_encode($foundedPackages,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
         $packageModel->clone_log = $output;
