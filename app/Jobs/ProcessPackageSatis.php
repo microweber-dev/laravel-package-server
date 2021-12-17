@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\RepositoryMediaProcessHelper;
 use App\Models\Package;
 use App\Helpers\RepositoryPathHelper;
 use Illuminate\Bus\Queueable;
@@ -114,10 +115,24 @@ class ProcessPackageSatis implements ShouldQueue
         $foundedPackages = [];
         foreach($includedPackageFiles as $file) {
 
-            dump($file); 
-
             $includedPackageContent = json_decode(file_get_contents($file), true);
-            $foundedPackages = array_merge($foundedPackages, $includedPackageContent['packages']);
+
+            $preparedPackages = [];
+            if ( !empty($includedPackageContent)) {
+                foreach ($includedPackageContent as $packageKey=>$packageVersions) {
+                    $preparedPackageVerions = [];
+                    foreach ($packageVersions as $packageVersionKey=>$packageVersion) {
+                        if (strpos($packageVersionKey, 'dev') !== false) {
+                            continue;
+                        }
+                        $packageVersion = RepositoryMediaProcessHelper::preparePackageMedia($packageVersion, $satisRepositoryOutputPath);
+                        $preparedPackageVerions[$packageVersionKey] = $packageVersion;
+                    }
+                    $preparedPackages[$packageKey] = $preparedPackageVerions;
+                }
+            }
+
+            $foundedPackages = array_merge($foundedPackages, $preparedPackages);
         }
 
         $packageModel->package_json = json_encode($foundedPackages,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
