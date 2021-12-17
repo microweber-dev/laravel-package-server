@@ -23,6 +23,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
         return view('dashboard');
     })->name('dashboard');
 
-    Route::any('packages/submit', \App\Http\Livewire\PackageSubmit::class);
+    Route::get('packages', \App\Http\Livewire\PackagesList::class)->name('packages');
+    Route::any('packages/add', \App\Http\Livewire\PackageAdd::class);
 
 });

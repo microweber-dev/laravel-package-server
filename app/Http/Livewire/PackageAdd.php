@@ -7,7 +7,7 @@ use App\Models\Package;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 
-class PackageSubmit extends Component
+class PackageAdd extends Component
 {
     use AuthorizesRequests;
 
@@ -19,14 +19,14 @@ class PackageSubmit extends Component
 
     public function render()
     {
-        return view('livewire.package-submit', [
+        return view('livewire.package-add', [
             'repository_url' => $this->repository_url,
         ]);
     }
 
     public function submitPackage()
     {
-     //   $this->validate();
+        $this->validate();
 
         $createPackage = new Package();
         $createPackage->user_id = auth()->user()->id;
@@ -35,7 +35,7 @@ class PackageSubmit extends Component
 
         dispatch(new ProcessPackageSubmit($createPackage->id));
 
-     //   return $this->redirect(route('dashboard'));
+       return $this->redirect(route('packages'));
 
     }
 }
