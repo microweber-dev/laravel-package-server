@@ -24,7 +24,7 @@ class Packages extends Component
 
         $userId = auth()->user()->id;
         $packages = Package::where('user_id', $userId)
-            ->where('clone_status', Package::CLONE_STATUS_SUCCESS)
+         //   ->where('clone_status', Package::CLONE_STATUS_SUCCESS)
             ->when(!empty($keyword), function ($q) use ($keyword) {
                 $q->where('name', 'LIKE', "%$keyword%");
                 $q->where('repository_url', 'LIKE', "%$keyword%");

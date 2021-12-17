@@ -65,22 +65,22 @@
             <tbody>
             @foreach ($packages as $package)
                 <tr>
-                    @if ($package->is_cloned == 1)
-                        <td>{{$package->name}}</td>
-                        <td>{{$package->repository_url}}</td>
-                        <td>
-                            <span class="badge bg-success">Cloned</span>
-                        </td>
-                        <td>{{$package->updated_at}}</td>
-                        <td>
-                            <a class="btn btn-outline-dark" href="{{$package->id}}">View</a>
-                            <button type="button" class="btn btn-outline-dark" wire:click="update({{ $package->id }})" wire:loading.attr="disabled">Update</button>
-                            <button type="button" class="btn btn-outline-dark" wire:click="delete({{ $package->id }})" wire:loading.attr="disabled">Delete</button>
-                        </td>
-                    @else
-                        <td colspan="2">{{$package->repository_url}}</td>
-                        <td><span class="badge bg-info">Processing...</span></td>
-                    @endif
+                    <td>{{$package->name}}</td>
+                    <td>{{$package->repository_url}}</td>
+
+                    <td>
+                        @if($package->clone_status == \App\Models\Package::CLONE_STATUS_SUCCESS)
+                        <span class="badge bg-success">{{$package->clone_status}}</span>
+                        @else
+                            <span class="badge bg-danger">{{$package->clone_status}}</span>
+                        @endif
+                    </td>
+                    <td>{{$package->updated_at}}</td>
+                    <td>
+                        <a class="btn btn-outline-dark" href="{{$package->id}}">View</a>
+                        <button type="button" class="btn btn-outline-dark" wire:click="update({{ $package->id }})" wire:loading.attr="disabled">Update</button>
+                        <button type="button" class="btn btn-outline-dark" wire:click="delete({{ $package->id }})" wire:loading.attr="disabled">Delete</button>
+                    </td>
                 </tr>
             @endforeach
             </tbody>
