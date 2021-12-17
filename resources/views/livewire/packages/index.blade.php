@@ -66,7 +66,14 @@
             @foreach ($packages as $package)
                 <tr>
                     <td>{{$package->name}}</td>
-                    <td>{{$package->repository_url}}</td>
+                    <td>
+                        {{$package->repository_url}}
+
+                        @if($package->clone_status != \App\Models\Package::CLONE_STATUS_SUCCESS)
+                            <br />
+                            <p class="text-danger">{{$package->clone_log}}</p>
+                        @endif
+                    </td>
 
                     <td>
                         @if($package->clone_status == \App\Models\Package::CLONE_STATUS_SUCCESS)

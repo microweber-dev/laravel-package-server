@@ -12,6 +12,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 use Symplify\GitWrapper\GitWrapper;
 
 class ProcessPackageSatis implements ShouldQueue
@@ -40,10 +42,9 @@ class ProcessPackageSatis implements ShouldQueue
 
         $packageModel = Package::where('id', $this->packageId)->first();
 
+        $packageModel->clone_log = "Job is started.";
         $packageModel->clone_status = Package::CLONE_STATUS_RUNNING;
         $packageModel->save();
-
-        
 
         $satisContent = [
             'name'=>'microweber/packages',
@@ -68,6 +69,45 @@ class ProcessPackageSatis implements ShouldQueue
         file_put_contents($saitsRepositoryPath . 'satis.json', $satisJson);
 
 
+        $satisBinPath = base_path() . '/satis-builder/vendor/composer/satis/bin/satis';
+        $satisRepositoryOutputPath = $saitsRepositoryPath . 'output-build';
 
+        // Accept host key
+        $parseRepositoryUrl = $packageModel->repository_url;
+        $parseRepositoryUrl = parse_url($parseRepositoryUrl);
+        if (isset($parseRepositoryUrl['host'])) {
+            $hostname = $parseRepositoryUrl['host'];
+            $acceptHost = shell_exec('
+            if ! grep "$(ssh-keyscan '.$hostname.' 2>/dev/null)" ~/.ssh/known_hosts > /dev/null; then
+                ssh-keyscan '.$hostname.' >> ~/.ssh/known_hosts
+            fi');
+        }
+
+        $satisCommand = [];
+        $satisCommand[] = 'php';
+        $satisCommand[] = '-d memory_limit=-1';
+        $satisCommand[] = $satisBinPath;
+        $satisCommand[] = 'build';
+        $satisCommand[] = $saitsRepositoryPath . 'satis.json';
+        $satisCommand[] = $satisRepositoryOutputPath . ' --stats';
+
+        $process = new Process($satisCommand);
+        $process->mustRun();
+        $output = $process->getOutput();
+
+        $packageModel->clone_log = $output;
+        $packageModel->clone_status = Package::CLONE_STATUS_SUCCESS;
+        $packageModel->save();
+    }
+
+    public function failed($error)
+    {
+        $packageModel = Package::where('id', $this->packageId)->first();
+
+        dump($error->getMessage());
+
+        $packageModel->clone_log = $error->getMessage();
+        $packageModel->clone_status = Package::CLONE_STATUS_FAILED;
+        $packageModel->save();
     }
 }

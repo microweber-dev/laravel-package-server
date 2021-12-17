@@ -53,6 +53,7 @@ class Packages extends Component
 
         $package = new Package();
         $package->user_id = $userId;
+        $package->clone_status = Package::CLONE_STATUS_WAITING;
         $package->repository_url = $this->repository_url;
         $package->save();
 
@@ -70,6 +71,8 @@ class Packages extends Component
         $userId = auth()->user()->id;
 
         $package = Package::where('id', $id)->where('user_id', $userId)->first();
+
+        dispatch(new ProcessPackageSatis($package->id));
 
         $this->check_background_job = true;
 
