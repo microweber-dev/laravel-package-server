@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Jobs\ProcessPackageSatis;
 use App\Jobs\ProcessPackageSubmit;
 use App\Models\Package;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -55,7 +56,8 @@ class Packages extends Component
         $package->repository_url = $this->repository_url;
         $package->save();
 
-        dispatch(new ProcessPackageSubmit($package->id));
+        dispatch(new ProcessPackageSatis($package->id));
+      //  dispatch(new ProcessPackageSubmit($package->id));
 
         $this->check_background_job = true;
         $this->is_modal_open = 0;

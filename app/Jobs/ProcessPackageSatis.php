@@ -37,7 +37,13 @@ class ProcessPackageSatis implements ShouldQueue
      */
     public function handle()
     {
+
         $packageModel = Package::where('id', $this->packageId)->first();
+
+        $packageModel->clone_status = Package::CLONE_STATUS_RUNNING;
+        $packageModel->save();
+
+        
 
         $satisContent = [
             'name'=>'microweber/packages',
@@ -45,13 +51,10 @@ class ProcessPackageSatis implements ShouldQueue
             'repositories'=>[
                 [
                     'type'=>'vcs',
-                    'url'=>RepositoryPathHelper::getRepositoriesClonePath($packageModel->id),
+                    'url'=> $packageModel->repository_url,
                 ]
             ],
             'require-all'=> true,
-           /* 'require'=> [
-               $packageModel->name =>'dev-master',
-            ]*/
              "archive" => [
                 "directory"=> "dist",
                 "format"=> "zip",
@@ -63,8 +66,6 @@ class ProcessPackageSatis implements ShouldQueue
         $saitsRepositoryPath = RepositoryPathHelper::getRepositoriesSatisPath($packageModel->id);
 
         file_put_contents($saitsRepositoryPath . 'satis.json', $satisJson);
-
-
 
 
 

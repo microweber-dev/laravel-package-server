@@ -43,7 +43,7 @@ class ProcessPackageSubmit implements ShouldQueue
         $packageModel->save();
 
         try {
-            
+
             $repositoryPath = RepositoryPathHelper::getRepositoriesClonePath($packageModel->id);
 
             if (is_dir($repositoryPath)) {
@@ -84,9 +84,4 @@ class ProcessPackageSubmit implements ShouldQueue
         }
     }
 
-
-    public function failed()
-    {
-        dump($this->packageId);
-    }
 }
