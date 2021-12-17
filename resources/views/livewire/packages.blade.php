@@ -11,7 +11,8 @@
     <div class="col-md-6">
         <div class="card mb-4">
             <div class="card-body">
-                @livewire('package-add')
+
+
             </div>
         </div>
     </div>
@@ -40,6 +41,7 @@
             <td>
                 <a class="btn btn-outline-dark" href="{{$package->id}}">View</a>
                 <a class="btn btn-outline-dark" href="{{$package->id}}">Update</a>
+                <button type="button" class="btn btn-outline-dark" wire:click="delete({{ $package->id }})" wire:loading.attr="disabled">Delete</button>
             </td>
             @else
             <td colspan="2">{{$package->repository_url}}</td>
