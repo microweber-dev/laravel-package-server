@@ -42,16 +42,18 @@ class ProcessPackageSubmit implements ShouldQueue
         $packageModel->clone_status = Package::CLONE_STATUS_RUNNING;
         $packageModel->save();
 
-        $repositoryPath = RepositoryPathHelper::getRepositoriesClonePath($packageModel->id);
-
-        if (is_dir($repositoryPath)) {
-            File::deleteDirectory($repositoryPath);
-        }
-
-        $gitWrapper = new GitWrapper();
-     //   $gitWrapper->setPrivateKey(env('SSH_KEY_PATH'));
-
         try {
+            
+            $repositoryPath = RepositoryPathHelper::getRepositoriesClonePath($packageModel->id);
+
+            if (is_dir($repositoryPath)) {
+                File::deleteDirectory($repositoryPath);
+            }
+
+            $gitWrapper = new GitWrapper();
+         //   $gitWrapper->setPrivateKey(env('SSH_KEY_PATH'));
+
+
             $git = $gitWrapper->cloneRepository($packageModel->repository_url, $repositoryPath, [
                 'verbose' => true,
              //   'depth' => 1
