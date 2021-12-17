@@ -94,8 +94,30 @@ class ProcessPackageSatis implements ShouldQueue
         $process->mustRun();
         $output = $process->getOutput();
 
+        $packagesJsonFilePath = $satisRepositoryOutputPath . '/packages.json';
+        if (!is_file($packagesJsonFilePath)) {
+            throw new \Exception('Build failed. packages.json missing.');
+        }
 
+        $packagesJson = json_decode(file_get_contents($packagesJsonFilePath),true);
+        if (empty($packagesJson)) {
+            if (!is_file($packagesJsonFilePath)) {
+                throw new \Exception('Build failed. packages.json is empty.');
+            }
+        }
 
+        $includedPackageFiles = [];
+        foreach($packagesJson['includes'] as $includeKey=>$includes) {
+            $includedPackageFiles[] = $satisRepositoryOutputPath .'/'. $includeKey;
+        }
+
+        $foundedPackages = [];
+        foreach($includedPackageFiles as $file) {
+            $includedPackageContent = json_decode(file_get_contents($file), true);
+            $foundedPackages = array_merge($foundedPackages, $includedPackageContent['packages']);
+        }
+
+        $packageModel->package_json = json_encode($foundedPackages,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
         $packageModel->clone_log = $output;
         $packageModel->clone_status = Package::CLONE_STATUS_SUCCESS;
         $packageModel->save();
