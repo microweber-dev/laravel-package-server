@@ -39,6 +39,9 @@ class ProcessPackageSubmit implements ShouldQueue
     {
         $packageModel = Package::where('id', $this->packageId)->first();
 
+        $packageModel->clone_status = Package::CLONE_STATUS_RUNNING;
+        $packageModel->save();
+
         $repositoryPath = RepositoryPathHelper::getRepositoriesClonePath($packageModel->id);
 
         if (is_dir($repositoryPath)) {
@@ -62,7 +65,7 @@ class ProcessPackageSubmit implements ShouldQueue
 
             $openComposerJson = json_decode(file_get_contents($composerJsonFile));
 
-            $packageModel->clone_status = 'success';
+            $packageModel->clone_status = Package::CLONE_STATUS_SUCCESS;
             $packageModel->clone_log = $status;
             $packageModel->name = $openComposerJson->name;
             $packageModel->is_cloned = 1;
@@ -72,7 +75,7 @@ class ProcessPackageSubmit implements ShouldQueue
 
         } catch (\Exception $e) {
 
-            $packageModel->clone_status = 'failed';
+            $packageModel->clone_status = Package::CLONE_STATUS_FAILED;
             $packageModel->clone_log = $e->getMessage();
             $packageModel->save();
 

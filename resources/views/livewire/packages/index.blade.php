@@ -1,5 +1,33 @@
 <div class="row">
 
+
+    @if ($check_background_job)
+        <div wire:poll="backgroundJobStatus">
+            <div class="col-md-12">
+                <div class="alert alert-success align-items-center" role="alert">
+                    <b>
+                        Background job is running.
+                    </b>
+            </div>
+        </div>
+        </div>
+    @endif
+
+    @if (session()->has('message'))
+        <div class="col-md-12">
+            <div id="js-alert-message" class="alert alert-success align-items-center" role="alert">
+                <b>
+                    {{ session('message') }}
+                </b>
+            </div>
+            <script>
+                setTimeout(function () {
+                    document.getElementById('js-alert-message').style.display = 'none';
+                }, 3500);
+            </script>
+        </div>
+    @endif
+
     <div class="col-md-12">
         <div class="card mb-4">
             <div class="card-body row">
@@ -18,21 +46,6 @@
             </div>
         </div>
     </div>
-
-    @if (session()->has('message'))
-        <div class="col-md-12">
-            <div id="js-alert-message" class="alert alert-success align-items-center" role="alert">
-                <b>
-                    {{ session('message') }}
-                </b>
-            </div>
-            <script>
-                setTimeout(function () {
-                    document.getElementById('js-alert-message').style.display = 'none';
-                }, 3500);
-            </script>
-        </div>
-    @endif
 
     @if($is_modal_open)
         @include('livewire.packages.create')

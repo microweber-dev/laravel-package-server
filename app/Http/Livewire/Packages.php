@@ -15,15 +15,21 @@ class Packages extends Component
 
     public $keyword = '';
     public $repository_url;
-    public $is_modal_open = 0;
+    public $is_modal_open = false;
+    public $check_background_job = true;
 
     public function render()
     {
+        $keyword = $this->keyword;
+
         $userId = auth()->user()->id;
         $packages = Package::where('user_id', $userId)
-            ->where('name', 'LIKE', "%$this->keyword%")
-            ->where('repository_url', 'LIKE', "%$this->keyword%")
-            ->paginate(15);
+            ->where('clone_status', Package::CLONE_STATUS_SUCCESS)
+            ->when(!empty($keyword), function ($q) use ($keyword) {
+                $q->where('name', 'LIKE', "%$keyword%");
+                $q->where('repository_url', 'LIKE', "%$keyword%");
+            })
+           ->paginate(15);
 
         return view('livewire.packages.index', compact('packages'));
 
@@ -33,8 +39,6 @@ class Packages extends Component
     {
         $this->repository_url = '';
         $this->is_modal_open = 1;
-
-
     }
 
     public function store()
@@ -52,8 +56,6 @@ class Packages extends Component
 
         dispatch(new ProcessPackageSubmit($package->id));
 
-        session()->flash('message', 'Background job is running.');
-
         $this->is_modal_open = 0;
         $this->repository_url = '';
 
@@ -65,8 +67,6 @@ class Packages extends Component
 
         $package = Package::where('id', $id)->where('user_id', $userId)->first();
 
-        session()->flash('message', 'Background job is running.');
-
     }
 
     public function delete($id)
@@ -77,5 +77,20 @@ class Packages extends Component
 
         session()->flash('message', 'Package deleted successfully.');
 
+    }
+
+    public function backgroundJobStatus()
+    {
+        $userId = auth()->user()->id;
+
+        $findRunningPackages = Package::where('user_id', $userId)
+            ->where('clone_status', Package::CLONE_STATUS_RUNNING)
+            ->count();
+
+        if ($findRunningPackages > 0) {
+            $this->check_background_job = true;
+        } else {
+            $this->check_background_job = false;
+        }
     }
 }

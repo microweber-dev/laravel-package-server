@@ -11,4 +11,8 @@ class Package extends Model
 
     protected $attributes = [];
 
+    public const CLONE_STATUS_RUNNING = 'running';
+    public const CLONE_STATUS_SUCCESS = 'success';
+    public const CLONE_STATUS_FAILED = 'failed';
+
 }
