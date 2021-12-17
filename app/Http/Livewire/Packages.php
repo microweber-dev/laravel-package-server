@@ -21,7 +21,7 @@ class Packages extends Component
         $userId = auth()->user()->id;
         $packages = Package::where('user_id', $userId)->paginate(15);
 
-        return view('livewire.packages', compact('packages'));
+        return view('livewire.packages.index', compact('packages'));
 
     }
 
@@ -29,19 +29,22 @@ class Packages extends Component
     {
         $this->repository_url = '';
         $this->is_modal_open = 1;
+
+
     }
 
     public function store()
     {
-
-        $this->validate([
+      /*  $this->validate([
             'repository_url' => 'required|url|unique:packages',
-        ]);
+        ]);*/
 
+        $userId = auth()->user()->id;
 
-        $package = Package::updateOrCreate(['id' => $this->id,'user_id' => auth()->user()->id], [
-            'repository_url' => $this->repository_url,
-        ]);
+        $package = new Package();
+        $package->user_id = $userId;
+        $package->repository_url = $this->repository_url;
+        $package->save();
 
         dispatch(new ProcessPackageSubmit($package->id));
 
@@ -49,6 +52,16 @@ class Packages extends Component
 
         $this->is_modal_open = 0;
         $this->repository_url = '';
+
+    }
+
+    public function update($id)
+    {
+        $userId = auth()->user()->id;
+
+        $package = Package::where('id', $id)->where('user_id', $userId)->first();
+
+        session()->flash('message', 'Package Updated Successfully.');
 
     }
 
