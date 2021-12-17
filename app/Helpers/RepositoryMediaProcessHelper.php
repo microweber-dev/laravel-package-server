@@ -35,7 +35,8 @@ class RepositoryMediaProcessHelper
 
             // Create Meta Folder
             $metaFolder = $workDir . '/meta/' . $distShasum . '/';
-            $metaFolderPublicUrl = $packageMainUrl .'dist/meta/' . $distShasum . '/';
+            $metaFolderPublicUrl = $packageMainUrl .'meta/' . $distShasum . '/';
+
             if (!$filesystem->exists($metaFolder)) {
                 $filesystem->mkdir($metaFolder);
             }
