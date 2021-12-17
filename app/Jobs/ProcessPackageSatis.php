@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Package;
-use App\RepositoryPathHelper;
+use App\Helpers\RepositoryPathHelper;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -113,6 +113,9 @@ class ProcessPackageSatis implements ShouldQueue
 
         $foundedPackages = [];
         foreach($includedPackageFiles as $file) {
+
+            dump($file); 
+
             $includedPackageContent = json_decode(file_get_contents($file), true);
             $foundedPackages = array_merge($foundedPackages, $includedPackageContent['packages']);
         }
