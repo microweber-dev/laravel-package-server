@@ -81,4 +81,10 @@ class ProcessPackageSubmit implements ShouldQueue
 
         }
     }
+
+
+    public function failed()
+    {
+        dump($this->packageId);
+    }
 }

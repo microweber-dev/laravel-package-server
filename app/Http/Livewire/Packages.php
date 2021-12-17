@@ -16,7 +16,7 @@ class Packages extends Component
     public $keyword = '';
     public $repository_url;
     public $is_modal_open = false;
-    public $check_background_job = true;
+    public $check_background_job = false;
 
     public function render()
     {
@@ -39,6 +39,7 @@ class Packages extends Component
     {
         $this->repository_url = '';
         $this->is_modal_open = 1;
+        $this->check_background_job = false;
     }
 
     public function store()
@@ -56,6 +57,7 @@ class Packages extends Component
 
         dispatch(new ProcessPackageSubmit($package->id));
 
+        $this->check_background_job = true;
         $this->is_modal_open = 0;
         $this->repository_url = '';
 
@@ -66,6 +68,8 @@ class Packages extends Component
         $userId = auth()->user()->id;
 
         $package = Package::where('id', $id)->where('user_id', $userId)->first();
+
+        $this->check_background_job = true;
 
     }
 
