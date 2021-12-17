@@ -52,7 +52,7 @@ class Packages extends Component
 
         dispatch(new ProcessPackageSubmit($package->id));
 
-        session()->flash('message', $this->id ? 'Package Updated Successfully.' : 'Package Created Successfully.');
+        session()->flash('message', 'Background job is running.');
 
         $this->is_modal_open = 0;
         $this->repository_url = '';
@@ -65,7 +65,7 @@ class Packages extends Component
 
         $package = Package::where('id', $id)->where('user_id', $userId)->first();
 
-        session()->flash('message', 'Package Updated Successfully.');
+        session()->flash('message', 'Background job is running.');
 
     }
 
@@ -75,7 +75,7 @@ class Packages extends Component
 
         Package::where('id', $id)->where('user_id', $userId)->delete();
 
-        session()->flash('message', 'Package Deleted Successfully.');
+        session()->flash('message', 'Package deleted successfully.');
 
     }
 }
