@@ -35,9 +35,9 @@ class Packages extends Component
 
     public function store()
     {
-      /*  $this->validate([
+        $this->validate([
             'repository_url' => 'required|url|unique:packages',
-        ]);*/
+        ]);
 
         $userId = auth()->user()->id;
 
