@@ -30,17 +30,21 @@
         <tbody>
         @foreach ($packages as $package)
         <tr>
+            @if ($package->is_cloned == 1)
             <td>{{$package->name}}</td>
             <td>{{$package->repository_url}}</td>
             <td>
-                @if ($package->is_cloned == 1)
-                    <span class="badge bg-success">Cloned</span>
-                @else
-                    <span class="badge bg-danger">Error</span>
-                @endif
+                <span class="badge bg-success">Cloned</span>
             </td>
             <td>{{$package->updated_at}}</td>
-            <td><a class="btn btn-outline-dark" href="{{$package->id}}">Update</a></td>
+            <td>
+                <a class="btn btn-outline-dark" href="{{$package->id}}">View</a>
+                <a class="btn btn-outline-dark" href="{{$package->id}}">Update</a>
+            </td>
+            @else
+            <td colspan="2">{{$package->repository_url}}</td>
+            <td><span class="badge bg-info">Processing...</span></td>
+            @endif
         </tr>
         @endforeach
         </tbody>
