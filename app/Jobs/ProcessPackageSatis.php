@@ -135,6 +135,19 @@ class ProcessPackageSatis implements ShouldQueue
             $foundedPackages = array_merge($foundedPackages, $preparedPackages);
         }
 
+        $outputPublicDist = public_path() . '/dist/';
+        if (!is_dir($outputPublicDist)) {
+            mkdir($outputPublicDist, 0755, true);
+        }
+
+        $outputPublicMeta = public_path() . '/meta/';
+        if (!is_dir($outputPublicMeta)) {
+            mkdir($outputPublicMeta, 0755, true);
+        }
+
+        shell_exec("rsync -avzh  $satisRepositoryOutputPath/dist/ $outputPublicDist");
+        shell_exec("rsync -avzh  $satisRepositoryOutputPath/meta/ $outputPublicMeta");
+
         $packageModel->package_json = json_encode($foundedPackages,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
         $packageModel->clone_log = $output;
         $packageModel->clone_status = Package::CLONE_STATUS_SUCCESS;
