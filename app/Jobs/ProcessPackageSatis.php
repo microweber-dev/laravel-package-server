@@ -49,6 +49,7 @@ class ProcessPackageSatis implements ShouldQueue
         $satisContent = [
             'name'=>'microweber/packages',
             'homepage'=>'https://github.com/',
+            "output-dir"=> public_path() . '/dist',
             'repositories'=>[
                 [
                     'type'=>'vcs',
@@ -67,7 +68,6 @@ class ProcessPackageSatis implements ShouldQueue
         $saitsRepositoryPath = RepositoryPathHelper::getRepositoriesSatisPath($packageModel->id);
 
         file_put_contents($saitsRepositoryPath . 'satis.json', $satisJson);
-
 
         $satisBinPath = base_path() . '/satis-builder/vendor/composer/satis/bin/satis';
         $satisRepositoryOutputPath = $saitsRepositoryPath . 'output-build';
@@ -89,11 +89,13 @@ class ProcessPackageSatis implements ShouldQueue
         $satisCommand[] = $satisBinPath;
         $satisCommand[] = 'build';
         $satisCommand[] = $saitsRepositoryPath . 'satis.json';
-        $satisCommand[] = $satisRepositoryOutputPath . ' --stats';
+        $satisCommand[] = $satisRepositoryOutputPath;
 
         $process = new Process($satisCommand);
         $process->mustRun();
         $output = $process->getOutput();
+
+
 
         $packageModel->clone_log = $output;
         $packageModel->clone_status = Package::CLONE_STATUS_SUCCESS;
@@ -103,8 +105,6 @@ class ProcessPackageSatis implements ShouldQueue
     public function failed($error)
     {
         $packageModel = Package::where('id', $this->packageId)->first();
-
-        dump($error->getMessage());
 
         $packageModel->clone_log = $error->getMessage();
         $packageModel->clone_status = Package::CLONE_STATUS_FAILED;
