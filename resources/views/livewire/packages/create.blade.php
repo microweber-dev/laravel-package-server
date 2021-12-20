@@ -8,7 +8,28 @@
 
     <form wire:submit.prevent="store">
 
-        <form>
+            @if(Auth::user()->allTeams()->count() > 0)
+                <div class="mb-3 has-validation">
+                    <label for="selectTeam" class="form-label">Select Teams</label>
+
+                    @foreach (Auth::user()->allTeams() as $team)
+                    <div class="form-check">
+                        <input class="form-check-input" wire:model="team_ids.{{ $team->id }}" type="checkbox" id="flexCheckTeam{{$team->id}}">
+                        <label class="form-check-label" for="flexCheckTeam{{$team->id}}">
+                            {{$team->name}}
+                        </label>
+                    </div>
+                    @endforeach
+
+                    <div class="invalid-feedback">
+                        @error('team_ids')
+                        {{ $message }}
+                        @enderror
+                    </div>
+                </div>
+            @else
+
+            @endif
 
             <div class="mb-3 has-validation">
                 <label for="inputRepository" class="form-label">Repository Url</label>
@@ -23,8 +44,5 @@
 
             <button type="submit" class="btn btn-outline-dark">Submit Package</button>
         </form>
-
-
-</form>
 
 </div>

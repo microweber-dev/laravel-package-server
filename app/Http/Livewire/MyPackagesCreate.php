@@ -14,17 +14,17 @@ class MyPackagesCreate extends Component
     use AuthorizesRequests;
 
     public $repository_url;
+    public $team_ids;
 
     public function render()
     {
-
         return view('livewire.packages.create');
-
     }
 
     public function store()
     {
         $this->validate([
+            'team_ids' => 'required|array',
             'repository_url' => 'required|url|unique:packages',
         ]);
 

@@ -28,6 +28,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
         return view('dashboard');
     })->name('dashboard');
 
+
     Route::any('my-packages', \App\Http\Livewire\MyPackages::class)->name('my-packages');
     Route::any('my-packages/create', \App\Http\Livewire\MyPackagesCreate::class)->name('my-packages.create');
 
