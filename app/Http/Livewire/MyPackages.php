@@ -9,14 +9,12 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class Packages extends Component
+class MyPackages extends Component
 {
     use AuthorizesRequests;
     use WithPagination;
 
     public $keyword = '';
-    public $repository_url;
-    public $is_modal_open = false;
     public $check_background_job = false;
 
     public function render()
@@ -33,36 +31,6 @@ class Packages extends Component
            ->paginate(15);
 
         return view('livewire.packages.index', compact('packages'));
-
-    }
-
-    public function create()
-    {
-        $this->repository_url = '';
-        $this->is_modal_open = 1;
-        $this->check_background_job = false;
-    }
-
-    public function store()
-    {
-        $this->validate([
-            'repository_url' => 'required|url|unique:packages',
-        ]);
-
-        $userId = auth()->user()->id;
-
-        $package = new Package();
-        $package->user_id = $userId;
-        $package->clone_status = Package::CLONE_STATUS_WAITING;
-        $package->repository_url = $this->repository_url;
-        $package->save();
-
-        dispatch(new ProcessPackageSatis($package->id));
-      //  dispatch(new ProcessPackageSubmit($package->id));
-
-        $this->check_background_job = true;
-        $this->is_modal_open = 0;
-        $this->repository_url = '';
 
     }
 

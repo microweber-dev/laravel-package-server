@@ -1,5 +1,10 @@
 <div class="row">
 
+    <x-slot name="header">
+        <h2 class="h4 font-weight-bold">
+            {{ __('My Packages') }}
+        </h2>
+    </x-slot>
 
     @if ($check_background_job)
         <div wire:poll="backgroundJobStatus">
@@ -39,17 +44,13 @@
                 </div>
                 <div class="col-md-4"></div>
                 <div class="col-md-2 justify-content-center">
-                    <button wire:click="create()" class="btn btn-outline-dark">
+                    <a href="{{route('my-packages.create')}}" class="btn btn-outline-dark">
                      Add Package
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-
-    @if($is_modal_open)
-        @include('livewire.packages.create')
-    @endif
 
     <div class="col-md-12">
         <table class="table table-bordered bg-white">

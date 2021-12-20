@@ -1,18 +1,29 @@
-<form wire:submit.prevent="store">
+<div class="row">
 
-    <div class="input-group has-validation mb-3">
-        <input type="text" class="form-control  @error('repository_url') is-invalid @enderror" wire:model="repository_url">
+    <x-slot name="header">
+        <h2 class="h4 font-weight-bold">
+            {{ __('Add package') }}
+        </h2>
+    </x-slot>
 
-        <div class="invalid-feedback">
-            @error('repository_url')
-            {{ $message }}
-            @enderror
-        </div>
+    <form wire:submit.prevent="store">
 
-        <div class="input-group-append">
+        <form>
+            <div class="mb-3 has-validation">
+                <label for="inputRepository" class="form-label">Repository Url</label>
+                <input type="text" wire:model="repository_url" class="form-control @error('repository_url') is-invalid @enderror" id="inputRepository" aria-describedby="repositoryHelp">
+                <div id="repositoryHelp" class="form-text">Enter the url of your git repository</div>
+                <div class="invalid-feedback">
+                    @error('repository_url')
+                    {{ $message }}
+                    @enderror
+                </div>
+            </div>
+
             <button type="submit" class="btn btn-outline-dark">Submit Package</button>
-        </div>
+        </form>
 
-    </div>
 
 </form>
+
+</div>
