@@ -19,7 +19,7 @@
 
                     @foreach (Auth::user()->allTeams() as $team)
                     <div class="form-check">
-                        <input class="form-check-input" id="inputTeam{{ $team->id }}" value="{{ $team->id }}" wire:model.defer="team_ids" type="checkbox">
+                        <input class="form-check-input" id="inputTeam{{ $team->id }}" value="{{ $team->id }}" wire:model="team_ids" type="checkbox">
                         <label class="form-check-label" for="inputTeam{{ $team->id }}">
                             {{$team->name}}
                         </label>
