@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Jobs\ProcessPackageSatis;
 use App\Jobs\ProcessPackageSubmit;
 use App\Models\Package;
+use App\Rules\CanAddRepositoryToTeamRule;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -24,7 +25,7 @@ class MyPackagesCreate extends Component
     public function store()
     {
         $this->validate([
-            'team_ids' => 'required|array',
+            'team_ids' => ['required','array', new CanAddRepositoryToTeamRule()],
             'repository_url' => 'required|url|unique:packages',
         ]);
 
@@ -38,5 +39,6 @@ class MyPackagesCreate extends Component
 
         dispatch(new ProcessPackageSatis($package->id));
 
+        $this->redirect(route('my-packages'));
     }
 }

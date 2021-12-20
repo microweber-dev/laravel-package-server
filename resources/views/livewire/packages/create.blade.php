@@ -21,11 +21,11 @@
                     </div>
                     @endforeach
 
-                    <div class="invalid-feedback">
+                    <span class="text-danger">
                         @error('team_ids')
                         {{ $message }}
                         @enderror
-                    </div>
+                    </span>
                 </div>
             @else
 
