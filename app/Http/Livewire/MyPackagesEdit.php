@@ -18,27 +18,29 @@ class MyPackagesEdit extends Component
 
     public $package_id;
     public $repository_url;
-    public $team_ids;
+    public $team_ids = [];
 
     public function render()
     {
-        return view('livewire.packages.edit');
-    }
-
-    public function mount($id = false)
-    {
-        $this->package_id = $id;
         $package = Package::where('user_id',auth()->user()->id)->where('id', $this->package_id)->first();
         if ($package == null) {
             return abort(404, "Package  not found");
         }
 
         $this->repository_url = $package->repository_url;
-        $this->team_ids = $package->teams()->pluck('team_id')->toArray();
+      //  $this->team_ids = $package->teams()->pluck('team_id')->toArray();
+
+        return view('livewire.packages.edit');
+    }
+
+    public function mount($id = false)
+    {
+        $this->package_id = $id;
     }
 
     public function edit()
     {
+        dd($this->team_ids);
         $validation = [];
         $validation['team_ids'] = ['required','array', new CanAddRepositoryToTeamRule()];
 
