@@ -26,4 +26,15 @@ class Package extends Model
     {
         return $this->belongsToMany(Jetstream::teamModel(), 'team_packages')->withTimestamps();
     }
+
+    public function teamIds() {
+
+        $ids = [];
+        $findTeams = $this->teams()->get();
+        if ($findTeams !== null) {
+            $ids = $findTeams->pluck('id')->toArray();
+        }
+
+        return $ids;
+    }
 }

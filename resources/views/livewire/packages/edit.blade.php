@@ -2,20 +2,25 @@
 
     <x-slot name="header">
         <h2 class="h4 font-weight-bold">
-            {{ __('Add package') }}
+            @if($package_id)
+                {{ __('Edit package') }}
+            @else
+                {{ __('Add package') }}
+            @endif
         </h2>
     </x-slot>
 
-    <form wire:submit.prevent="store">
+
+    <form wire:submit.prevent="edit">
 
             @if(Auth::user()->allTeams()->count() > 0)
                 <div class="mb-3 has-validation">
-                    <label for="selectTeam" class="form-label">Select Teams</label>
+                    <label for="selectTeam" class="form-label">Add package to teams</label>
 
                     @foreach (Auth::user()->allTeams() as $team)
                     <div class="form-check">
-                        <input class="form-check-input" wire:model="team_ids.{{ $team->id }}" type="checkbox" id="flexCheckTeam{{$team->id}}">
-                        <label class="form-check-label" for="flexCheckTeam{{$team->id}}">
+                        <input class="form-check-input" id="inputTeam{{ $team->id }}" value="{{ $team->id }}" wire:model.defer.lazy="team_ids" type="checkbox">
+                        <label class="form-check-label" for="inputTeam{{ $team->id }}">
                             {{$team->name}}
                         </label>
                     </div>
@@ -33,7 +38,7 @@
 
             <div class="mb-3 has-validation">
                 <label for="inputRepository" class="form-label">Repository Url</label>
-                <input type="text" wire:model="repository_url" class="form-control @error('repository_url') is-invalid @enderror" id="inputRepository" aria-describedby="repositoryHelp">
+                <input type="text" @if($package_id) disabled="disabled" @endif value="{{$repository_url}}" wire:model="repository_url" class="form-control @error('repository_url') is-invalid @enderror" id="inputRepository" aria-describedby="repositoryHelp">
                 <div id="repositoryHelp" class="form-text">Enter the url of your git repository</div>
                 <div class="invalid-feedback">
                     @error('repository_url')
@@ -42,7 +47,11 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-outline-dark">Submit Package</button>
+                @if($package_id)
+                    <button type="submit" class="btn btn-outline-dark">Save Package</button>
+                @else
+                    <button type="submit" class="btn btn-outline-dark">Submit Package</button>
+                @endif
         </form>
 
 </div>

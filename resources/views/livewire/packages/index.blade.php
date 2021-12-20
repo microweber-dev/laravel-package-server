@@ -44,7 +44,7 @@
                 </div>
                 <div class="col-md-4"></div>
                 <div class="col-md-2 justify-content-center">
-                    <a href="{{route('my-packages.create')}}" class="btn btn-outline-dark">
+                    <a href="{{route('my-packages.add')}}" class="btn btn-outline-dark">
                      Add Package
                     </a>
                 </div>
@@ -87,6 +87,7 @@
                     <td>
                         <a class="btn btn-outline-dark" href="{{$package->id}}">View</a>
                         <button type="button" class="btn btn-outline-dark" wire:click="update({{ $package->id }})" wire:loading.attr="disabled">Update</button>
+                        <a href="{{route('my-packages.edit', $package->id)}}" class="btn btn-outline-dark">Edit</a>
                         <button type="button" class="btn btn-outline-dark" wire:click="delete({{ $package->id }})" wire:loading.attr="disabled">Delete</button>
                     </td>
                 </tr>

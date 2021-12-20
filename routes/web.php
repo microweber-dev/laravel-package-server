@@ -30,6 +30,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
 
 
     Route::any('my-packages', \App\Http\Livewire\MyPackages::class)->name('my-packages');
-    Route::any('my-packages/create', \App\Http\Livewire\MyPackagesCreate::class)->name('my-packages.create');
+    Route::any('my-packages/add', \App\Http\Livewire\MyPackagesEdit::class)->name('my-packages.add');
+    Route::any('my-packages/{id}/edit', \App\Http\Livewire\MyPackagesEdit::class)->name('my-packages.edit');
 
 });
