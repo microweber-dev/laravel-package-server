@@ -77,4 +77,19 @@ class User extends Authenticatable
 
         return $this->getPhotoUrl();
     }
+
+    /**
+     * Determine if the given team is the current team.
+     *
+     * @param  mixed  $team
+     * @return bool
+     */
+    public function isCurrentTeam($team)
+    {
+        if (empty($team->currentTeam)) {
+            return false;
+        }
+        return $team->id === $this->currentTeam->id;
+    }
+
 }

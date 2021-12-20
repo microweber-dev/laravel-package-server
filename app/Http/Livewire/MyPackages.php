@@ -50,7 +50,10 @@ class MyPackages extends Component
     {
         $userId = auth()->user()->id;
 
-        Package::where('id', $id)->where('user_id', $userId)->delete();
+
+        $findPackage = Package::where('id', $id)->where('user_id', $userId)->first();
+        $findPackage->teams()->detach();
+        $findPackage->delete();
 
         session()->flash('message', 'Package deleted successfully.');
 

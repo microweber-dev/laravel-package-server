@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Jetstream\Jetstream;
 
 class Package extends Model
 {
@@ -23,8 +24,6 @@ class Package extends Model
      */
     public function teams()
     {
-        return $this->belongsToMany(Jetstream::teamModel(), Jetstream::membershipModel())
-                        ->withTimestamps()
-                        ->as('membership');
+        return $this->belongsToMany(Jetstream::teamModel(), 'team_packages')->withTimestamps();
     }
 }

@@ -5,8 +5,10 @@ namespace App\Http\Livewire;
 use App\Jobs\ProcessPackageSatis;
 use App\Jobs\ProcessPackageSubmit;
 use App\Models\Package;
+use App\Models\Team;
 use App\Rules\CanAddRepositoryToTeamRule;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -36,6 +38,13 @@ class MyPackagesCreate extends Component
         $package->clone_status = Package::CLONE_STATUS_WAITING;
         $package->repository_url = $this->repository_url;
         $package->save();
+
+        foreach ($this->team_ids as $teamId=>$teamVal) {
+            $findTeam = Team::where('id', $teamId)->first();
+            if ($findTeam !== null) {
+                $package->teams()->attach($findTeam->id);
+            }
+        }
 
         dispatch(new ProcessPackageSatis($package->id));
 
