@@ -25,6 +25,8 @@ class UpdateTeamWhmcsForm extends Component
 
     public $settings = [];
 
+    public $connection_status = false;
+
     /**
      * Mount the component.
      *
@@ -38,6 +40,8 @@ class UpdateTeamWhmcsForm extends Component
         $this->state = $team->withoutRelations()->toArray();
 
         $this->settings = $team->settings()->get();
+
+        $this->getConnectionStatus();
     }
 
     public function updateTeamWhmcs()
@@ -55,18 +59,21 @@ class UpdateTeamWhmcsForm extends Component
         try {
             $checkConnection = \Whmcs::GetProducts();
         } catch (\Exception $e) {
-            return ['error'=> $e->getMessage()];
+            $this->connection_status = false;
+            return;
         }
 
         if (empty($checkConnection)) {
-            return ['error'=>'Something went wrong. Can\'t connect to the WHMCS.'];
+            $this->connection_status = false;
+            return;
         }
 
         if (isset($checkConnection['result']) && $checkConnection['result'] == 'error') {
-            return ['error'=>$checkConnection['message']];
+            $this->connection_status = false;
+            return;
         }
 
-        return ['success'=>'Connection with WHMCS is successfully.'];
+        $this->connection_status = true;
     }
 
     /**

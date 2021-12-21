@@ -12,6 +12,18 @@
             {{ __('Saved.') }}
         </x-jet-action-message>
 
+        <div>
+            @if (!$this->connection_status)
+                <div class="alert alert-danger">
+                    Something went wrong. Can\'t connect to the WHMCS.
+                </div>
+            @else
+                <div class="alert alert-success">
+                    Connection with WHMCS is successfully.
+                </div>
+            @endif
+        </div>
+
         <div class="w-md-75">
             <div class="form-group">
                 <x-jet-label for="whmcs_url" value="{{ __('WHMCS URL') }}" />
