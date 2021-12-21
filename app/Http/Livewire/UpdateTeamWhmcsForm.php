@@ -40,13 +40,7 @@ class UpdateTeamWhmcsForm extends Component
         $this->settings = $team->settings()->get();
     }
 
-    /**
-     * Update the team's name.
-     *
-     * @param  \Laravel\Jetstream\Contracts\UpdatesTeamNames  $updater
-     * @return void
-     */
-    public function updateTeamWhmcsForm()
+    public function updateTeamWhmcs()
     {
         $this->resetErrorBag();
 

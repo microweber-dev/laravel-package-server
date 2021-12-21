@@ -1,4 +1,4 @@
-<x-jet-form-section submit="updateTeamWhmcsForm">
+<x-jet-form-section submit="updateTeamWhmcs">
     <x-slot name="title">
         {{ __('WHMCS Settings') }}
     </x-slot>

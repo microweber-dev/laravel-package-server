@@ -22,6 +22,8 @@ class UpdateTeamPackageManagerForm extends Component
      */
     public $state = [];
 
+    public $settings = [];
+
     /**
      * Mount the component.
      *
@@ -33,22 +35,17 @@ class UpdateTeamPackageManagerForm extends Component
         $this->team = $team;
 
         $this->state = $team->withoutRelations()->toArray();
+
+        $this->settings = $team->settings()->get();
     }
 
-    /**
-     * Update the team's name.
-     *
-     * @param  \Laravel\Jetstream\Contracts\UpdatesTeamNames  $updater
-     * @return void
-     */
-    public function updateTeamName(UpdatesTeamNames $updater)
+    public function updateTeamPackageManager()
     {
         $this->resetErrorBag();
 
-        $updater->update($this->user, $this->team, $this->state);
+        $this->team->settings()->apply((array)$this->settings);
 
         $this->emit('saved');
-
         $this->emit('refresh-navigation-menu');
     }
 

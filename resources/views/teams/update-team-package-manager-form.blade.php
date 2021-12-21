@@ -1,10 +1,10 @@
-<x-jet-form-section submit="updatePackageManager">
+<x-jet-form-section submit="updateTeamPackageManager">
     <x-slot name="title">
-        {{ __('Team Name') }}
+        {{ __('Package Manager') }}
     </x-slot>
 
     <x-slot name="description">
-        {{ __('The team\'s name and owner information.') }}
+        {{ __('Configure package manager team information') }}
     </x-slot>
 
     <x-slot name="form">
@@ -12,33 +12,56 @@
             {{ __('Saved.') }}
         </x-jet-action-message>
 
-        <!-- Team Owner Information -->
-        <div class="mb-4">
-            <x-jet-label value="{{ __('Team Owner') }}" />
 
-            <div class="d-flex mt-2">
-                <img class="rounded-circle me-2" width="48" src="{{ $team->owner->profile_photo_url }}">
-                <div>
-                    <div>{{ $team->owner->name }}</div>
-                    <div class="text-muted">{{ $team->owner->email }}</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Team Name -->
         <div class="w-md-75">
             <div class="form-group">
-                <x-jet-label for="name" value="{{ __('Team Name') }}" />
+                <x-jet-label for="package_manager_templates_demo_domain" value="{{ __('Templates Demo Domain') }}" />
 
-                <x-jet-input id="name"
+                <x-jet-input id="package_manager_templates_demo_domain"
                              type="text"
-                             class="{{ $errors->has('name') ? 'is-invalid' : '' }}"
-                             wire:model.defer="state.name"
+                             class="{{ $errors->has('package_manager_templates_demo_domain') ? 'is-invalid' : '' }}"
+                             wire:model.defer="settings.package_manager_templates_demo_domain"
                              :disabled="! Gate::check('update', $team)" />
+                <small>Example: https://template.yoursite.com</small>
 
-                <x-jet-input-error for="name" />
+                <x-jet-input-error for="package_manager_templates_demo_domain" />
             </div>
         </div>
+
+
+
+        <div class="w-md-75 mt-4">
+            <div class="form-group">
+                <x-jet-label for="package_manager_name" value="{{ __('Package Manager Name') }}" />
+
+                <x-jet-input id="package_manager_name"
+                             type="text"
+                             class="{{ $errors->has('package_manager_name') ? 'is-invalid' : '' }}"
+                             wire:model.defer="settings.package_manager_name"
+                             :disabled="! Gate::check('update', $team)" />
+
+                <small>Example: microweber/packages</small>
+
+                <x-jet-input-error for="package_manager_name" />
+            </div>
+        </div>
+
+        <div class="w-md-75 mt-4">
+            <div class="form-group">
+                <x-jet-label for="package_manager_homepage" value="{{ __('Package Manager Homepage') }}" />
+
+                <x-jet-input id="package_manager_homepage"
+                             type="text"
+                             class="{{ $errors->has('package_manager_homepage') ? 'is-invalid' : '' }}"
+                             wire:model.defer="settings.package_manager_homepage"
+                             :disabled="! Gate::check('update', $team)" />
+                <small>Example: https://packages.microweberapi.com</small>
+                
+                <x-jet-input-error for="package_manager_homepage" />
+            </div>
+        </div>
+
+
     </x-slot>
 
     @if (Gate::check('update', $team))
