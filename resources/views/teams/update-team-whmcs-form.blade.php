@@ -1,4 +1,4 @@
-<x-jet-form-section submit="updateTeamName">
+<x-jet-form-section submit="updateTeamWhmcsForm">
     <x-slot name="title">
         {{ __('WHMCS Settings') }}
     </x-slot>
@@ -19,7 +19,7 @@
                 <x-jet-input id="whmcs_url"
                              type="text"
                              class="{{ $errors->has('whmcs_url') ? 'is-invalid' : '' }}"
-                             wire:model.defer="state.whmcs_url"
+                             wire:model.defer="settings.whmcs_url"
                              :disabled="! Gate::check('update', $team)" />
 
                 <x-jet-input-error for="whmcs_url" />
@@ -34,7 +34,7 @@
                 <x-jet-input id="whmcs_api_identifier"
                              type="text"
                              class="{{ $errors->has('whmcs_api_identifier') ? 'is-invalid' : '' }}"
-                             wire:model.defer="state.whmcs_api_identifier"
+                             wire:model.defer="settings.whmcs_api_identifier"
                              :disabled="! Gate::check('update', $team)" />
 
                 <x-jet-input-error for="whmcs_api_identifier" />
@@ -48,7 +48,7 @@
                 <x-jet-input id="whmcs_api_secret"
                              type="text"
                              class="{{ $errors->has('whmcs_api_secret') ? 'is-invalid' : '' }}"
-                             wire:model.defer="state.whmcs_api_secret"
+                             wire:model.defer="settings.whmcs_api_secret"
                              :disabled="! Gate::check('update', $team)" />
 
                 <x-jet-input-error for="whmcs_api_secret" />

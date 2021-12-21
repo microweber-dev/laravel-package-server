@@ -22,6 +22,9 @@ class UpdateTeamWhmcsForm extends Component
      */
     public $state = [];
 
+
+    public $settings = [];
+
     /**
      * Mount the component.
      *
@@ -33,6 +36,8 @@ class UpdateTeamWhmcsForm extends Component
         $this->team = $team;
 
         $this->state = $team->withoutRelations()->toArray();
+
+        $this->settings = $team->settings()->get();
     }
 
     /**
@@ -41,14 +46,13 @@ class UpdateTeamWhmcsForm extends Component
      * @param  \Laravel\Jetstream\Contracts\UpdatesTeamNames  $updater
      * @return void
      */
-    public function updateTeamName(UpdatesTeamNames $updater)
+    public function updateTeamWhmcsForm()
     {
         $this->resetErrorBag();
 
-        $updater->update($this->user, $this->team, $this->state);
+        $this->team->settings()->apply((array)$this->settings);
 
         $this->emit('saved');
-
         $this->emit('refresh-navigation-menu');
     }
 
