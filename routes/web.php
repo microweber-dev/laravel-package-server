@@ -34,3 +34,5 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
     Route::any('my-packages/{id}/edit', \App\Http\Livewire\MyPackagesEdit::class)->name('my-packages.edit');
 
 });
+
+
