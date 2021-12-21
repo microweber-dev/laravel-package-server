@@ -18,6 +18,11 @@ class CanAddRepositoryToTeamRule implements Rule
      */
     public function passes($attribute, $value)
     {
+
+        if (!is_array($value)) {
+            $value = [];
+        }
+        
         $value = array_filter($value);
         if (empty($value)) {
             $this->customMessage = 'You must select one team to add this repository';
