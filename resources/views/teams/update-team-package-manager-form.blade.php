@@ -56,7 +56,7 @@
                              wire:model.defer="settings.package_manager_homepage"
                              :disabled="! Gate::check('update', $team)" />
                 <small>Example: https://packages.microweberapi.com</small>
-                
+
                 <x-jet-input-error for="package_manager_homepage" />
             </div>
         </div>

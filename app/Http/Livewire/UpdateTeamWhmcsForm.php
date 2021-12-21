@@ -50,6 +50,25 @@ class UpdateTeamWhmcsForm extends Component
         $this->emit('refresh-navigation-menu');
     }
 
+    public function getConnectionStatus()
+    {
+        try {
+            $checkConnection = \Whmcs::GetProducts();
+        } catch (\Exception $e) {
+            return ['error'=> $e->getMessage()];
+        }
+
+        if (empty($checkConnection)) {
+            return ['error'=>'Something went wrong. Can\'t connect to the WHMCS.'];
+        }
+
+        if (isset($checkConnection['result']) && $checkConnection['result'] == 'error') {
+            return ['error'=>$checkConnection['message']];
+        }
+
+        return ['success'=>'Connection with WHMCS is successfully.'];
+    }
+
     /**
      * Get the current user of the application.
      *

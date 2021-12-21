@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6ad4da05fa1267744a80d3febf376279",
+    "content-hash": "cb3abc18d9e5cf0aa9457a2fa02e369f",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -247,6 +247,64 @@
                 }
             ],
             "time": "2021-09-13T08:41:34+00:00"
+        },
+        {
+            "name": "darthsoup/laravel-whmcs",
+            "version": "0.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/darthsoup/laravel-whmcs.git",
+                "reference": "b7f711440e20929b744722c644089090a17a082b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/darthsoup/laravel-whmcs/zipball/b7f711440e20929b744722c644089090a17a082b",
+                "reference": "b7f711440e20929b744722c644089090a17a082b",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "~6.0|~7.0",
+                "illuminate/contracts": "^5.2|^6|^7|^8",
+                "illuminate/support": "^5.2|^6|^7|^8",
+                "php": ">=7.0.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "~1.0",
+                "orchestra/testbench": "3.x",
+                "phpunit/phpunit": "~5.0|~6.0|~7.0|~8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "DarthSoup\\Whmcs\\WhmcsServiceProvider"
+                    ],
+                    "aliases": {
+                        "Whmcs": "DarthSoup\\Whmcs\\Facades\\Whmcs"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "DarthSoup\\Whmcs\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kevin Krummnacker",
+                    "email": "kevin.krummnacker@gmail.com"
+                }
+            ],
+            "description": "Laravel WHMCS API interface",
+            "support": {
+                "issues": "https://github.com/darthsoup/laravel-whmcs/issues",
+                "source": "https://github.com/darthsoup/laravel-whmcs/tree/0.3.1"
+            },
+            "time": "2021-09-29T21:47:40+00:00"
         },
         {
             "name": "dasprid/enum",
