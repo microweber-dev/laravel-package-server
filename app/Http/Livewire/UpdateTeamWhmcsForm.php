@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\WhmcsManager;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Jetstream\Contracts\UpdatesTeamNames;
 use Livewire\Component;
@@ -56,10 +57,13 @@ class UpdateTeamWhmcsForm extends Component
 
     public function getConnectionStatus()
     {
+
+        $whmcsManger = new WhmcsManager($this->settings);
+
         try {
-            $checkConnection = \Whmcs::GetProducts();
+            $checkConnection = $whmcsManger->getProducts();
         } catch (\Exception $e) {
-            $this->connection_status = false;
+            $this->connection_status = $e->getMessage();
             return;
         }
 
@@ -69,11 +73,11 @@ class UpdateTeamWhmcsForm extends Component
         }
 
         if (isset($checkConnection['result']) && $checkConnection['result'] == 'error') {
-            $this->connection_status = false;
+            $this->connection_status = $checkConnection;
             return;
         }
 
-        $this->connection_status = true;
+        $this->connection_status['success'] = true;
     }
 
     /**

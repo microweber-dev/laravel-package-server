@@ -13,9 +13,13 @@
         </x-jet-action-message>
 
         <div>
-            @if (!$this->connection_status)
+            @if (!isset($this->connection_status['success']))
                 <div class="alert alert-danger">
-                    Something went wrong. Can\'t connect to the WHMCS.
+                    @if (!empty($this->connection_status))
+                        @dump($this->connection_status)
+                    @else
+                        Something went wrong. Can\'t connect to the WHMCS.
+                    @endif
                 </div>
             @else
                 <div class="alert alert-success">
