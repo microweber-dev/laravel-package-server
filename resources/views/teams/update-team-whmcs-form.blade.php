@@ -26,8 +26,49 @@
             </div>
         </div>
 
+         <div class="w-md-75 mt-4">
+            <div class="form-group">
+                <x-jet-label for="whmcs_auth_type" value="{{ __('WHMSC Auth Type') }}" />
+                <select id="whmcs_auth_type" name="whmcs_auth_type" wire:model="settings.whmcs_auth_type" class="form-control">
+                    <option value="api">API</option>
+                    <option value="password">Username &amp; Password</option>
+                </select>
+            </div>
+        </div>
 
-        <div class="w-md-75 mt-1">
+        @if(isset($this->settings['whmcs_auth_type']) && $this->settings['whmcs_auth_type'] == 'password')
+
+            <div class="w-md-75 mt-4">
+                <div class="form-group">
+                    <x-jet-label for="whmcs_username" value="{{ __('WHMSC Username') }}" />
+
+                    <x-jet-input id="whmcs_username"
+                                 type="text"
+                                 class="{{ $errors->has('whmcs_username') ? 'is-invalid' : '' }}"
+                                 wire:model.defer="settings.whmcs_username"
+                                 :disabled="! Gate::check('update', $team)" />
+
+                    <x-jet-input-error for="whmcs_username" />
+                </div>
+            </div>
+
+            <div class="w-md-75 mt-3">
+                <div class="form-group">
+                    <x-jet-label for="whmcs_password" value="{{ __('WHMSC Password') }}" />
+
+                    <x-jet-input id="whmcs_password"
+                                 type="text"
+                                 class="{{ $errors->has('whmcs_password') ? 'is-invalid' : '' }}"
+                                 wire:model.defer="settings.whmcs_password"
+                                 :disabled="! Gate::check('update', $team)" />
+
+                    <x-jet-input-error for="whmcs_password" />
+                </div>
+            </div>
+
+
+        @else
+        <div class="w-md-75 mt-4">
             <div class="form-group">
                 <x-jet-label for="whmcs_api_identifier" value="{{ __('WHMCS Api Identifier') }}" />
 
@@ -41,7 +82,7 @@
             </div>
         </div>
 
-        <div class="w-md-75 mt-1">
+        <div class="w-md-75 mt-2">
             <div class="form-group">
                 <x-jet-label for="whmcs_api_secret" value="{{ __('WHMCS Api Secret') }}" />
 
@@ -54,6 +95,7 @@
                 <x-jet-input-error for="whmcs_api_secret" />
             </div>
         </div>
+        @endif
 
 
     </x-slot>
