@@ -1,4 +1,4 @@
-<x-jet-form-section submit="updateTeamName">
+<x-jet-form-section submit="updatePackageManager">
     <x-slot name="title">
         {{ __('Team Name') }}
     </x-slot>

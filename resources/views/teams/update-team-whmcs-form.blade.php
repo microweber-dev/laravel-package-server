@@ -1,10 +1,10 @@
 <x-jet-form-section submit="updateTeamName">
     <x-slot name="title">
-        {{ __('Team Name') }}
+        {{ __('WHMCS Settings') }}
     </x-slot>
 
     <x-slot name="description">
-        {{ __('The team\'s name and owner information.') }}
+        {{ __('Configure WHMCS api details to get information.') }}
     </x-slot>
 
     <x-slot name="form">
@@ -12,33 +12,21 @@
             {{ __('Saved.') }}
         </x-jet-action-message>
 
-        <!-- Team Owner Information -->
-        <div class="mb-4">
-            <x-jet-label value="{{ __('Team Owner') }}" />
-
-            <div class="d-flex mt-2">
-                <img class="rounded-circle me-2" width="48" src="{{ $team->owner->profile_photo_url }}">
-                <div>
-                    <div>{{ $team->owner->name }}</div>
-                    <div class="text-muted">{{ $team->owner->email }}</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Team Name -->
         <div class="w-md-75">
             <div class="form-group">
-                <x-jet-label for="name" value="{{ __('Team Name') }}" />
+                <x-jet-label for="whmcs_url" value="{{ __('WHMCS URL') }}" />
 
-                <x-jet-input id="name"
+                <x-jet-input id="whmcs_url"
                              type="text"
-                             class="{{ $errors->has('name') ? 'is-invalid' : '' }}"
-                             wire:model.defer="state.name"
+                             class="{{ $errors->has('whmcs_url') ? 'is-invalid' : '' }}"
+                             wire:model.defer="state.whmcs_url"
                              :disabled="! Gate::check('update', $team)" />
 
                 <x-jet-input-error for="name" />
             </div>
         </div>
+
+
     </x-slot>
 
     @if (Gate::check('update', $team))

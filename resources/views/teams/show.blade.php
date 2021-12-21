@@ -8,6 +8,11 @@
     <div>
         @livewire('teams.update-team-name-form', ['team' => $team])
 
+        <x-jet-section-border />
+        @livewire('teams.update-team-package-manager-form', ['team' => $team])
+        <x-jet-section-border />
+        @livewire('teams.update-team-whmcs-form', ['team' => $team])
+
         @livewire('teams.team-member-manager', ['team' => $team])
 
         @if (Gate::check('delete', $team) && ! $team->personal_team)
