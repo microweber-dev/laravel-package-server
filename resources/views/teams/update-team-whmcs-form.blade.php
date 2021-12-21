@@ -22,7 +22,36 @@
                              wire:model.defer="state.whmcs_url"
                              :disabled="! Gate::check('update', $team)" />
 
-                <x-jet-input-error for="name" />
+                <x-jet-input-error for="whmcs_url" />
+            </div>
+        </div>
+
+
+        <div class="w-md-75 mt-1">
+            <div class="form-group">
+                <x-jet-label for="whmcs_api_identifier" value="{{ __('WHMCS Api Identifier') }}" />
+
+                <x-jet-input id="whmcs_api_identifier"
+                             type="text"
+                             class="{{ $errors->has('whmcs_api_identifier') ? 'is-invalid' : '' }}"
+                             wire:model.defer="state.whmcs_api_identifier"
+                             :disabled="! Gate::check('update', $team)" />
+
+                <x-jet-input-error for="whmcs_api_identifier" />
+            </div>
+        </div>
+
+        <div class="w-md-75 mt-1">
+            <div class="form-group">
+                <x-jet-label for="whmcs_api_secret" value="{{ __('WHMCS Api Secret') }}" />
+
+                <x-jet-input id="whmcs_api_secret"
+                             type="text"
+                             class="{{ $errors->has('whmcs_api_secret') ? 'is-invalid' : '' }}"
+                             wire:model.defer="state.whmcs_api_secret"
+                             :disabled="! Gate::check('update', $team)" />
+
+                <x-jet-input-error for="whmcs_api_secret" />
             </div>
         </div>
 
