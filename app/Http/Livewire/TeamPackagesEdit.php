@@ -41,6 +41,7 @@ class TeamPackagesEdit extends Component
 
         $this->team_package_id = $findTeamPackage->id;
         $this->is_visible = $findTeamPackage->is_visible;
+        $this->is_paid = $findTeamPackage->is_paid;
         $this->whmcs_product_ids = $findTeamPackage->whmcs_product_ids;
         $this->package_id = $findTeamPackage->package->id;
         $this->repository_url = $findTeamPackage->package->repository_url;

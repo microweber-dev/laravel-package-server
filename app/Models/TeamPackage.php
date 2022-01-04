@@ -9,6 +9,12 @@ class TeamPackage extends Model
 {
     use HasFactory;
 
+    public $fillable = [
+        'is_paid',
+        'is_visible',
+        'whmcs_product_ids',
+    ];
+
     public function package()
     {
         return $this->hasOne(Package::class, 'id', 'package_id');
