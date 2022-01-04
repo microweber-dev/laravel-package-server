@@ -68,9 +68,13 @@
 
         @if($team->is_private == 1)
         <div class="mt-4">
-        {{ __('Your package manager auth credentials:') }} <br />
-                <b>Username: composer</b> <br />
+        {{ __('Your package manager auth credentials:') }}
+        </div>
+        <div>
+                <b>Username: token</b> <br />
                 <b>Token: {{$team->token}}</b>
+            <br />
+            <button type="button" onclick="confirm('{{ __('Are you sure you want to regenerate the token?') }}') || event.stopImmediatePropagation()" wire:click="regenerateToken" class="btn btn-sm btn-outline-dark">{{ __('Regenerate Token') }}</button>
         </div>
         @endif
 

@@ -52,16 +52,20 @@ class Team extends JetstreamTeam
         parent::boot();
 
         self::creating(function ($model) {
-            $model->token = md5(uniqid());
+            $model->generateToken();
         });
 
         self::updating(function ($model) {
             if (empty($model->token)) {
-                $model->token = md5(uniqid());
+                $model->generateToken();
             }
         });
     }
 
+    public function generateToken()
+    {
+        $this->token = md5(uniqid());
+    }
 
     public function packages()
     {

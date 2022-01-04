@@ -49,6 +49,12 @@ class UpdateTeamPackageManagerForm extends Component
         $this->emit('refresh-navigation-menu');
     }
 
+    public function regenerateToken()
+    {
+        $this->team->generateToken();
+    }
+
+
     /**
      * Get the current user of the application.
      *
