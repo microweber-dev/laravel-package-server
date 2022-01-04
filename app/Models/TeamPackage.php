@@ -15,6 +15,10 @@ class TeamPackage extends Model
         'whmcs_product_ids',
     ];
 
+    public $casts = [
+        'whmcs_product_ids'=>'array'
+    ];
+
     public function package()
     {
         return $this->hasOne(Package::class, 'id', 'package_id');

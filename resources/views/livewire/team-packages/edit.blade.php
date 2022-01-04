@@ -54,10 +54,43 @@
 
         @if($this->is_paid == 1)
 
-            <div>
+            <div class="w-md-75 mt-3">
+                <div class="form-group">
+                    <x-jet-label for="is_paid" value="{{ __('Is Paid') }}" />
 
-                WHMCS PRODUCT IDS .... <br />
+                    <div class="form-check">
+                        <x-jet-checkbox wire:model="is_paid" id="is_paid" value="1" />
+                        <label class="form-check-label" for="is_paid">
+                            {{ __('Yes') }}
+                        </label>
+                    </div>
+
+                </div>
             </div>
+
+
+
+            <hr />
+            <h5>
+                Purchased Plan Requirements To Access This Repository
+            </h5>
+            <p>Select the following WHMCS plans to access this repository</p>
+
+            @if(!empty($this->whmcs_product_types))
+                @foreach($this->whmcs_product_types as $whmcs_product_type_name=>$whmcs_product_type)
+                    <b>{{ucfirst($whmcs_product_type_name)}}</b> <br />
+                    @foreach($whmcs_product_type as $whmcs_product)
+
+                        <div class="form-check">
+                            <input class="form-check-input" id="inputWhmcsProduct{{ $whmcs_product['pid']}}" value="{{ $whmcs_product['pid'] }}" wire:model.defer="whmcs_product_ids" type="checkbox">
+                            <label class="form-check-label" for="inputWhmcsProduct{{ $whmcs_product['pid'] }}">
+                                {{$whmcs_product['name']}}
+                            </label>
+                        </div>
+
+                    @endforeach
+                @endforeach
+            @endif
 
             @endif
 
