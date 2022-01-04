@@ -26,6 +26,8 @@ class TeamPackagesEdit extends Component
 
     public function render()
     {
+
+
         return view('livewire.team-packages.edit');
     }
 

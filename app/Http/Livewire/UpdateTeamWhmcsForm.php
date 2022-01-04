@@ -53,6 +53,8 @@ class UpdateTeamWhmcsForm extends Component
 
         $this->emit('saved');
         $this->emit('refresh-navigation-menu');
+
+        $this->getConnectionStatus();
     }
 
     public function getConnectionStatus()

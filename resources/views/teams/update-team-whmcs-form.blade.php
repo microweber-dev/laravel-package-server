@@ -15,8 +15,8 @@
         <div>
             @if (!isset($this->connection_status['success']))
                 <div class="alert alert-danger">
-                    @if (!empty($this->connection_status))
-                        @dump($this->connection_status)
+                    @if (isset($this->connection_status['message']))
+                        {{$this->connection_status['message']}} 
                     @else
                         Something went wrong. Can\'t connect to the WHMCS.
                     @endif
