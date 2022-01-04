@@ -54,22 +54,6 @@
 
         @if($this->is_paid == 1)
 
-            <div class="w-md-75 mt-3">
-                <div class="form-group">
-                    <x-jet-label for="is_paid" value="{{ __('Is Paid') }}" />
-
-                    <div class="form-check">
-                        <x-jet-checkbox wire:model="is_paid" id="is_paid" value="1" />
-                        <label class="form-check-label" for="is_paid">
-                            {{ __('Yes') }}
-                        </label>
-                    </div>
-
-                </div>
-            </div>
-
-
-
             <hr />
             <h5>
                 Purchased Plan Requirements To Access This Repository
