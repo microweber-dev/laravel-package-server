@@ -16,7 +16,7 @@
             @if (!isset($this->connection_status['success']))
                 <div class="alert alert-danger">
                     @if (isset($this->connection_status['message']))
-                        {{$this->connection_status['message']}} 
+                        {{$this->connection_status['message']}}
                     @else
                         Something went wrong. Can\'t connect to the WHMCS.
                     @endif
@@ -119,6 +119,10 @@
     @if (Gate::check('update', $team))
         <x-slot name="actions">
 			<div class="d-flex align-items-baseline">
+
+                <button type="button" wire:click="getConnectionStatus" class="btn btn-outline-dark">{{ __('Test Api') }}</button>
+                &nbsp; &nbsp; &nbsp; 
+
 				<x-jet-button>
                     <div wire:loading class="spinner-border spinner-border-sm" role="status">
                         <span class="visually-hidden">Loading...</span>
