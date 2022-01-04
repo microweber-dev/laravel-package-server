@@ -4,6 +4,11 @@
         <h2 class="h4 font-weight-bold">
             {{ __('Team Packages') }}
         </h2>
+        @if(!empty($this->team->slug))
+            <div class="mt-2">
+                <a href="{{route('packages.team.packages.json', $this->team->slug)}}" target="_blank">{{route('packages.team.packages.json', $this->team->slug)}}</a>
+            </div>
+        @endif
     </x-slot>
 
 
