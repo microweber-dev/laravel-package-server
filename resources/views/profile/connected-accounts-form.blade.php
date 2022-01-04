@@ -32,7 +32,7 @@
                         @if (! is_null($account))
                             <div class="">
                                 @if (Laravel\Jetstream\Jetstream::managesProfilePhotos() && ! is_null($account->avatar_path))
-                                    <button class="btn btn-primary" wire:click="setAvatarAsProfilePhoto({{ $account->id }})">
+                                    <button class="btn btn-outline-dark" wire:click="setAvatarAsProfilePhoto({{ $account->id }})">
                                         {{ __('Use Avatar as Profile Photo') }}
                                     </button>
                                 @endif
