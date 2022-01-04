@@ -39,6 +39,22 @@
                 <x-jet-input-error for="name" />
             </div>
         </div>
+
+        <!-- Team Slug -->
+        <div class="w-md-75 mt-3">
+            <div class="form-group">
+                <x-jet-label for="slug" value="{{ __('Team Slug') }}" />
+
+                <x-jet-input id="slug"
+                             type="text"
+                             class="{{ $errors->has('slug') ? 'is-invalid' : '' }}"
+                             wire:model.defer="state.slug"
+                             :disabled="! Gate::check('update', $team)" />
+
+                <x-jet-input-error for="slug" />
+            </div>
+        </div>
+
     </x-slot>
 
     @if (Gate::check('update', $team))

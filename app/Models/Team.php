@@ -30,6 +30,7 @@ class Team extends JetstreamTeam
      */
     protected $fillable = [
         'name',
+        'slug',
         'personal_team',
     ];
 
