@@ -64,7 +64,12 @@ class Team extends JetstreamTeam
 
     public function generateToken()
     {
-        $this->token = md5(uniqid());
+        $this->token = md5(uniqid(time()));
+    }
+
+    public function isPrivate()
+    {
+        return ($this->is_private == 1 ? true : false);
     }
 
     public function packages()

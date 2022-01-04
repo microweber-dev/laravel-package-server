@@ -17,6 +17,9 @@
                 <x-jet-nav-link href="{{ route('my-packages') }}" :active="request()->routeIs('my-packages')">
                     {{ __('My Packages') }}
                 </x-jet-nav-link>
+                <x-jet-nav-link href="{{ route('team-packages') }}" :active="request()->routeIs('team-packages')">
+                    {{ __('Team Packages') }}
+                </x-jet-nav-link>
             </ul>
 
             <!-- Right Side Of Navbar -->
