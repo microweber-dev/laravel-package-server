@@ -55,6 +55,21 @@
             </div>
         </div>
 
+        <!-- Team Private -->
+        <div class="w-md-75 mt-3">
+            <div class="form-group">
+                <x-jet-label for="slug" value="{{ __('Team Private') }}" />
+
+                <div class="form-check">
+                    <x-jet-checkbox wire:model.defer="state.is_private" id="is_private" value="1" />
+                    <label class="form-check-label" for="is_private">
+                        {{ __('Yes') }}
+                    </label>
+                </div>
+
+            </div>
+        </div>
+
     </x-slot>
 
     @if (Gate::check('update', $team))

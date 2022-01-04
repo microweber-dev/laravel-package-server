@@ -29,6 +29,7 @@ class UpdateTeamName implements UpdatesTeamNames
         $team->forceFill([
             'name' => $input['name'],
             'slug' => $input['slug'],
+            'is_private' => $input['is_private'],
         ])->save();
     }
 }

@@ -66,6 +66,14 @@
           <a href="{{route('packages.team.packages.json', $team->slug)}}" target="_blank">{{route('packages.team.packages.json', $team->slug)}}</a>
         </div>
 
+        @if($team->is_private == 1)
+        <div class="mt-4">
+        {{ __('Your package manager auth credentials:') }} <br />
+                <b>Username: composer</b> <br />
+                <b>Token: {{$team->token}}</b>
+        </div>
+        @endif
+
     </x-slot>
 
     @if (Gate::check('update', $team))
