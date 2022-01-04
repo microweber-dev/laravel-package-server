@@ -32,6 +32,7 @@ class Team extends JetstreamTeam
     protected $fillable = [
         'name',
         'slug',
+        'is_private',
         'personal_team',
     ];
 
@@ -45,6 +46,22 @@ class Team extends JetstreamTeam
         'updated' => TeamUpdated::class,
         'deleted' => TeamDeleted::class,
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        self::creating(function ($model) {
+            $model->token = md5(uniqid());
+        });
+
+        self::updating(function ($model) {
+            if (empty($model->token)) {
+                $model->token = md5(uniqid());
+            }
+        });
+    }
+
 
     public function packages()
     {
