@@ -61,6 +61,10 @@
             </div>
         </div>
 
+        <div class="mt-4">
+        {{ __('Your package manager json url:') }} <br />
+          <a href="{{route('packages.team.packages.json', $team->slug)}}" target="_blank">{{route('packages.team.packages.json', $team->slug)}}</a>
+        </div>
 
     </x-slot>
 

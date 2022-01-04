@@ -20,6 +20,7 @@ Route::get('/', function () {
 
 Route::namespace('\App\Http\Controllers')->group(function() {
     Route::any('packages.json', 'PackagesJsonController@index')->name('packages.json');
+    Route::any('packages/{slug}/packages.json', 'PackagesJsonController@team')->name('packages.team.packages.json');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function() {
