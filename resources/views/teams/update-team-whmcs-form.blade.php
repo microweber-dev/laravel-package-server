@@ -121,7 +121,7 @@
 			<div class="d-flex align-items-baseline">
 
                 <button type="button" wire:click="getConnectionStatus" class="btn btn-outline-dark">{{ __('Test Api') }}</button>
-                &nbsp; &nbsp; &nbsp; 
+                &nbsp; &nbsp; &nbsp;
 
 				<x-jet-button>
                     <div wire:loading class="spinner-border spinner-border-sm" role="status">

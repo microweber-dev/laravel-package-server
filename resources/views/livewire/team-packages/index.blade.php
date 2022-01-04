@@ -29,6 +29,9 @@
                 <th scope="col">Name</th>
                 <th scope="col">Repository Url</th>
                 <th scope="col">Status</th>
+                <th scope="col">Is visible</th>
+                <th scope="col">Is paid</th>
+                <th scope="col">Owner</th>
                 <th scope="col">Last Update</th>
                 <th scope="col">Action</th>
             </tr>
@@ -53,6 +56,25 @@
                             <span class="badge bg-danger">{{$teamPackage->package->clone_status}}</span>
                         @endif
                     </td>
+
+                    <td>
+                        @if($teamPackage->is_visible == 1)
+                            <p class="badge bg-success">Yes</p>
+                        @else
+                            <p class="badge bg-danger">No</p>
+                        @endif
+                    </td>
+                    <td>
+                        @if($teamPackage->is_paid == 1)
+                            <p class="badge bg-success">Yes</p>
+                        @else
+                            <p class="badge bg-danger">No</p>
+                        @endif
+                    </td>
+                    <td>
+                        {{$teamPackage->package->owner->name}}
+                    </td>
+
                     <td>{{$teamPackage->updated_at}}</td>
                     <td>
                         <a class="btn btn-outline-dark" href="{{$teamPackage->id}}">View</a>

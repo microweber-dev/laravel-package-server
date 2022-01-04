@@ -27,6 +27,11 @@ class Package extends Model
         return $this->belongsToMany(Jetstream::teamModel(), 'team_packages')->withTimestamps();
     }
 
+    public function owner()
+    {
+        return $this->hasOne(User::class,'id','user_id');
+    }
+
     public function teamIdsAsArray() {
 
         $ids = [];
