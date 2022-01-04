@@ -20,7 +20,7 @@ class WhmcsManager
         }
 
         if (isset($this->config['whmcs_url'])) {
-            Config::set('whmcs.apiurl', $this->config['whmcs_url']);
+            Config::set('whmcs.apiurl', $this->config['whmcs_url']); 
         }
 
         if (isset($this->config['whmcs_api_identifier'])) {
