@@ -24,6 +24,44 @@
                 </div>
             </div>
 
+            <div class="w-md-75 mt-3">
+                <div class="form-group">
+                    <x-jet-label for="is_visible" value="{{ __('Is Visible') }}" />
+
+                    <div class="form-check">
+                        <x-jet-checkbox wire:model.defer="is_visible" id="is_visible" value="1" />
+                        <label class="form-check-label" for="is_visible">
+                            {{ __('Yes') }}
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="w-md-75 mt-3">
+                <div class="form-group">
+                    <x-jet-label for="is_paid" value="{{ __('Is Paid') }}" />
+
+                    <div class="form-check">
+                        <x-jet-checkbox wire:model="is_paid" id="is_paid" value="1" />
+                        <label class="form-check-label" for="is_paid">
+                            {{ __('Yes') }}
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+
+        @if($this->is_paid == 1)
+
+            <div>
+
+                WHMCS PRODUCT IDS .... <br />
+            </div>
+
+            @endif
+
+
               <button type="submit" class="btn btn-outline-dark">Save Package</button>
         </form>
 
