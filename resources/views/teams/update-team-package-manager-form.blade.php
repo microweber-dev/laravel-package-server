@@ -61,10 +61,12 @@
             </div>
         </div>
 
+        @if(!empty($team->slug))
         <div class="mt-4">
         {{ __('Your package manager json url:') }} <br />
           <a href="{{route('packages.team.packages.json', $team->slug)}}" target="_blank">{{route('packages.team.packages.json', $team->slug)}}</a>
         </div>
+        @endif
 
         @if($team->is_private == 1)
         <div class="mt-4">
