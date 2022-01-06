@@ -9,6 +9,13 @@ class TeamPackage extends Model
 {
     use HasFactory;
 
+    public const PACKAGE_PAID = 1;
+    public const PACKAGE_FREE = 0;
+
+    protected $attributes = [
+        'is_paid' => self::PACKAGE_FREE,
+    ];
+
     public $fillable = [
         'is_paid',
         'is_visible',

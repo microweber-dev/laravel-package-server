@@ -11,7 +11,6 @@
         @endif
     </x-slot>
 
-
     @if (session()->has('message'))
         <div class="col-md-12">
             <div id="js-alert-message" class="alert alert-success align-items-center" role="alert">

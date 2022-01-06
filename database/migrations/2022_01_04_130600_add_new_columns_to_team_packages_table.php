@@ -15,8 +15,8 @@ class AddNewColumnsToTeamPackagesTable extends Migration
     {
         Schema::table('team_packages', function (Blueprint $table) {
             $table->text('whmcs_product_ids')->nullable();
-            $table->integer('is_visible')->nullable();
-            $table->integer('is_paid')->nullable();
+            $table->integer('is_visible')->nullable()->default(1);
+            $table->integer('is_paid')->nullable()->default(0);
         });
     }
 

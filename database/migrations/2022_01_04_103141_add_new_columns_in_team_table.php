@@ -15,7 +15,7 @@ class AddNewColumnsInTeamTable extends Migration
     {
         Schema::table('teams', function (Blueprint $table) {
             $table->string('token')->nullable();
-            $table->integer('is_private')->nullable();
+            $table->integer('is_private')->nullable()->default(0);
         });
     }
 
