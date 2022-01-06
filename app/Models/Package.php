@@ -9,13 +9,11 @@ use Laravel\Jetstream\Jetstream;
 class Package extends Model
 {
     use HasFactory;
-
-
+    
     public const CLONE_STATUS_WAITING = 'waiting';
     public const CLONE_STATUS_RUNNING = 'running';
     public const CLONE_STATUS_SUCCESS = 'success';
     public const CLONE_STATUS_FAILED = 'failed';
-
 
      /**
      * Get all of the teams the user belongs to.
@@ -30,6 +28,11 @@ class Package extends Model
     public function owner()
     {
         return $this->hasOne(User::class,'id','user_id');
+    }
+
+    public function credential()
+    {
+        return $this->hasOne(Credential::class,'id','credential_id');
     }
 
     public function teamIdsAsArray() {

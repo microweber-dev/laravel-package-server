@@ -92,4 +92,8 @@ class User extends Authenticatable
         return $team->id === $this->currentTeam->id;
     }
 
+    public function credentials()
+    {
+        return $this->hasMany(Credential::class);
+    }
 }

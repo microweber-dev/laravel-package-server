@@ -47,11 +47,24 @@
                 </div>
             </div>
 
-                @if($package_id)
-                    <button type="submit" class="btn btn-outline-dark">Save Package</button>
-                @else
-                    <button type="submit" class="btn btn-outline-dark">Submit Package</button>
-                @endif
+            <div class="w-md-75 mt-4 mb-4">
+                <div class="form-group">
+                    <x-jet-label for="credential_id" value="{{ __('Which credentials should we use (optional)') }}" />
+                    <select id="credential_id" name="credential_id" wire:model.defer="credential_id" class="form-control">
+                        @foreach($credentials as $credential)
+                        <option value="{{$credential->id}}">{{$credential->description}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+                <div class="w-md-75 mt-4">
+            @if($package_id)
+                <button type="submit" class="btn btn-outline-dark">Save Package</button>
+            @else
+                <button type="submit" class="btn btn-outline-dark">Submit Package</button>
+            @endif
+                </div>
         </form>
 
 </div>

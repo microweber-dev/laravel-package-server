@@ -19,6 +19,8 @@ class MyPackagesEdit extends Component
     public $package_id;
     public $repository_url;
     public $team_ids = [];
+    public $credentials = [];
+    public $credential_id;
 
     public function render()
     {
@@ -27,6 +29,8 @@ class MyPackagesEdit extends Component
 
     public function mount($id = false)
     {
+        $user = auth()->user();
+
         $this->package_id = $id;
 
         if ($this->package_id) {
@@ -38,6 +42,8 @@ class MyPackagesEdit extends Component
             $this->repository_url = $package->repository_url;
             $this->team_ids = $package->teams()->pluck('team_id')->toArray();
         }
+
+        $this->credentials = $user->credentials()->get();
     }
 
     public function edit()
@@ -61,6 +67,7 @@ class MyPackagesEdit extends Component
             $package->user_id = $userId;
             $package->clone_status = Package::CLONE_STATUS_WAITING;
             $package->repository_url = $this->repository_url;
+            $package->credential_id = $this->credential_id;
             $package->save();
 
             $newPackageAdd = true;
