@@ -21,7 +21,8 @@ class CredentialsForm extends Component
         'refresh-navigation-menu' => '$refresh',
     ];
 
-    public $credentialType;
+    public $domain = '';
+    public $credentialType = 'github-oauth';
 
     /**
      * Render the component.
@@ -30,6 +31,14 @@ class CredentialsForm extends Component
      */
     public function render()
     {
+        if ($this->credentialType == 'github-oauth') {
+            $this->domain = 'github.com';
+        }
+
+        if ($this->credentialType == 'gitlab-token') {
+             $this->domain = 'gitlab.com';
+        }
+
         return view('profile.credentials-form');
     }
 }

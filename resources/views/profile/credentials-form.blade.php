@@ -33,7 +33,8 @@
                 <x-jet-input id="domain"
                              type="text"
                              class="{{ $errors->has('domain') ? 'is-invalid' : '' }}"
-                             wire:model.defer="domain" />
+                             wire:model.defer="domain"
+                />
 
                 <x-jet-input-error for="domain" />
             </div>
@@ -41,12 +42,33 @@
 
         <div class="mt-3">
 
+            @if($credentialType == 'github-oauth' || $credentialType == 'gitlab-token')
+            <div class="w-md-75 mt-3">
+                <div class="form-group">
+                    <x-jet-label for="access_token" value="{{ __('Access Token') }}" />
+
+                    <x-jet-input id="access_token"
+                                 type="text"
+                                 class="{{ $errors->has('access_token') ? 'is-invalid' : '' }}"
+                                 wire:model.defer="access_token" />
+
+                    <x-jet-input-error for="access_token" />
+                </div>
+            </div>
+            @endif
+
             @if($credentialType == 'github-oauth')
-            GITHUB OAUTH
+
+                    <p class="alert alert-primary mt-3">Head to
+                        <a target="_blank" href="https://github.com/settings/tokens/new?scopes=repo,read:user,admin:repo_hook,admin:org_hook&amp;description=Private+Microweber+Access
+">https://<span data-github-domain="">github.com</span>/settings/tokens/new?scopes=repo,read:user,admin:repo_hook,admin:org_hook&amp;description=Private+Microweber+Access
+                        </a> to create an API token.
+                    </p>
+
             @endif
 
             @if($credentialType == 'gitlab-token')
-            GITLAB token
+                    <p class="alert alert-primary mt-3">Head to <a target="_blank" href="https://gitlab.com/-/profile/personal_access_tokens">https://<span data-gitlab-domain="">gitlab.com</span>/-/profile/personal_access_tokens</a> and select the scopes <code>api</code> and <code>read_user</code>.</p>
             @endif
 
         </div>
