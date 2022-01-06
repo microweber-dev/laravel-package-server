@@ -74,7 +74,7 @@
 
             <div class="d-flex align-items-baseline">
                 <button type="button" wire:click="create" class="btn btn-outline-dark">Create</button>
-            </div> 
+            </div>
 
         </div>
     </x-slot>
