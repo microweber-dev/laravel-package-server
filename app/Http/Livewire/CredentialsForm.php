@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Livewire;
 
+use App\Models\Credential;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use JoelButcher\Socialstream\ConnectedAccount;
@@ -22,8 +23,9 @@ class CredentialsForm extends Component
     ];
 
     public $domain = '';
-    public $credentialType = 'github-oauth';
-    public $accessToken = '';
+    public $authenticationType = 'github-oauth';
+    public $authenticationData = [];
+    public $description = '';
 
     /**
      * Render the component.
@@ -32,11 +34,11 @@ class CredentialsForm extends Component
      */
     public function render()
     {
-        if ($this->credentialType == 'github-oauth') {
+        if ($this->authenticationType == 'github-oauth') {
             $this->domain = 'github.com';
         }
 
-        if ($this->credentialType == 'gitlab-token') {
+        if ($this->authenticationType == 'gitlab-token') {
              $this->domain = 'gitlab.com';
         }
 
@@ -45,6 +47,16 @@ class CredentialsForm extends Component
 
     public function create()
     {
+        $user = auth()->user();
+
+        $credential = new Credential();
+        $credential->user_id = $user->id;
+        $credential->authentication_type = $this->authenticationType;
+        $credential->domain = $this->domain;
+        $credential->description = $this->description;
+        $credential->authentication_data = $this->authenticationData;
+        $credential->save();
+
     ///    dump($this->credentialType);
     }
 }
