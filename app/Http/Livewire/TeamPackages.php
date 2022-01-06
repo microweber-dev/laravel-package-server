@@ -31,6 +31,8 @@ class TeamPackages extends Component
         $this->team = $user->currentTeam;
 
         $teamPackages = TeamPackage::where('team_id', $teamId)
+            ->whereHas('package')
+            ->whereHas('team')
             ->with('package')
             ->with('team')
            ->paginate(15);
