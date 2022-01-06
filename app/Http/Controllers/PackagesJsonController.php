@@ -133,8 +133,6 @@ class PackagesJsonController extends Controller
         }
         $package['extra']['whmcs']['whmcs_url'] = $whmcsUrl;
 
-        $packageUrl = $this->_clearRepositoryUrl($package['source']['url']);
-
         if (isset($teamPackage['is_paid']) && $teamPackage['is_paid'] == 1) {
 
             if (isset($teamPackage['whmcs_product_ids']) && !empty($teamPackage['whmcs_product_ids'])) {
@@ -214,18 +212,6 @@ class PackagesJsonController extends Controller
         }
 
         return false;
-    }
-
-    private function _clearRepositoryUrl($repositoryUrl) {
-
-        $repositoryUrl = str_replace('https://', false, $repositoryUrl);
-        $repositoryUrl = str_replace('http://', false, $repositoryUrl);
-        $repositoryUrl = str_replace('http://wwww.', false, $repositoryUrl);
-        $repositoryUrl = str_replace('https://wwww.', false, $repositoryUrl);
-        $repositoryUrl = str_replace(':', '/', $repositoryUrl);
-        $repositoryUrl = str_replace('git@', '', $repositoryUrl);
-
-        return $repositoryUrl;
     }
 
 }
