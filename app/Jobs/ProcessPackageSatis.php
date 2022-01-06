@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Helpers\RepositoryMediaProcessHelper;
+use App\Models\Credential;
 use App\Models\Package;
 use App\Helpers\RepositoryPathHelper;
 use Illuminate\Bus\Queueable;
@@ -42,7 +43,7 @@ class ProcessPackageSatis implements ShouldQueue
     {
         \Artisan::call('queue:flush');
 
-        $packageModel = Package::where('id', $this->packageId)->first();
+        $packageModel = Package::where('id', $this->packageId)->with('credential')->first();
 
         $packageModel->clone_log = "Job is started.";
         $packageModel->clone_status = Package::CLONE_STATUS_RUNNING;
@@ -64,6 +65,23 @@ class ProcessPackageSatis implements ShouldQueue
                 "skip-dev"=> true
             ],
         ];
+
+        if ($packageModel->credential !== null) {
+            if ($packageModel->credential->authentication_type == Credential::TYPE_GITLAB_TOKEN) {
+                if (isset($packageModel->credential->authentication_data['accessToken'])) {
+                    $satisContent['config']['gitlab-oauth'] = [
+                        $packageModel->credential->domain => $packageModel->credential->authentication_data['accessToken']
+                    ];
+                }
+            }
+            if ($packageModel->credential->authentication_type == Credential::TYPE_GITHUB_OAUTH) {
+                if (isset($packageModel->credential->authentication_data['accessToken'])) {
+                    $satisContent['config']['github-oauth'] = [
+                        $packageModel->credential->domain => $packageModel->credential->authentication_data['accessToken']
+                    ];
+                }
+            }
+        }
 
         $satisJson = json_encode($satisContent, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
         $saitsRepositoryPath = RepositoryPathHelper::getRepositoriesSatisPath($packageModel->id);
