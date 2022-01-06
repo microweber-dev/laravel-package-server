@@ -21,6 +21,8 @@ class CredentialsForm extends Component
         'refresh-navigation-menu' => '$refresh',
     ];
 
+    public $credentialType;
+
     /**
      * Render the component.
      *
