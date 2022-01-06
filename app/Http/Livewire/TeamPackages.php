@@ -35,6 +35,7 @@ class TeamPackages extends Component
             ->whereHas('team')
             ->with('package')
             ->with('team')
+            ->orderBy('id','DESC')
            ->paginate(15);
 
         return view('livewire.team-packages.index', compact('teamPackages'));
