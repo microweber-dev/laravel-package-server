@@ -9,8 +9,11 @@ use App\Actions\Socialstream\HandleInvalidState;
 use App\Actions\Socialstream\ResolveSocialiteUser;
 use App\Actions\Socialstream\SetUserPassword;
 use App\Actions\Socialstream\UpdateConnectedAccount;
+use App\Http\Livewire\CredentialsForm;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\View\Compilers\BladeCompiler;
 use JoelButcher\Socialstream\Socialstream;
+use Livewire\Livewire;
 
 class SocialstreamServiceProvider extends ServiceProvider
 {
@@ -21,7 +24,9 @@ class SocialstreamServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->afterResolving(BladeCompiler::class, function () {
+            Livewire::component('profile.credentials-form', CredentialsForm::class);
+        });
     }
 
     /**

@@ -26,7 +26,7 @@
 
 
         @livewire('profile.credentials-form')
-        <x-jet-section-border /> 
+        <x-jet-section-border />
 
 
         @if (JoelButcher\Socialstream\Socialstream::show())

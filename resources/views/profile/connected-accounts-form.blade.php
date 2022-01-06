@@ -32,19 +32,19 @@
                         @if (! is_null($account))
                             <div class="">
                                 @if (Laravel\Jetstream\Jetstream::managesProfilePhotos() && ! is_null($account->avatar_path))
-                                    <button class="btn btn-outline-dark" wire:click="setAvatarAsProfilePhoto({{ $account->id }})">
+                                    <button class="btn btn-outline-dark btn-sm" wire:click="setAvatarAsProfilePhoto({{ $account->id }})">
                                         {{ __('Use Avatar as Profile Photo') }}
                                     </button>
                                 @endif
 
                                 @if (($this->accounts->count() > 1 || ! is_null($this->user->password)))
-                                    <x-jet-danger-button wire:click="confirmRemove({{ $account->id }})" wire:loading.attr="disabled">
+                                    <x-jet-danger-button wire:click="confirmRemove({{ $account->id }})" wire:loading.attr="disabled" class="btn-sm">
                                         {{ __('Remove') }}
                                     </x-jet-danger-button>
                                 @endif
                             </div>
                         @else
-                            <x-action-link class="btn btn-primary" href="{{ route('oauth.redirect', ['provider' => $provider]) }}">
+                            <x-action-link class="btn btn-outline-dark btn-sm" href="{{ route('oauth.redirect', ['provider' => $provider]) }}">
                                 {{ __('Connect') }}
                             </x-action-link>
                         @endif

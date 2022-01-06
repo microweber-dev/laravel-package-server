@@ -4,13 +4,12 @@
     </x-slot>
 
     <x-slot name="description">
-        {{ __('Access your private repositories') }}
+        {{ __('These credentials let Private Packagist access your private repositories, update the package data and build zip archives. Once you create one here you can select it when adding packages.') }}
+
     </x-slot>
 
     <x-slot name="content">
-        <div>
-            {{ __('These credentials let Private Packagist access your private repositories, update the package data and build zip archives. Once you create one here you can select it when adding packages.') }}
-        </div>
+
 
         <div class="mt-3">
 
