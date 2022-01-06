@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Package;
 use App\Models\Team;
+use App\Models\TeamPackage;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class PackagesJsonController extends Controller
@@ -29,19 +31,29 @@ class PackagesJsonController extends Controller
 
     public function team(Request $request, $slug = false) {
 
+        ini_set('memory_limit', '512M');
+
         if (!$slug) {
             return [];
         }
 
-        $findTeam = Team::where('slug', $slug)
-            ->with(['packages' => function ($query) {
-                $query->where('clone_status', Package::CLONE_STATUS_SUCCESS);
-            }])
-            ->first();
-
+        $findTeam = Team::where('slug', $slug)->first();
         if ($findTeam == null) {
             return [];
         }
+
+        $teamPackages = TeamPackage::where('team_id', $findTeam->id)
+            ->whereHas('package', function (Builder $query) {
+                $query->where('clone_status',Package::CLONE_STATUS_SUCCESS);
+            })
+            ->with('package')
+            ->get();
+
+        if ($teamPackages == null) {
+            return [];
+        }
+
+        $teamSettings = $findTeam->settings()->get();
 
         if ($findTeam->isPrivate()) {
 
@@ -68,17 +80,23 @@ class PackagesJsonController extends Controller
         $json = [];
         $json['packages'] = [];
 
-        if ($findTeam->packages->count() > 0) {
-            foreach ($findTeam->packages as $package) {
-                $package['package_json'] = str_replace('https://example.com/', config('app.url'), $package['package_json']);
-                $packageContent = json_decode($package['package_json'],true);
+        if ($teamPackages->count() > 0) {
+            foreach ($teamPackages as $teamPackage) {
+
+                $package = $teamPackage->package;
+                $packageJson = $package->package_json;
+
+                $packageJson = str_replace('https://example.com/', config('app.url'), $packageJson);
+                $packageContent = json_decode($packageJson,true);
                 if (!empty($packageContent)) {
-
-                    foreach ($json['packages'] as $packageName=>$packageVersions) {
-                        $json['packages'][$packageName] = $this->_prepareVersions($packageVersions);
-                    }
-
-                    $json['packages'] = array_merge($packageContent, $json['packages']);
+                    foreach ($packageContent as $packageName=>$packageVersions) {
+                        $json['packages'][$packageName] = $this->_prepareVersions($packageVersions,[
+                            'whmcs_product_ids'=>$teamPackage->whmcs_product_ids,
+                            'is_visible'=>$teamPackage->is_visible,
+                            'is_paid'=>$teamPackage->is_paid,
+                            'team_settings'=>$teamSettings
+                        ]);
+                    };
                 }
             }
         }
@@ -87,37 +105,39 @@ class PackagesJsonController extends Controller
 
     }
 
-    private function _prepareVersions($versions) {
+    private function _prepareVersions($versions, $teamPackage) {
 
         $prepareVersions = [];
         foreach ($versions as $version=>$package) {
-            $prepareVersions[$version] = $this->_preparePackage($package);
+            $prepareVersions[$version] = $this->_preparePackage($package, $teamPackage);
         }
 
         return $prepareVersions;
     }
 
-    private function _preparePackage($package) {
-
+    private function _preparePackage($package, $teamPackage) {
 
         if (isset($package['extra']['preview_url'])) {
-            if (true) {
+            if (isset($teamPackage['team_settings']['package_manager_templates_demo_domain'])) {
 
                 $previewUrl = $package['extra']['preview_url'];
-                $previewUrl = str_replace('templates.microweber.com', 'package_manager_templates_demo_domain', $previewUrl);
+                $previewUrl = str_replace('templates.microweber.com', $teamPackage['team_settings']['package_manager_templates_demo_domain'], $previewUrl);
 
                 $package['extra']['preview_url'] = $previewUrl;
             }
         }
 
-        $package['extra']['whmcs']['whmcs_url'] = 'WHMCS URL';
+        $whmcsUrl = '';
+        if (isset($teamPackage['team_settings']['whmcs_url'])) {
+            $whmcsUrl = $teamPackage['team_settings']['whmcs_url'];
+        }
+        $package['extra']['whmcs']['whmcs_url'] = $whmcsUrl;
 
         $packageUrl = $this->_clearRepositoryUrl($package['source']['url']);
 
-        if (isset($this->repositories[$packageUrl])) {
-            $repositorySettings = $this->repositories[$packageUrl];
-            //$repositorySettings['whmcs_product_ids'] = 1;
-            if (isset($repositorySettings['whmcs_product_ids']) && !empty($repositorySettings['whmcs_product_ids'])) {
+        if (isset($teamPackage['is_paid']) && $teamPackage['is_paid'] == 1) {
+
+            if (isset($teamPackage['whmcs_product_ids']) && !empty($teamPackage['whmcs_product_ids'])) {
 
                 $licensed = false;
                 file_put_contents(base_path().'/server.txt', print_r($_SERVER,1));
@@ -158,7 +178,7 @@ class PackagesJsonController extends Controller
 
                         if (!empty($userLicenseKeysMap)) {
                             foreach ($userLicenseKeysMap as $userLicenseKey) {
-                                if ($this->_validateLicenseKey($userLicenseKey)) {
+                                if ($this->_validateLicenseKey($whmcsUrl, $userLicenseKey)) {
                                     $licensed = true;
                                 }
                             }
@@ -170,14 +190,14 @@ class PackagesJsonController extends Controller
                 if (!$licensed) {
                     $package['dist'] = [
                         "type" => "license_key",
-                        "url" => $this->whmcs_url,
+                        "url" => $whmcsUrl,
                         "reference" => "license_key",
                         "shasum" => "license_key"
                     ];
                 }
 
-                $package['license_ids'] = $repositorySettings['whmcs_product_ids'];
-                $package['extra']['whmcs']['whmcs_product_ids'] = $repositorySettings['whmcs_product_ids'];
+                $package['license_ids'] = $teamPackage['whmcs_product_ids'];
+                $package['extra']['whmcs']['whmcs_product_ids'] = $teamPackage['whmcs_product_ids'];
 
             }
         }
@@ -185,9 +205,9 @@ class PackagesJsonController extends Controller
         return $package;
     }
 
-    private function _validateLicenseKey($key) {
+    private function _validateLicenseKey($whmcsUrl, $key) {
 
-        $checkWhmcs = file_get_contents($this->whmcs_url . '/index.php?m=microweber_addon&function=validate_license&license_key=' . $key);
+        $checkWhmcs = file_get_contents($whmcsUrl . '/index.php?m=microweber_addon&function=validate_license&license_key=' . $key);
         $checkWhmcs = json_decode($checkWhmcs, TRUE);
         if (isset($checkWhmcs['status']) && $checkWhmcs['status'] == 'success') {
             return true;
