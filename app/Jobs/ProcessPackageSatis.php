@@ -40,7 +40,7 @@ class ProcessPackageSatis implements ShouldQueue
      */
     public function handle()
     {
-        $this->call('queue:flush');
+        \Artisan::call('queue:flush'); 
 
         $packageModel = Package::where('id', $this->packageId)->first();
 
