@@ -40,6 +40,7 @@ class MyPackagesEdit extends Component
             }
 
             $this->repository_url = $package->repository_url;
+            $this->credential_id = $package->credential_id;
             $this->team_ids = $package->teams()->pluck('team_id')->toArray();
         }
 
@@ -67,11 +68,12 @@ class MyPackagesEdit extends Component
             $package->user_id = $userId;
             $package->clone_status = Package::CLONE_STATUS_WAITING;
             $package->repository_url = $this->repository_url;
-            $package->credential_id = $this->credential_id;
-            $package->save();
 
             $newPackageAdd = true;
         }
+
+        $package->credential_id = $this->credential_id;
+        $package->save();
 
         if (!empty($this->team_ids)) {
             $package->teams()->sync($this->team_ids);

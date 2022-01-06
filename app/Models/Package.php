@@ -9,7 +9,7 @@ use Laravel\Jetstream\Jetstream;
 class Package extends Model
 {
     use HasFactory;
-    
+
     public const CLONE_STATUS_WAITING = 'waiting';
     public const CLONE_STATUS_RUNNING = 'running';
     public const CLONE_STATUS_SUCCESS = 'success';

@@ -51,6 +51,7 @@
                 <div class="form-group">
                     <x-jet-label for="credential_id" value="{{ __('Which credentials should we use (optional)') }}" />
                     <select id="credential_id" name="credential_id" wire:model.defer="credential_id" class="form-control">
+                        <option value="">None</option>
                         @foreach($credentials as $credential)
                         <option value="{{$credential->id}}">{{$credential->description}}</option>
                         @endforeach
