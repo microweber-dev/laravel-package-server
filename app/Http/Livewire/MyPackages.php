@@ -31,7 +31,7 @@ class MyPackages extends Component
                 $q->where('repository_url', 'LIKE', "%$keyword%");
             })
             ->orderBy('id','DESC')
-           ->paginate(15); 
+           ->paginate(15);
 
         return view('livewire.packages.index', compact('packages'));
 

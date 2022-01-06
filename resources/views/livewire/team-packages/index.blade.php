@@ -30,9 +30,8 @@
         <table class="table table-bordered bg-white">
             <thead>
             <tr>
-                <th scope="col">Name</th>
+                <th scope="col">#</th>
                 <th scope="col">Repository Url</th>
-                <th scope="col">Status</th>
                 <th scope="col">Is visible</th>
                 <th scope="col">Is paid</th>
                 <th scope="col">Owner</th>
@@ -43,22 +42,12 @@
             <tbody>
             @foreach ($teamPackages as $teamPackage)
                 <tr>
-                    <td>{{$teamPackage->package->name}}</td>
                     <td>
-                        {{$teamPackage->package->repository_url}}
-
-                        @if($teamPackage->package->clone_status != \App\Models\Package::CLONE_STATUS_SUCCESS)
-                            <br />
-                            <p class="text-danger">{{$teamPackage->package->clone_log}}</p>
-                        @endif
+                        {{$teamPackage->id}}
                     </td>
 
                     <td>
-                        @if($teamPackage->package->clone_status == \App\Models\Package::CLONE_STATUS_SUCCESS)
-                        <span class="badge bg-success">{{$teamPackage->package->clone_status}}</span>
-                        @else
-                            <span class="badge bg-danger">{{$teamPackage->package->clone_status}}</span>
-                        @endif
+                        {{$teamPackage->package->repository_url}}
                     </td>
 
                     <td>

@@ -6,6 +6,7 @@ use App\Jobs\ProcessPackageSatis;
 use App\Jobs\ProcessPackageSubmit;
 use App\Models\Package;
 use App\Models\TeamPackage;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -31,7 +32,9 @@ class TeamPackages extends Component
         $this->team = $user->currentTeam;
 
         $teamPackages = TeamPackage::where('team_id', $teamId)
-            ->whereHas('package')
+            ->whereHas('package', function (Builder $query) {
+                $query->where('clone_status',Package::CLONE_STATUS_SUCCESS);
+            })
             ->whereHas('team')
             ->with('package')
             ->with('team')
