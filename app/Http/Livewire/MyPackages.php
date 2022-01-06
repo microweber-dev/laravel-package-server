@@ -14,6 +14,8 @@ class MyPackages extends Component
     use AuthorizesRequests;
     use WithPagination;
 
+    protected $paginationTheme = 'bootstrap';
+
     public $keyword = '';
     public $check_background_job = false;
 

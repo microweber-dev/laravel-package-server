@@ -15,6 +15,8 @@ class TeamPackages extends Component
     use AuthorizesRequests;
     use WithPagination;
 
+    protected $paginationTheme = 'bootstrap';
+
     public $team;
     public $keyword = '';
     public $check_background_job = false;

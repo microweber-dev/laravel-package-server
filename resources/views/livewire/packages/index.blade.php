@@ -95,7 +95,9 @@
             </tbody>
         </table>
 
-        {{ $packages->links() }}
+        <div>
+            {{ $packages->links() }}
+        </div>
 
     </div>
 </div>
