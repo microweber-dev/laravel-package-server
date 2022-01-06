@@ -45,14 +45,14 @@
             @if($credentialType == 'github-oauth' || $credentialType == 'gitlab-token')
             <div class="w-md-75 mt-3">
                 <div class="form-group">
-                    <x-jet-label for="access_token" value="{{ __('Access Token') }}" />
+                    <x-jet-label for="accessToken" value="{{ __('Access Token') }}" />
 
-                    <x-jet-input id="access_token"
+                    <x-jet-input id="accessToken"
                                  type="text"
-                                 class="{{ $errors->has('access_token') ? 'is-invalid' : '' }}"
-                                 wire:model.defer="access_token" />
+                                 class="{{ $errors->has('accessToken') ? 'is-invalid' : '' }}"
+                                 wire:model.defer="accessToken" />
 
-                    <x-jet-input-error for="access_token" />
+                    <x-jet-input-error for="accessToken" />
                 </div>
             </div>
             @endif
@@ -70,6 +70,11 @@
             @if($credentialType == 'gitlab-token')
                     <p class="alert alert-primary mt-3">Head to <a target="_blank" href="https://gitlab.com/-/profile/personal_access_tokens">https://<span data-gitlab-domain="">gitlab.com</span>/-/profile/personal_access_tokens</a> and select the scopes <code>api</code> and <code>read_user</code>.</p>
             @endif
+
+
+            <div class="d-flex align-items-baseline">
+                <button type="button" wire:click="create" class="btn btn-outline-dark">Create</button>
+            </div> 
 
         </div>
     </x-slot>

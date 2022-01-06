@@ -23,6 +23,7 @@ class CredentialsForm extends Component
 
     public $domain = '';
     public $credentialType = 'github-oauth';
+    public $accessToken = '';
 
     /**
      * Render the component.
@@ -40,5 +41,10 @@ class CredentialsForm extends Component
         }
 
         return view('profile.credentials-form');
+    }
+
+    public function create()
+    {
+        dump($this->credentialType);
     }
 }
