@@ -24,6 +24,11 @@
             <x-jet-section-border />
         @endif
 
+
+        @livewire('profile.credentials-form')
+        <x-jet-section-border />
+
+
         @if (JoelButcher\Socialstream\Socialstream::show())
                 @livewire('profile.connected-accounts-form')
             <x-jet-section-border />
