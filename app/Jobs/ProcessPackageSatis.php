@@ -40,6 +40,8 @@ class ProcessPackageSatis implements ShouldQueue
      */
     public function handle()
     {
+        $this->call('queue:flush');
+
         $packageModel = Package::where('id', $this->packageId)->first();
 
         $packageModel->clone_log = "Job is started.";
