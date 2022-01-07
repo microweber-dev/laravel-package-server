@@ -23,6 +23,8 @@ class TeamPackage extends Model
     ];
 
     public $casts = [
+        'is_paid'=>'int',
+        'is_visible'=>'int',
         'whmcs_product_ids'=>'array'
     ];
 

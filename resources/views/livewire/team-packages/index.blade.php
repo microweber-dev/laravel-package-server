@@ -51,18 +51,29 @@
                     </td>
 
                     <td>
-                        @if($teamPackage->is_visible == 1)
-                            <p class="badge bg-success">Yes</p>
-                        @else
-                            <p class="badge bg-danger">No</p>
-                        @endif
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" wire:model="is_visible.{{$teamPackage->id}}" value="1" type="checkbox" id="flexSwitchCheckIsVisible">
+                            <label class="form-check-label" for="flexSwitchCheckIsVisible">
+                                @if($teamPackage->is_visible == 1)
+                                    Yes
+                                @else
+                                    No
+                                @endif
+                            </label>
+                        </div>
                     </td>
+
                     <td>
-                        @if($teamPackage->is_paid == 1)
-                            <p class="badge bg-success">Yes</p>
-                        @else
-                            <p class="badge bg-danger">No</p>
-                        @endif
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" wire:model="is_paid.{{$teamPackage->id}}" value="1" type="checkbox" id="flexSwitchCheckIsPaid">
+                            <label class="form-check-label" for="flexSwitchCheckIsPaid">
+                                @if($teamPackage->is_paid == 1)
+                                    Yes
+                                @else
+                                    No
+                                @endif
+                            </label>
+                        </div>
                     </td>
                     <td>
                         {{$teamPackage->package->owner->name}}

@@ -22,6 +22,9 @@ class TeamPackages extends Component
     public $keyword = '';
     public $check_background_job = false;
 
+    public $is_visible = [];
+    public $is_paid = [];
+
     public function render()
     {
         $keyword = $this->keyword;
@@ -30,6 +33,38 @@ class TeamPackages extends Component
         $userId = $user->id;
         $teamId = $user->currentTeam->id;
         $this->team = $user->currentTeam;
+
+        // Is visible
+        if (!empty($this->is_visible)) {
+           foreach ($this->is_visible as $packageId=>$isVisible) {
+               $isVisible = intval($isVisible);
+               $findTeamPackageEdit = TeamPackage::where('team_id', $teamId)
+                   ->where('id', $packageId)
+                   ->first();
+               if ($findTeamPackageEdit != null) {
+                   if (((int) $findTeamPackageEdit->is_visible) != $isVisible) {
+                       $findTeamPackageEdit->is_visible = $isVisible;
+                       $findTeamPackageEdit->save();
+                   }
+               }
+           }
+        }
+
+        // Is paid
+        if (!empty($this->is_paid)) {
+           foreach ($this->is_paid as $packageId=>$isPaid) {
+               $isPaid = intval($isPaid);
+               $findTeamPackageEdit = TeamPackage::where('team_id', $teamId)
+                   ->where('id', $packageId)
+                   ->first();
+               if ($findTeamPackageEdit != null) {
+                   if (((int) $findTeamPackageEdit->is_paid) != $isPaid) {
+                       $findTeamPackageEdit->is_paid = $isPaid;
+                       $findTeamPackageEdit->save();
+                   }
+               }
+           }
+        }
 
         $teamPackages = TeamPackage::where('team_id', $teamId)
             ->whereHas('package', function (Builder $query) {
@@ -40,6 +75,13 @@ class TeamPackages extends Component
             ->with('team')
             ->orderBy('id','DESC')
            ->paginate(15);
+
+        if (!empty($teamPackages)) {
+            foreach ($teamPackages->items() as $teamPackage) {
+                $this->is_visible[$teamPackage->id] = (int) $teamPackage->is_visible;
+                $this->is_paid[$teamPackage->id] = (int) $teamPackage->is_paid;
+            }
+        }
 
         return view('livewire.team-packages.index', compact('teamPackages'));
 
@@ -56,7 +98,5 @@ class TeamPackages extends Component
         $this->check_background_job = true;
 
     }
-
-
 
 }

@@ -46,6 +46,7 @@ class PackagesJsonController extends Controller
             ->whereHas('package', function (Builder $query) {
                 $query->where('clone_status',Package::CLONE_STATUS_SUCCESS);
             })
+            ->where('is_visible', 1)
             ->with('package')
             ->get();
 
