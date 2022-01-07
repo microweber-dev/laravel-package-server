@@ -55,9 +55,8 @@ class PackagesJsonController extends Controller
 
         $teamSettings = $findTeam->settings()->get();
 
+        $logged = false;
         if ($findTeam->isPrivate()) {
-
-            $logged = false;
 
             //check if request has authorization header
             if ($request->header('PHP_AUTH_USER', null) && $request->header('PHP_AUTH_PW', null)) {
