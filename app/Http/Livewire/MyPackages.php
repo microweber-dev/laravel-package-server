@@ -28,7 +28,7 @@ class MyPackages extends Component
          //   ->where('clone_status', Package::CLONE_STATUS_SUCCESS)
             ->when(!empty($keyword), function ($q) use ($keyword) {
                 $q->where('name', 'LIKE', "%$keyword%");
-                $q->where('repository_url', 'LIKE', "%$keyword%");
+                $q->orWhere('repository_url', 'LIKE', "%$keyword%");
             })
             ->orderBy('id','DESC')
            ->paginate(15);
