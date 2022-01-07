@@ -91,6 +91,7 @@ class PackagesJsonController extends Controller
                 if (!empty($packageContent)) {
                     foreach ($packageContent as $packageName=>$packageVersions) {
                         $json['packages'][$packageName] = $this->_prepareVersions($packageVersions,[
+                            'token_authenticated'=>$logged,
                             'whmcs_product_ids'=>$teamPackage->whmcs_product_ids,
                             'is_visible'=>$teamPackage->is_visible,
                             'is_paid'=>$teamPackage->is_paid,
@@ -183,6 +184,10 @@ class PackagesJsonController extends Controller
                         }
                     }
 
+                }
+
+                if (isset($teamPackage['token_authenticated']) && $teamPackage['token_authenticated'] === true) {
+                    $licensed = true;
                 }
 
                 if (!$licensed) {
