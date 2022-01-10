@@ -2,6 +2,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\Credential;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use JoelButcher\Socialstream\ConnectedAccount;
@@ -26,6 +27,8 @@ class CredentialsForm extends Component
     public $authenticationType = 'github-oauth';
     public $authenticationData = [];
     public $description = '';
+    public $showCredentialsForm = false;
+    public $confirmingDeleteId = false;
 
     /**
      * Render the component.
@@ -34,6 +37,8 @@ class CredentialsForm extends Component
      */
     public function render()
     {
+        $user = auth()->user();
+
         if ($this->authenticationType == 'github-oauth') {
             $this->domain = 'github.com';
         }
@@ -42,7 +47,33 @@ class CredentialsForm extends Component
              $this->domain = 'gitlab.com';
         }
 
+        $this->credentials = $user->credentials()->get();
+
         return view('profile.credentials-form');
+    }
+
+    public function showCredentialsForm()
+    {
+        $this->showCredentialsForm = true;
+    }
+
+    public function hideCredentialsForm()
+    {
+        $this->showCredentialsForm = false;
+    }
+
+    public function confirmDelete($id)
+    {
+        $this->confirmingDeleteId = $id;
+    }
+
+    public function delete($credentialId)
+    {
+        $user = auth()->user();
+        $findCredential = Credential::where('user_id', $user->id)->where('id', $credentialId)->first();
+        if ($findCredential != null) {
+            $findCredential->delete();
+        }
     }
 
     public function create()
@@ -57,6 +88,6 @@ class CredentialsForm extends Component
         $credential->authentication_data = $this->authenticationData;
         $credential->save();
 
-    ///    dump($this->credentialType);
+        $this->showCredentialsForm = false;
     }
 }
