@@ -23,6 +23,10 @@ class MyPackages extends Component
     {
         $keyword = $this->keyword;
 
+        if (request()->get('check_for_background_job') == 1) {
+            $this->check_background_job = true;
+        }
+
         $userId = auth()->user()->id;
         $packages = Package::where('user_id', $userId)
          //   ->where('clone_status', Package::CLONE_STATUS_SUCCESS)

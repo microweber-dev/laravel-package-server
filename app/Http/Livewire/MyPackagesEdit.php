@@ -83,6 +83,6 @@ class MyPackagesEdit extends Component
             dispatch(new ProcessPackageSatis($package->id));
         }
 
-        $this->redirect(route('my-packages'));
+        $this->redirect(route('my-packages').'?check_for_background_job=1');
     }
 }

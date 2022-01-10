@@ -108,8 +108,8 @@ class ProcessPackageSatis implements ShouldQueue
 
         $satisCommand = [];
         $satisCommand[] = 'php';
-        $satisCommand[] = '-d memory_limit=-1 max_execution_time=600';
-        //$satisCommand[] = '-c '.base_path().'/php.ini';
+        //$satisCommand[] = '-d memory_limit=-1 max_execution_time=600';
+        $satisCommand[] = '-c '.base_path().'/php.ini';  
         $satisCommand[] = $satisBinPath;
         $satisCommand[] = 'build';
         $satisCommand[] = $saitsRepositoryPath . 'satis.json';
@@ -120,7 +120,7 @@ class ProcessPackageSatis implements ShouldQueue
             'COMPOSER_HOME'=>$saitsRepositoryPath
         ]);
         $process->setTimeout(null);
-        $process->setIdleTimeout(null); 
+        $process->setIdleTimeout(null);
         $process->mustRun();
         $output = $process->getOutput();
 
