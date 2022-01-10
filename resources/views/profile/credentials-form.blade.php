@@ -10,6 +10,8 @@
 
     <x-slot name="content">
 
+        <button onclick="Livewire.emit('openModal', 'hello-world')">Open Modal</button>
+
         <div><h4>{{ __('Add New Credentials') }}</h4></div>
 
         <div class="w-md-75">
