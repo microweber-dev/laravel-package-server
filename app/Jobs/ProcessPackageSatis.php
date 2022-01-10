@@ -106,8 +106,6 @@ class ProcessPackageSatis implements ShouldQueue
             mkdir($saitsRepositoryPath);
         }
 
-        shell_exec('export COMPOSER_HOME='.$saitsRepositoryPath);
-
         $satisCommand = [];
         $satisCommand[] = 'php';
         $satisCommand[] = '-d memory_limit=-1';
@@ -116,10 +114,12 @@ class ProcessPackageSatis implements ShouldQueue
         $satisCommand[] = $saitsRepositoryPath . 'satis.json';
         $satisCommand[] = $satisRepositoryOutputPath;
 
-        $process = new Process($satisCommand);
+        $process = new Process($satisCommand,null,[
+            'HOME'=>dirname(base_path()),
+            'COMPOSER_HOME'=>$saitsRepositoryPath
+        ]);
         $process->mustRun();
         $output = $process->getOutput();
-
 
         $packagesJsonFilePath = $satisRepositoryOutputPath . '/packages.json';
         if (!is_file($packagesJsonFilePath)) {
