@@ -115,8 +115,15 @@ class ProcessPackageSatis implements ShouldQueue
         $satisCommand[] = $saitsRepositoryPath . 'satis.json';
         $satisCommand[] = $satisRepositoryOutputPath;
 
+
+        $composerCacheDir = base_path().'/composer-cache';
+        if (!is_dir($composerCacheDir)) {
+            mkdir($composerCacheDir);
+        }
+
         $process = new Process($satisCommand,null,[
             'HOME'=>dirname(base_path()),
+            'COMPOSER_CACHE_DIR '=>$composerCacheDir,
             'COMPOSER_MEMORY_LIMIT '=>'-1',
             'COMPOSER_PROCESS_TIMEOUT '=>100000,
             'COMPOSER_HOME'=>$saitsRepositoryPath
