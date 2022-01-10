@@ -28,6 +28,8 @@ class CredentialsForm extends Component
     public $authenticationData = [];
     public $description = '';
     public $showCredentialsForm = false;
+    public $credentialId = false;
+    public $credentialEdit = false;
     public $confirmingDeleteId = false;
 
     /**
@@ -55,6 +57,13 @@ class CredentialsForm extends Component
     public function showCredentialsForm()
     {
         $this->showCredentialsForm = true;
+
+        $this->credentialId = false;
+        $this->domain = '';
+        $this->authenticationType = 'github-oauth';
+        $this->authenticationData = [];
+        $this->description = '';
+
     }
 
     public function hideCredentialsForm()
@@ -76,12 +85,36 @@ class CredentialsForm extends Component
         }
     }
 
-    public function create()
+    public function edit($credentialId) {
+
+        $user = auth()->user();
+        $findCredential = Credential::where('user_id', $user->id)->where('id', $credentialId)->first();
+        if ($findCredential != null) {
+             $this->showCredentialsForm = true;
+             $this->credentialEdit = true;
+             $this->credentialId = $findCredential->id;
+             $this->domain = $findCredential->domain;
+             $this->authenticationType = $findCredential->authentication_type;
+             $this->authenticationData = $findCredential->authentication_data;
+             $this->description = $findCredential->description;
+        }
+    }
+
+    public function save($credentialId = false)
     {
         $user = auth()->user();
 
-        $credential = new Credential();
-        $credential->user_id = $user->id;
+        if ($credentialId) {
+            $findCredential = Credential::where('user_id', $user->id)->where('id', $credentialId)->first();
+            if ($findCredential == null) {
+                return [];
+            }
+            $credential = $findCredential;
+        } else{
+            $credential = new Credential();
+            $credential->user_id = $user->id;
+        }
+
         $credential->authentication_type = $this->authenticationType;
         $credential->domain = $this->domain;
         $credential->description = $this->description;

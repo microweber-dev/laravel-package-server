@@ -18,7 +18,12 @@
 
         @if($showCredentialsForm)
             <div>
-                <div class="mt-3"><h4>{{ __('Add New Credentials') }}</h4></div>
+
+                @if ($credentialEdit)
+                    <div class="mt-3"><h4>{{ __('Edit credential') }}</h4></div>
+                @else
+                 <div class="mt-3"><h4>{{ __('Add New Credentials') }}</h4></div>
+                @endif
 
                 <div class="w-md-75">
                     <div class="form-group">
@@ -100,8 +105,13 @@
                 @endif
 
 
+
                 <div class="d-flex align-items-baseline">
-                    <button type="button" wire:click="create" class="btn btn-outline-dark">Create</button>
+                    @if ($credentialEdit)
+                        <button type="button" wire:click="save({{$credentialId}})" class="btn btn-outline-dark">Edit</button>
+                    @else
+                        <button type="button" wire:click="save" class="btn btn-outline-dark">Create</button>
+                    @endif
                 </div>
                 @endif
             </div>
