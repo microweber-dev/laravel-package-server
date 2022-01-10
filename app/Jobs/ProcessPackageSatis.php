@@ -102,6 +102,12 @@ class ProcessPackageSatis implements ShouldQueue
             fi');
         }
 
+        if (!is_dir($saitsRepositoryPath)) {
+            mkdir($saitsRepositoryPath);
+        }
+
+        shell_exec('export COMPOSER_HOME='.$saitsRepositoryPath);
+
         $satisCommand = [];
         $satisCommand[] = 'php';
         $satisCommand[] = '-d memory_limit=-1';
@@ -113,6 +119,7 @@ class ProcessPackageSatis implements ShouldQueue
         $process = new Process($satisCommand);
         $process->mustRun();
         $output = $process->getOutput();
+
 
         $packagesJsonFilePath = $satisRepositoryOutputPath . '/packages.json';
         if (!is_file($packagesJsonFilePath)) {
