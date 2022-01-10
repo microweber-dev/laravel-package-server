@@ -2,6 +2,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\Credential;
+use App\Rules\CanAddRepositoryToTeamRule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -102,6 +103,11 @@ class CredentialsForm extends Component
 
     public function save($credentialId = false)
     {
+
+        $validation = [];
+        $validation['description'] = ['required'];
+        $this->validate($validation);
+
         $user = auth()->user();
 
         if ($credentialId) {
