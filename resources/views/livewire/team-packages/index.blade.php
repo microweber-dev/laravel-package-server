@@ -58,7 +58,7 @@
                         @endif
 
                         @if($teamPackage->package->clone_status != \App\Models\Package::CLONE_STATUS_SUCCESS)
-                            <div style="max-height: 100px;max-width: 700px;overflow: scroll" class="text-danger">
+                            <div style="max-height: 100px;max-width: 700px;overflow: hidden" class="text-danger">
                                 {{$teamPackage->package->clone_log}}
                             </div>
                         @endif
@@ -96,6 +96,7 @@
                     <td>{{$teamPackage->updated_at}}</td>
                     <td>
                         <a class="btn btn-outline-dark" href="{{route('my-packages.show', $teamPackage->package->id)}}">View</a>
+                        <button type="button" class="btn btn-outline-dark" wire:click="packageUpdate({{ $teamPackage->package->id }})" wire:loading.attr="disabled">Update</button>
                         <a href="{{route('team-packages.edit', $teamPackage->id)}}" class="btn btn-outline-dark">Edit</a>
                     </td>
                 </tr>

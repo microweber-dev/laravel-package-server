@@ -68,13 +68,13 @@ class TeamPackages extends Component
 
         $teamPackages = TeamPackage::where('team_id', $teamId)
             ->whereHas('package', function (Builder $query) {
-                $query->where('clone_status',Package::CLONE_STATUS_SUCCESS);
+           //     $query->where('clone_status',Package::CLONE_STATUS_SUCCESS);
             })
             ->whereHas('team')
             ->with('package')
             ->with('team')
             ->orderBy('id','DESC')
-           ->paginate(15);
+           ->paginate(100);
 
         if (!empty($teamPackages)) {
             foreach ($teamPackages->items() as $teamPackage) {
@@ -87,11 +87,42 @@ class TeamPackages extends Component
 
     }
 
-    public function update($id)
-    {
-        $userId = auth()->user()->id;
 
-        $package = Package::where('id', $id)->where('user_id', $userId)->first();
+    public function packageUpdate($id)
+    {
+        $user = auth()->user();
+        $teams = $user->allTeams();
+
+        $userAdminInTeams = [];
+        foreach ($teams as $team) {
+            if ($user->hasTeamRole($team, 'admin')) {
+                $userAdminInTeams[] = $team->id;
+            }
+        }
+
+        $package = Package::where('id', $id)->with('teams')->first();
+        if ($package->teams == null) {
+            return [];
+        }
+
+        $packageTeamIds = [];
+        foreach($package->teams as $packageTeam) {
+            $packageTeamIds[] = $packageTeam->id;
+        }
+
+        $userHasPermission = false;
+        foreach ($userAdminInTeams as $userAdminTeamId) {
+            foreach ($packageTeamIds as $packageTeamId) {
+                if ($userAdminTeamId == $packageTeamId) {
+                    $userHasPermission = true;
+                    break;
+                }
+            }
+        }
+
+        if (!$userHasPermission) {
+            return[];
+        }
 
         dispatch(new ProcessPackageSatis($package->id));
 

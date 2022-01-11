@@ -35,7 +35,7 @@ class MyPackages extends Component
                 $q->orWhere('repository_url', 'LIKE', "%$keyword%");
             })
             ->orderBy('id','DESC')
-           ->paginate(15);
+           ->paginate(100);
 
         return view('livewire.packages.index', compact('packages'));
 
