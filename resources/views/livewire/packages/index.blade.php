@@ -74,7 +74,7 @@
                         @endif
                     </td>
                     <td>
-                        <div> {{$package->name}}</div>
+                        <div><b> {{$package->description}}</b></div>
                         <div> {{$package->repository_url}}</div>
 
                         @if($package->version > 0)
@@ -82,7 +82,9 @@
                         @endif
 
                         @if($package->clone_status != \App\Models\Package::CLONE_STATUS_SUCCESS)
-                            <div class="text-danger">{{$package->clone_log}}</div>
+                            <div style="max-height: 100px;max-width: 700px;overflow: scroll" class="text-danger">
+                                {{$package->clone_log}}
+                            </div>
                         @endif
                     </td>
                     <td>

@@ -30,8 +30,8 @@
         <table class="table table-bordered bg-white">
             <thead>
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">Repository Url</th>
+                <th scope="col">Screenshot</th>
+                <th scope="col">Details</th>
                 <th scope="col">Is visible</th>
                 <th scope="col">Is paid</th>
                 <th scope="col">Owner</th>
@@ -43,11 +43,25 @@
             @foreach ($teamPackages as $teamPackage)
                 <tr>
                     <td>
-                        {{$teamPackage->id}}
+                        @if(!empty($teamPackage->package->screenshot))
+                            <div style="max-height:100px;text-align:center;overflow: hidden;">
+                                <img src="{{$teamPackage->package->screenshot()}}" style="width:130px;" />
+                            </div>
+                        @endif
                     </td>
-
                     <td>
-                        {{$teamPackage->package->repository_url}}
+                        <div><b> {{$teamPackage->package->description}}</b></div>
+                        <div> {{$teamPackage->package->repository_url}}</div>
+
+                        @if($teamPackage->package->version > 0)
+                            <div> <span class="badge bg-success">v{{$teamPackage->package->version}}</span></div>
+                        @endif
+
+                        @if($teamPackage->package->clone_status != \App\Models\Package::CLONE_STATUS_SUCCESS)
+                            <div style="max-height: 100px;max-width: 700px;overflow: scroll" class="text-danger">
+                                {{$teamPackage->package->clone_log}}
+                            </div>
+                        @endif
                     </td>
 
                     <td>
