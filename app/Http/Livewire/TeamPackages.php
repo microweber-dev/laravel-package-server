@@ -101,27 +101,8 @@ class TeamPackages extends Component
         }
 
         $package = Package::where('id', $id)->with('teams')->first();
-        if ($package->teams == null) {
+        if (!in_array($package->team_owner_id,$userAdminInTeams)) {
             return [];
-        }
-
-        $packageTeamIds = [];
-        foreach($package->teams as $packageTeam) {
-            $packageTeamIds[] = $packageTeam->id;
-        }
-
-        $userHasPermission = false;
-        foreach ($userAdminInTeams as $userAdminTeamId) {
-            foreach ($packageTeamIds as $packageTeamId) {
-                if ($userAdminTeamId == $packageTeamId) {
-                    $userHasPermission = true;
-                    break;
-                }
-            }
-        }
-
-        if (!$userHasPermission) {
-            return[];
         }
 
         dispatch(new ProcessPackageSatis($package->id));
