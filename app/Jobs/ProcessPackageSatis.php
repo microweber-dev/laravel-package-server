@@ -167,15 +167,25 @@ class ProcessPackageSatis implements ShouldQueue
                         }
                         $packageVersion = RepositoryMediaProcessHelper::preparePackageMedia($packageVersion, $satisRepositoryOutputPath);
 
-                        $lastVersionMetaData['name'] = $packageVersion['name'];
-                        $lastVersionMetaData['description'] = $packageVersion['description'];
+                        if (isset($packageVersion['name'])) {
+                            $lastVersionMetaData['name'] = $packageVersion['name'];
+                        }
+
+                        if (isset($packageVersion['description'])) {
+                            $lastVersionMetaData['description'] = $packageVersion['description'];
+                        }
 
                         if (isset($packageVersion['keywords'])) {
                             $lastVersionMetaData['keywords'] = $packageVersion['keywords'];
                         }
 
-                        $lastVersionMetaData['homepage'] = $packageVersion['homepage'];
-                        $lastVersionMetaData['version'] = $packageVersion['version'];
+                        if (isset($packageVersion['homepage'])) {
+                            $lastVersionMetaData['homepage'] = $packageVersion['homepage'];
+                        }
+
+                        if (isset($packageVersion['version'])) {
+                            $lastVersionMetaData['version'] = $packageVersion['version'];
+                        }
 
                         if (isset($packageVersion['target-dir'])) {
                             $lastVersionMetaData['target_dir'] = $packageVersion['target-dir'];

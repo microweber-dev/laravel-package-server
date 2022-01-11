@@ -68,7 +68,7 @@
                 <tr>
                     <td>
                         @if(!empty($package->screenshot))
-                          <div>
+                          <div style="max-height:100px;text-align:center;overflow: hidden;">
                               <img src="{{$package->screenshot()}}" style="width:130px;" />
                           </div>
                         @endif
@@ -80,7 +80,7 @@
                         @if($package->version > 0)
                            <div> <span class="badge bg-success">v{{$package->version}}</span></div>
                         @endif
-                        
+
                         @if($package->clone_status != \App\Models\Package::CLONE_STATUS_SUCCESS)
                             <div class="text-danger">{{$package->clone_log}}</div>
                         @endif
