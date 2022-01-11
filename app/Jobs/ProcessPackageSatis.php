@@ -150,6 +150,8 @@ class ProcessPackageSatis implements ShouldQueue
             $includedPackageFiles[] = $satisRepositoryOutputPath .'/'. $includeKey;
         }
 
+        $lastVersionMetaData = [];
+
         $foundedPackages = [];
         foreach($includedPackageFiles as $file) {
 
@@ -164,6 +166,28 @@ class ProcessPackageSatis implements ShouldQueue
                             continue;
                         }
                         $packageVersion = RepositoryMediaProcessHelper::preparePackageMedia($packageVersion, $satisRepositoryOutputPath);
+
+                        $lastVersionMetaData['name'] = $packageVersion['name'];
+                        $lastVersionMetaData['description'] = $packageVersion['description'];
+                        $lastVersionMetaData['keywords'] = $packageVersion['keywords'];
+                        $lastVersionMetaData['homepage'] = $packageVersion['homepage'];
+                        $lastVersionMetaData['version'] = $packageVersion['version'];
+
+                        if (isset($packageVersion['target-dir'])) {
+                            $lastVersionMetaData['target_dir'] = $packageVersion['target-dir'];
+                        }
+
+                        if (isset($packageVersion['extra']['preview_url'])) {
+                            $lastVersionMetaData['preview_url'] = $packageVersion['extra']['preview_url'];
+                        }
+
+                        if (isset($packageVersion['extra']['_meta']['screenshot'])) {
+                            $lastVersionMetaData['screenshot'] = $packageVersion['extra']['_meta']['screenshot'];
+                        }
+                        if (isset($packageVersion['extra']['_meta']['readme'])) {
+                            $lastVersionMetaData['readme'] = $packageVersion['extra']['_meta']['readme'];
+                        }
+
                         $preparedPackageVerions[$packageVersionKey] = $packageVersion;
                     }
                     $preparedPackages[$packageKey] = $preparedPackageVerions;
@@ -185,6 +209,12 @@ class ProcessPackageSatis implements ShouldQueue
 
         shell_exec("rsync -avzh  $satisRepositoryOutputPath/dist/ $outputPublicDist");
         shell_exec("rsync -avzh  $satisRepositoryOutputPath/meta/ $outputPublicMeta");
+
+        if (!empty($lastVersionMetaData)) {
+            foreach ($lastVersionMetaData as $metaData=>$metaDataValue) {
+                $packageModel->$metaData = $metaDataValue;
+            }
+        }
 
         $packageModel->package_json = json_encode($foundedPackages,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
         $packageModel->clone_log = $output;
