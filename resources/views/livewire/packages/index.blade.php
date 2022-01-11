@@ -85,7 +85,7 @@
                     </td>
                     <td>{{$package->updated_at}}</td>
                     <td>
-                        <a class="btn btn-outline-dark" href="{{$package->id}}">View</a>
+                        <a class="btn btn-outline-dark" href="{{route('my-packages.show', $package->id)}}">View</a>
                         <button type="button" class="btn btn-outline-dark" wire:click="update({{ $package->id }})" wire:loading.attr="disabled">Update</button>
                         <a href="{{route('my-packages.edit', $package->id)}}" class="btn btn-outline-dark">Edit</a>
                         <button type="button" class="btn btn-outline-dark" wire:click="delete({{ $package->id }})" wire:loading.attr="disabled">Delete</button>

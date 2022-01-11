@@ -81,7 +81,7 @@
 
                     <td>{{$teamPackage->updated_at}}</td>
                     <td>
-                        <a class="btn btn-outline-dark" href="{{$teamPackage->id}}">View</a>
+                        <a class="btn btn-outline-dark" href="{{route('my-packages.show', $teamPackage->package->id)}}">View</a>
                         <a href="{{route('team-packages.edit', $teamPackage->id)}}" class="btn btn-outline-dark">Edit</a>
                     </td>
                 </tr>
