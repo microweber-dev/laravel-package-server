@@ -105,7 +105,7 @@ class TeamPackages extends Component
             return [];
         }
 
-        dispatch(new ProcessPackageSatis($package->id));
+        dispatch(new ProcessPackageSatis($package->id)); 
 
         $this->check_background_job = true;
 
