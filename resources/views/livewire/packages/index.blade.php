@@ -76,10 +76,13 @@
                     <td>
                         <div> {{$package->name}}</div>
                         <div> {{$package->repository_url}}</div>
-                        <div> <span class="badge bg-success">v.{{$package->version}}</span></div>
 
+                        @if($package->version > 0)
+                           <div> <span class="badge bg-success">v{{$package->version}}</span></div>
+                        @endif
+                        
                         @if($package->clone_status != \App\Models\Package::CLONE_STATUS_SUCCESS)
-                            <div class="text-danger">v.{{$package->clone_log}}</div>
+                            <div class="text-danger">{{$package->clone_log}}</div>
                         @endif
                     </td>
                     <td>
