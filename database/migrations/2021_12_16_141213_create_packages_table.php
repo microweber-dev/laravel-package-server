@@ -18,6 +18,15 @@ class CreatePackagesTable extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->string('repository_url')->nullable();
+
+            $table->string('icon')->nullable();
+            $table->string('thumbnail')->nullable();
+            $table->string('description')->nullable();
+            $table->string('homepage')->nullable();
+            $table->string('type')->nullable();
+            $table->string('target_dir')->nullable();
+            $table->string('last_version')->nullable();
+
             $table->longText('package_json')->nullable();
 
             $table->foreignId('user_id')->nullable()->index();
