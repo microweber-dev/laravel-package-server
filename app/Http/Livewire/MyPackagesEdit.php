@@ -21,6 +21,7 @@ class MyPackagesEdit extends Component
     public $team_ids = [];
     public $credentials = [];
     public $credential_id;
+    public $team_owner_id;
 
     public function render()
     {
@@ -39,6 +40,7 @@ class MyPackagesEdit extends Component
                 return abort(404, "Package  not found");
             }
 
+            $this->team_owner_id = $package->team_owner_id;
             $this->repository_url = $package->repository_url;
             $this->credential_id = $package->credential_id;
             $this->team_ids = $package->teams()->pluck('team_id')->toArray();
@@ -72,6 +74,7 @@ class MyPackagesEdit extends Component
             $newPackageAdd = true;
         }
 
+        $package->team_owner_id = $this->team_owner_id;
         $package->credential_id = $this->credential_id;
         $package->save();
 
