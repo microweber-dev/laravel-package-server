@@ -24,6 +24,7 @@ class CreatePackagesTable extends Migration
             $table->string('icon')->nullable();
             $table->string('screenshot')->nullable();
             $table->string('description')->nullable();
+            $table->string('readme')->nullable();
             $table->string('homepage')->nullable();
             $table->string('type')->nullable();
             $table->string('target_dir')->nullable();
