@@ -56,7 +56,7 @@
         <table class="table table-bordered bg-white">
             <thead>
             <tr>
-                <th scope="col">Name</th>
+                <th scope="col">Details</th>
                 <th scope="col">Repository Url</th>
                 <th scope="col">Status</th>
                 <th scope="col">Last Update</th>
@@ -66,16 +66,22 @@
             <tbody>
             @foreach ($packages as $package)
                 <tr>
-                    <td>{{$package->name}}</td>
                     <td>
-                        {{$package->repository_url}}
-
-                        @if($package->clone_status != \App\Models\Package::CLONE_STATUS_SUCCESS)
-                            <br />
-                            <p class="text-danger">{{$package->clone_log}}</p>
+                        @if(!empty($package->screenshot))
+                          <div>
+                              <img src="{{$package->screenshot()}}" style="width:130px;" />
+                          </div>
                         @endif
                     </td>
+                    <td>
+                        <div> {{$package->name}}</div>
+                        <div> {{$package->repository_url}}</div>
+                        <div> <span class="badge bg-success">v.{{$package->version}}</span></div>
 
+                        @if($package->clone_status != \App\Models\Package::CLONE_STATUS_SUCCESS)
+                            <div class="text-danger">v.{{$package->clone_log}}</div>
+                        @endif
+                    </td>
                     <td>
                         @if($package->clone_status == \App\Models\Package::CLONE_STATUS_SUCCESS)
                         <span class="badge bg-success">{{$package->clone_status}}</span>
