@@ -33,6 +33,7 @@
                 <div class="mb-3 has-validation">
                     <label for="inputRepository" class="form-label">Existing repositories</label>
                     <select class="form-control" wire:model="add_existing_repository_id">
+                        <option>Select repositories..</option>
                         @foreach($existing_packages_grouped as $group_name=>$existing_packages)
                             <optgroup label="{{$group_name}}">
                                 @foreach($existing_packages as $package)
