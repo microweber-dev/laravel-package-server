@@ -55,7 +55,7 @@ class MyPackagesEdit extends Component
     public function edit()
     {
         $validation = [];
-        $validation['team_ids'] = ['required','array', new CanAddRepositoryToTeamRule()];
+        $validation['team_ids'] = ['required', 'array', new CanAddRepositoryToTeamRule()];
 
         if (empty($this->package_id)) {
             $validation['repository_url'] = ['required', 'url', 'unique:packages'];

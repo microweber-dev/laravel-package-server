@@ -50,7 +50,18 @@ class TeamPackages extends Component
         $teamId = $user->currentTeam->id;
         $this->team = $user->currentTeam;
 
-        $getExistingPackages = Package::select(['name','type','description','repository_url','id'])->get();
+        $userAdminInTeams = [];
+        foreach ($user->allTeams() as $team) {
+            if ($user->hasTeamRole($team, 'admin')) {
+                $userAdminInTeams[] = $team->id;
+            }
+        }
+
+        $getExistingPackages = Package::select(['team_owner_id','name','type','description','repository_url','id'])
+            ->whereIn('team_owner_id', $userAdminInTeams)
+            ->orWhere('user_id', $userId)
+            ->get();
+
         if ($getExistingPackages != null) {
             foreach ($getExistingPackages as $existingPackage) {
                 $groupName = 'All';
