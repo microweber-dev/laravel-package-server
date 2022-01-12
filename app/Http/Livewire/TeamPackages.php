@@ -137,8 +137,7 @@ class TeamPackages extends Component
     {
         $user = auth()->user();
         $teamId = $user->currentTeam->id;
-
-
+        
         if ($this->add_from_existing) {
             if ($this->add_existing_repository_id) {
                 $package = Package::where('id', $this->add_existing_repository_id)->first();
