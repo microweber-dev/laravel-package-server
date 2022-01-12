@@ -23,6 +23,7 @@ class TeamPackages extends Component
     public $keyword = '';
     public $check_background_job = false;
 
+    public $add_existing_repository_url = '';
     public $add_existing_repository_id = false;
     public $show_add_team_package_form = false;
     public $add_from_existing = false;
@@ -137,7 +138,7 @@ class TeamPackages extends Component
     {
         $user = auth()->user();
         $teamId = $user->currentTeam->id;
-        
+
         if ($this->add_from_existing) {
             if ($this->add_existing_repository_id) {
                 $package = Package::where('id', $this->add_existing_repository_id)->first();
@@ -152,6 +153,10 @@ class TeamPackages extends Component
                     }
                 }
             }
+        }
+
+        if ($this->add_existing_repository_url) {
+            return redirect(route('my-packages.add') . '?repository_url=' . $this->add_existing_repository_url.'&team_id=' . $teamId.'&team_owner_id='.$teamId);
         }
 
         $this->show_add_team_package_form = false;

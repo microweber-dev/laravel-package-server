@@ -26,6 +26,15 @@ class MyPackagesEdit extends Component
 
     public function render()
     {
+        if (request()->get('repository_url')) {
+            $this->repository_url = request()->get('repository_url');
+        }
+
+        if (request()->get('team_id')) {
+            $this->team_ids[] = request()->get('team_id');
+            $this->team_owner_id = request()->get('team_id');
+        }
+
         return view('livewire.packages.edit');
     }
 

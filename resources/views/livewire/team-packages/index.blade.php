@@ -54,7 +54,7 @@
             @else
             <div class="mb-3 has-validation">
                 <label for="inputRepository" class="form-label">Repository Url</label>
-                <input type="text" wire:model="repository_url" class="form-control @error('repository_url') is-invalid @enderror" id="inputRepository" aria-describedby="repositoryHelp">
+                <input type="text" wire:model="add_existing_repository_url" class="form-control @error('add_existing_repository_url') is-invalid @enderror" id="inputRepository" aria-describedby="repositoryHelp">
                 <div id="repositoryHelp" class="form-text">The url of git repository</div>
                 <div class="invalid-feedback">
                     @error('repository_url')
