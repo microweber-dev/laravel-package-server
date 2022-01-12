@@ -53,6 +53,20 @@ class MyPackages extends Component
 
     }
 
+    public function updateAllPacakges()
+    {
+        $user = auth()->user();
+
+        $packages = Package::select(['id','user_id'])->where('user_id', $user->id)->get();
+        if ($packages->count() > 0) {
+            foreach ($packages as $package) {
+                dispatch(new ProcessPackageSatis($package->id));
+            }
+            $this->check_background_job = true;
+        }
+
+    }
+
     public function delete($id)
     {
         $userId = auth()->user()->id;

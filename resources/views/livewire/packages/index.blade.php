@@ -42,13 +42,15 @@
                         <small>Microweber Packages is the official microweber cms composer repository. </small>
                     </div>
                 </div>
-                <div class="col-md-4">
-
-                </div>
-                <div class="col-md-2 justify-content-center">
+                <div class="col-md-2">
                     <a href="{{route('my-packages.add')}}" class="btn btn-outline-dark">
                      Add Package
                     </a>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" wire:click="updateAllPacakges" class="btn btn-outline-dark">
+                     Update all
+                    </button>
                 </div>
             </div>
         </div>
