@@ -20,6 +20,19 @@ class Package extends Model
         return str_replace('https://example.com/', config('app.url'), $this->screenshot);
     }
 
+    public function displayName()
+    {
+        if (!empty($this->description)) {
+            return $this->description;
+        }
+
+        if (!empty($this->name)) {
+            return $this->name;
+        }
+
+        return $this->repository_url;
+    }
+
     public function teams()
     {
         return $this->belongsToMany(Jetstream::teamModel(), 'team_packages')->withTimestamps();

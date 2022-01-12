@@ -171,6 +171,10 @@ class ProcessPackageSatis implements ShouldQueue
                             $lastVersionMetaData['name'] = $packageVersion['name'];
                         }
 
+                        if (isset($packageVersion['type'])) {
+                            $lastVersionMetaData['type'] = $packageVersion['type'];
+                        }
+
                         if (isset($packageVersion['description'])) {
                             $lastVersionMetaData['description'] = $packageVersion['description'];
                         }

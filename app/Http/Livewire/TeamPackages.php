@@ -22,8 +22,17 @@ class TeamPackages extends Component
     public $keyword = '';
     public $check_background_job = false;
 
+    public $show_add_team_package_form = false;
+    public $add_from_existing = false;
+    public $existing_packages_grouped = [];
+
     public $is_visible = [];
     public $is_paid = [];
+
+    public function showAddTeamPackageForm()
+    {
+        $this->show_add_team_package_form = true;
+    }
 
     public function render()
     {
@@ -33,6 +42,20 @@ class TeamPackages extends Component
         $userId = $user->id;
         $teamId = $user->currentTeam->id;
         $this->team = $user->currentTeam;
+
+        $getExistingPackages = Package::select(['name','type','description','repository_url','id'])->get();
+        if ($getExistingPackages != null) {
+            foreach ($getExistingPackages as $existingPackage) {
+                $groupName = 'All';
+                if (!empty($existingPackage->type)) {
+                    $groupName = $existingPackage->type;
+                }
+                $this->existing_packages_grouped[$groupName][] = [
+                    'name'=>$existingPackage->displayName(),
+                    'id'=>$existingPackage->id
+                ];
+            }
+        }
 
         // Is visible
         if (!empty($this->is_visible)) {

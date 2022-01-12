@@ -26,6 +26,61 @@
         </div>
     @endif
 
+    <div class="col-md-12 text-right pb-3">
+        <div class="mb-3">
+          <button type="button" wire:click="showAddTeamPackageForm" class="btn btn-outline-dark btn-sm">Add team package</button>
+        </div>
+        @if($show_add_team_package_form)
+        <div class="mt-3">
+            @if($add_from_existing)
+                <div class="mb-3 has-validation">
+                    <label for="inputRepository" class="form-label">Existing repositories</label>
+                    <select class="form-control">
+                        @foreach($existing_packages_grouped as $group_name=>$existing_packages)
+                            <optgroup label="{{$group_name}}">
+                                @foreach($existing_packages as $package)
+                                <option value="{{$package['id']}}">
+                                     {{$package['name']}}
+                                </option>
+                                @endforeach
+                            </optgroup>
+                        @endforeach
+                    </select>
+                    <div id="repositoryHelp" class="form-text">Select the git repository from existing packages</div>
+                    <div class="invalid-feedback">
+                        @error('repository_url')
+                        {{ $message }}
+                        @enderror
+                    </div>
+                </div>
+            @else
+            <div class="mb-3 has-validation">
+                <label for="inputRepository" class="form-label">Repository Url</label>
+                <input type="text" wire:model="repository_url" class="form-control @error('repository_url') is-invalid @enderror" id="inputRepository" aria-describedby="repositoryHelp">
+                <div id="repositoryHelp" class="form-text">The url of git repository</div>
+                <div class="invalid-feedback">
+                    @error('repository_url')
+                    {{ $message }}
+                    @enderror
+                </div>
+            </div>
+            @endif
+            <div class="w-md-75 mt-3">
+                <div class="form-group">
+                    <div class="form-check">
+                        <x-jet-checkbox wire:model="add_from_existing" id="add_from_existing" value="1" />
+                        <label class="form-check-label" for="add_from_existing">
+                            {{ __('Add from existing') }}
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        @endif
+    </div>
+
     <div class="col-md-12">
         <table class="table table-bordered bg-white">
             <thead>
