@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Jobs\ProcessPackageSatis;
 use App\Jobs\ProcessPackageSubmit;
 use App\Models\Package;
+use App\Models\Team;
 use App\Models\TeamPackage;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -118,14 +119,24 @@ class TeamPackages extends Component
 
     public function addTeamPackage()
     {
+        $user = auth()->user();
+        $teamId = $user->currentTeam->id;
+
         if ($this->add_from_existing) {
             if ($this->add_existing_repository_id) {
-
-
+                $package = Package::where('user_id', $user->id)->where('id', $this->add_existing_repository_id)->first();
+                if ($package !== null) {
+                    $teamPackage = new TeamPackage();
+                    $teamPackage->package_id = $package->id;
+                    $teamPackage->team_id = $teamId;
+                    $teamPackage->save();
+                }
                 return [];
             }
             return [];
         }
+
+        
     }
 
     public function packageUpdate($id)
