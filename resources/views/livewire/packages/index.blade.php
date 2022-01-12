@@ -95,6 +95,7 @@
                                 {{$package->clone_log}}
                             </div>
                         @endif
+                        <div>Added by: {{$package->owner->name}}</div>
                     </td>
                     <td>
                         @if($package->clone_status == \App\Models\Package::CLONE_STATUS_SUCCESS)
@@ -105,10 +106,10 @@
                     </td>
                     <td>{{$package->updated_at}}</td>
                     <td>
-                        <a class="btn btn-outline-dark" href="{{route('my-packages.show', $package->id)}}">View</a>
-                        <button type="button" class="btn btn-outline-dark" wire:click="update({{ $package->id }})" wire:loading.attr="disabled">Update</button>
-                        <a href="{{route('my-packages.edit', $package->id)}}" class="btn btn-outline-dark">Edit</a>
-                        <button type="button" class="btn btn-outline-dark" wire:click="delete({{ $package->id }})" wire:loading.attr="disabled">Delete</button>
+                        <a class="btn btn-outline-dark btn-sm" href="{{route('my-packages.show', $package->id)}}">View</a>
+                        <button type="button" class="btn btn-outline-dark btn-sm" wire:click="update({{ $package->id }})" wire:loading.attr="disabled">Update</button>
+                        <a href="{{route('my-packages.edit', $package->id)}}" class="btn btn-outline-dark btn-sm">Edit</a>
+                        <button type="button" class="btn btn-outline-dark btn-sm" wire:click="delete({{ $package->id }})" wire:loading.attr="disabled">Delete</button>
                     </td>
                 </tr>
             @endforeach
