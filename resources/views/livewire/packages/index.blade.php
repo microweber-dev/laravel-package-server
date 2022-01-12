@@ -42,7 +42,17 @@
                         <small>Microweber Packages is the official microweber cms composer repository. </small>
                     </div>
                 </div>
-                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <div class="form-check">
+                            <x-jet-checkbox wire:model="shared_packages" id="shared_packages" value="1" />
+                            <label class="form-check-label" for="shared_packages">
+                                {{ __('Shared packages') }}
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
                 <div class="col-md-2 justify-content-center">
                     <a href="{{route('my-packages.add')}}" class="btn btn-outline-dark">
                      Add Package
@@ -51,7 +61,6 @@
             </div>
         </div>
     </div>
-
     <div class="col-md-12">
         <table class="table table-bordered bg-white">
             <thead>

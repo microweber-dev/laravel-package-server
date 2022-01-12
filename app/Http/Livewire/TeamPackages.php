@@ -101,11 +101,11 @@ class TeamPackages extends Component
         }
 
         $package = Package::where('id', $id)->with('teams')->first();
-        if (!in_array($package->team_owner_id,$userAdminInTeams)) {
+        if (!in_array($package->team_owner_id, $userAdminInTeams)) {
             return [];
         }
 
-        dispatch(new ProcessPackageSatis($package->id)); 
+        dispatch(new ProcessPackageSatis($package->id));
 
         $this->check_background_job = true;
 
