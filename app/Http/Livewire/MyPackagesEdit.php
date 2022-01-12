@@ -82,7 +82,7 @@ class MyPackagesEdit extends Component
         $package->save();
 
         if (!empty($this->team_ids)) {
-            $package->teams()->sync($this->team_ids); 
+            $package->teams()->sync($this->team_ids);
         }
 
         if ($newPackageAdd) {
