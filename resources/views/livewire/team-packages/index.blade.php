@@ -160,6 +160,7 @@
                         <a class="btn btn-outline-dark" href="{{route('my-packages.show', $teamPackage->package->id)}}">View</a>
                         <button type="button" class="btn btn-outline-dark" wire:click="packageUpdate({{ $teamPackage->package->id }})" wire:loading.attr="disabled">Update</button>
                         <a href="{{route('team-packages.edit', $teamPackage->id)}}" class="btn btn-outline-dark">Edit</a>
+                        <button type="button" class="btn btn-outline-dark" wire:click="teamPackageRemove({{ $teamPackage->id }})" wire:loading.attr="disabled">Remove</button>
                     </td>
                 </tr>
             @endforeach

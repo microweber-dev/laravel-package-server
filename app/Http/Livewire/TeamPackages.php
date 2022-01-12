@@ -136,7 +136,20 @@ class TeamPackages extends Component
             return [];
         }
 
-        
+    }
+
+    public function teamPackageRemove($id)
+    {
+        $user = auth()->user();
+        $team = $user->currentTeam;
+
+        if (!$user->hasTeamRole($team, 'admin')) {
+           return [];
+        }
+
+        $findTeamPackage = TeamPackage::where('id', $id)->where('team_id', $team->id)->first();
+        $findTeamPackage->delete();
+
     }
 
     public function packageUpdate($id)
