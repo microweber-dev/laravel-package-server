@@ -18,7 +18,6 @@ class MyPackages extends Component
 
     public $keyword = '';
     public $check_background_job = false;
-    public $shared_packages = false;
 
     public function render()
     {
@@ -29,18 +28,8 @@ class MyPackages extends Component
         }
 
         $user = auth()->user();
-        $teams = $user->allTeams();
 
-        $userAdminInTeams = [];
-        foreach ($teams as $team) {
-            if ($user->hasTeamRole($team, 'admin')) {
-                $userAdminInTeams[] = $team->id;
-            }
-        }
-
-        $packages = Package::when((!empty($userAdminInTeams) && $this->shared_packages), function ($q) use ($userAdminInTeams) {
-                $q->whereIn('team_owner_id', $userAdminInTeams);
-            })
+        $packages = Package::where('user_id', $user->id)
             ->when(!empty($keyword), function ($q) use ($keyword) {
                 $q->where('name', 'LIKE', "%$keyword%");
                 $q->orWhere('repository_url', 'LIKE', "%$keyword%");

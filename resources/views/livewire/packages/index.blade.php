@@ -43,15 +43,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="form-group">
-                        <div class="form-check">
-                            <x-jet-checkbox wire:model="shared_packages" id="shared_packages" value="1" />
-                            <label class="form-check-label" for="shared_packages">
-                                {{ __('Shared packages') }}
-                            </label>
-                        </div>
 
-                    </div>
                 </div>
                 <div class="col-md-2 justify-content-center">
                     <a href="{{route('my-packages.add')}}" class="btn btn-outline-dark">
@@ -95,7 +87,6 @@
                                 {{$package->clone_log}}
                             </div>
                         @endif
-                        <div>Added by: {{$package->owner->name}}</div>
                     </td>
                     <td>
                         @if($package->clone_status == \App\Models\Package::CLONE_STATUS_SUCCESS)
