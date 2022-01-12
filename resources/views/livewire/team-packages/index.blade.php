@@ -26,23 +26,20 @@
         </div>
     @endif
 
-    <div class="col-md-12 text-right pb-3">
-        <div class="mb-3">
-          <button type="button" wire:click="showAddTeamPackageForm" class="btn btn-outline-dark btn-sm">Add team package</button>
-        </div>
+    <div class="col-md-12 text-right pb-2">
         @if($show_add_team_package_form)
-        <div class="mt-3">
+        <div class="">
             @if($add_from_existing)
                 <div class="mb-3 has-validation">
                     <label for="inputRepository" class="form-label">Existing repositories</label>
-                    <select class="form-control">
+                    <select class="form-control" wire:model="add_existing_repository_id">
                         @foreach($existing_packages_grouped as $group_name=>$existing_packages)
                             <optgroup label="{{$group_name}}">
                                 @foreach($existing_packages as $package)
                                 <option value="{{$package['id']}}">
                                      {{$package['name']}}
                                 </option>
-                                @endforeach 
+                                @endforeach
                             </optgroup>
                         @endforeach
                     </select>
@@ -65,7 +62,7 @@
                 </div>
             </div>
             @endif
-            <div class="w-md-75 mt-3">
+            <div class="w-md-75 mb-3">
                 <div class="form-group">
                     <div class="form-check">
                         <x-jet-checkbox wire:model="add_from_existing" id="add_from_existing" value="1" />
@@ -79,6 +76,16 @@
 
         </div>
         @endif
+
+        <div>
+            @if($show_add_team_package_form)
+                <button type="button" wire:click="hideAddTeamPackageForm" class="btn btn-outline-danger btn-sm">Cancel</button>
+                <button type="button" wire:click="addTeamPackage" class="btn btn-outline-success btn-sm">Save package</button>
+            @else
+                <button type="button" wire:click="showAddTeamPackageForm" class="btn btn-outline-dark btn-sm">Add team package</button>
+            @endif
+        </div>
+
     </div>
 
     <div class="col-md-12">

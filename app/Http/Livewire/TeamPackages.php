@@ -22,6 +22,7 @@ class TeamPackages extends Component
     public $keyword = '';
     public $check_background_job = false;
 
+    public $add_existing_repository_id = false;
     public $show_add_team_package_form = false;
     public $add_from_existing = false;
     public $existing_packages_grouped = [];
@@ -32,6 +33,11 @@ class TeamPackages extends Component
     public function showAddTeamPackageForm()
     {
         $this->show_add_team_package_form = true;
+    }
+
+    public function hideAddTeamPackageForm()
+    {
+        $this->show_add_team_package_form = false;
     }
 
     public function render()
@@ -110,6 +116,17 @@ class TeamPackages extends Component
 
     }
 
+    public function addTeamPackage()
+    {
+        if ($this->add_from_existing) {
+            if ($this->add_existing_repository_id) {
+
+
+                return [];
+            }
+            return [];
+        }
+    }
 
     public function packageUpdate($id)
     {
