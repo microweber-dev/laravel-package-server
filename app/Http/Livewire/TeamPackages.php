@@ -138,21 +138,26 @@ class TeamPackages extends Component
         $user = auth()->user();
         $teamId = $user->currentTeam->id;
 
+
         if ($this->add_from_existing) {
             if ($this->add_existing_repository_id) {
                 $package = Package::where('id', $this->add_existing_repository_id)->first();
                 if ($package !== null) {
-                    $teamPackage = new TeamPackage();
-                    $teamPackage->package_id = $package->id;
-                    $teamPackage->team_id = $teamId;
-                    $teamPackage->is_visible = 1;
-                    $teamPackage->save();
+                    $findTeamPacakge = TeamPackage::where('team_id', $teamId)->where('package_id', $package->id)->first();
+                    if ($findTeamPacakge == null) {
+                        $teamPackage = new TeamPackage();
+                        $teamPackage->package_id = $package->id;
+                        $teamPackage->team_id = $teamId;
+                        $teamPackage->is_visible = 1;
+                        $teamPackage->save();
+                    }
                 }
-                return [];
             }
-            return [];
         }
 
+        $this->show_add_team_package_form = false;
+        $this->add_from_existing = false;
+        $this->add_existing_repository_id = false;
     }
 
     public function teamPackageRemove($id)
