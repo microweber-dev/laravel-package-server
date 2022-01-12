@@ -59,20 +59,17 @@
                 </div>
             </div>
 
-             {{--   Only owner can change the package team--}}
-            @if(Auth::user()->id == $package_user_id)
            <div class="w-md-75 mt-4 mb-4">
-            <div class="form-group">
-                <x-jet-label for="team_owner_id" value="{{ __('Owner Team') }}" />
-                <select id="team_owner_id" name="team_owner_id" wire:model.defer="team_owner_id" class="form-control">
-                    <option value="">None</option>
-                    @foreach (Auth::user()->allTeams() as $team)
-                    <option value="{{$team->id}}">{{$team->name}}</option>
-                    @endforeach
-                </select>
+                <div class="form-group">
+                    <x-jet-label for="team_owner_id" value="{{ __('Owner Team') }}" />
+                    <select id="team_owner_id" name="team_owner_id" wire:model.defer="team_owner_id" class="form-control">
+                        <option value="">None</option>
+                        @foreach (Auth::user()->allTeams() as $team)
+                        <option value="{{$team->id}}">{{$team->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
-        </div>
-            @endif
 
                 <div class="w-md-75 mt-4">
             @if($package_id)
