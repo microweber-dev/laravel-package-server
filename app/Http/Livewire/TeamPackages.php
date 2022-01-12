@@ -50,7 +50,7 @@ class TeamPackages extends Component
                 if (!empty($existingPackage->type)) {
                     $groupName = $existingPackage->type;
                 }
-                $this->existing_packages_grouped[$groupName][] = [
+                $this->existing_packages_grouped[$groupName][$existingPackage->id] = [
                     'name'=>$existingPackage->displayName(),
                     'id'=>$existingPackage->id
                 ];

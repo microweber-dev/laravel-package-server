@@ -42,7 +42,7 @@
                                 <option value="{{$package['id']}}">
                                      {{$package['name']}}
                                 </option>
-                                @endforeach
+                                @endforeach 
                             </optgroup>
                         @endforeach
                     </select>
