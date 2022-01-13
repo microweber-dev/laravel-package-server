@@ -21,6 +21,8 @@ Route::get('/', function () {
 Route::namespace('\App\Http\Controllers')->group(function() {
     Route::any('packages.json', 'PackagesJsonController@index')->name('packages.json');
     Route::any('packages/{slug}/packages.json', 'PackagesJsonController@team')->name('packages.team.packages.json');
+
+    Route::post('packages/download-notify', 'PackagesJsonController@downloadNotify')->name('packages.download-notify');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function() {

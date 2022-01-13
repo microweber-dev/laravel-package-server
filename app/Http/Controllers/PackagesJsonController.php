@@ -29,6 +29,17 @@ class PackagesJsonController extends Controller
         return $json;
     }
 
+    public function downloadNotify(Request $request) {
+
+        $file = 'last-download-notify.txt';
+        if (is_file($file)) {
+            echo 'last post is: ' . file_get_contents($file);
+        }
+
+        file_put_contents($file, json_encode($request->all(), JSON_PRETTY_PRINT));
+
+    }
+
     public function team(Request $request, $slug = false) {
 
         ini_set('memory_limit', '512M');
@@ -127,6 +138,8 @@ class PackagesJsonController extends Controller
                 $package['extra']['preview_url'] = $previewUrl;
             }
         }
+
+        $package['notification-url'] = route('packages.download-notify');
 
         $whmcsUrl = '';
         if (isset($teamPackage['team_settings']['whmcs_url'])) {
