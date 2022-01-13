@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class PackageDownloadStats extends Model
 {
     use HasFactory;
+
 }

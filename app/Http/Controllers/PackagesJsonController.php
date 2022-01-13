@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Package;
+use App\Models\PackageDownloadStats;
 use App\Models\Team;
 use App\Models\TeamPackage;
 use Illuminate\Database\Eloquent\Builder;
@@ -38,8 +39,24 @@ class PackagesJsonController extends Controller
         });
         $data['ip_address'] = $request->ip();
 
-        $file = 'last-download-notify.txt';
-        file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT));
+        if (isset($data['request']['downloads'])) {
+            foreach ($data['request']['downloads'] as $download) {
+                $findPackageByName = Package::where('name', $download['name'])->first();
+                if ($findPackageByName != null) {
+
+                    $downloadStats = new PackageDownloadStats();
+                    $downloadStats->package_id = $findPackageByName->id;
+                    $downloadStats->name = $download['name'];
+                    $downloadStats->version = $download['version'];
+                    $downloadStats->ip_address = $data['ip_address'];
+                    $downloadStats->authorization = $data['headers']['authorization'];
+                    $downloadStats->host = $data['headers']['host'];
+                    $downloadStats->user_agent = $data['headers']['user-agent'];
+                    $downloadStats->save();
+
+                }
+            }
+        }
 
     }
 
