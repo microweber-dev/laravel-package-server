@@ -50,14 +50,11 @@ class MyPackagesShow extends Component
                 $this->download_stats[] = ['Day', 'Downloads'];
 
                 $packageDownloadStats = PackageDownloadStats::where('package_id', $package->id)
-                    ->groupBy('stats_day')
+                   ->groupBy(['stats_year', 'stats_month','stats_day'])
                     ->get();
-
-                dd($packageDownloadStats);
 
                 if ($packageDownloadStats->count() > 0) {
                     foreach ($packageDownloadStats as $packageStats) {
-                        dd($packageStats);
                         $this->download_stats[] = ['All', 2];
                     }
                 }
