@@ -31,8 +31,15 @@ class PackagesJsonController extends Controller
 
     public function downloadNotify(Request $request) {
 
-        $file = 'last-download-notify.txt'; 
-        file_put_contents($file, json_encode($request->all(), JSON_PRETTY_PRINT));
+        $data = [];
+        $data['request'] = $request->all();
+        $data['headers'] = collect($request->header())->transform(function ($item) {
+            return $item[0];
+        });
+        $data['ip_address'] = $request->ip();
+
+        $file = 'last-download-notify.txt';
+        file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT));
 
     }
 
