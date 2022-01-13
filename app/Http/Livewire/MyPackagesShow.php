@@ -10,6 +10,7 @@ use App\Models\Team;
 use App\Rules\CanAddRepositoryToTeamRule;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -44,11 +45,22 @@ class MyPackagesShow extends Component
 
 
             if ($this->period_stats = 'daily') {
+
                 $this->download_stats = [];
                 $this->download_stats[] = ['Day', 'Downloads'];
 
-                $packageDownloadsCount = PackageDownloadStats::where('package_id', $package->id)->get();
-                $this->download_stats[] = ['All', $packageDownloadsCount->count()];
+                $packageDownloadStats = PackageDownloadStats::where('package_id', $package->id)
+                    ->groupBy('stats_day')
+                    ->get();
+
+                dd($packageDownloadStats);
+
+                if ($packageDownloadStats->count() > 0) {
+                    foreach ($packageDownloadStats as $packageStats) {
+                        dd($packageStats);
+                        $this->download_stats[] = ['All', 2];
+                    }
+                }
             }
 
             $this->repository_url = $package->repository_url;
