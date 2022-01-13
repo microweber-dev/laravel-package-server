@@ -41,6 +41,7 @@ class PackagesJsonController extends Controller
 
         if (isset($data['request']['downloads'])) {
             foreach ($data['request']['downloads'] as $download) {
+                
                 $findPackageByName = Package::where('name', $download['name'])->first();
                 if ($findPackageByName != null) {
 
