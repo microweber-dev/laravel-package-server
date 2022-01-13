@@ -41,7 +41,7 @@ class PackagesJsonController extends Controller
 
         if (isset($data['request']['downloads'])) {
             foreach ($data['request']['downloads'] as $download) {
-                
+
                 $findPackageByName = Package::where('name', $download['name'])->first();
                 if ($findPackageByName != null) {
 
@@ -57,16 +57,6 @@ class PackagesJsonController extends Controller
 
                 }
             }
-        }
-
-    }
-
-    public function readNotify(Request $request) {
-
-        $file = 'last-download-notify.txt';
-
-        if (is_file($file)) {
-            echo 'last post is: ' . file_get_contents($file);
         }
 
     }

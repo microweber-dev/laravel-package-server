@@ -24,8 +24,7 @@ Route::namespace('\App\Http\Controllers')->group(function() {
 });
 
 Route::namespace('\App\Http\Controllers')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])->group(function() {
-    Route::any('packages/download-notify', 'PackagesJsonController@downloadNotify')->name('packages.download-notify');
-    Route::get('packages/read-notify', 'PackagesJsonController@readNotify');
+    Route::post('packages/download-notify', 'PackagesJsonController@downloadNotify')->name('packages.download-notify');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function() {
