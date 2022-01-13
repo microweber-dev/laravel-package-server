@@ -140,7 +140,7 @@ class TeamPackages extends Component
                         $query->whereIn('team_owner_id', $user->getTeamIdsWhereIsAdmin());
                         $query->orWhere('user_id', $user->id);
                     })
-                    ->first(); 
+                    ->first();
 
                 if ($package !== null) {
                     $findTeamPacakge = TeamPackage::where('team_id', $teamId)->where('package_id', $package->id)->first();
@@ -182,8 +182,13 @@ class TeamPackages extends Component
     {
         $user = auth()->user();
 
-        $package = Package::where('id', $id)->with('teams')->first();
-        if (!in_array($package->team_owner_id, $user->getTeamIdsWhereIsAdmin())) {
+        $package = Package::where('id',$id)
+            ->where(function($query) use ($user) {
+                $query->whereIn('team_owner_id', $user->getTeamIdsWhereIsAdmin());
+                $query->orWhere('user_id', $user->id);
+            })
+            ->first();
+        if ($package == null) {
             return [];
         }
 
