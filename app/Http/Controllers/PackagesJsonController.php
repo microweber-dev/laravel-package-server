@@ -31,12 +31,18 @@ class PackagesJsonController extends Controller
 
     public function downloadNotify(Request $request) {
 
+        $file = 'last-download-notify.txt'; 
+        file_put_contents($file, json_encode($request->all(), JSON_PRETTY_PRINT));
+
+    }
+
+    public function readNotify(Request $request) {
+
         $file = 'last-download-notify.txt';
+
         if (is_file($file)) {
             echo 'last post is: ' . file_get_contents($file);
         }
-
-        file_put_contents($file, json_encode($request->all(), JSON_PRETTY_PRINT));
 
     }
 
