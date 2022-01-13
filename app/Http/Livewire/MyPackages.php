@@ -27,13 +27,11 @@ class MyPackages extends Component
             $this->check_background_job = true;
         }
 
-        $user = auth()->user();
-
-        $packages = Package::where('user_id', $user->id)
-            ->when(!empty($keyword), function ($q) use ($keyword) {
+        $packages = Package::when(!empty($keyword), function ($q) use ($keyword) {
                 $q->where('name', 'LIKE', "%$keyword%");
                 $q->orWhere('repository_url', 'LIKE', "%$keyword%");
             })
+            ->userHasAccess()
             ->orderBy('id','DESC')
            ->paginate(100);
 
@@ -43,9 +41,7 @@ class MyPackages extends Component
 
     public function update($id)
     {
-        $userId = auth()->user()->id;
-
-        $package = Package::where('id', $id)->where('user_id', $userId)->first();
+        $package = Package::where('id', $id)->userHasAccess()->first();
 
         dispatch(new ProcessPackageSatis($package->id));
 
@@ -55,9 +51,7 @@ class MyPackages extends Component
 
     public function updateAllPacakges()
     {
-        $user = auth()->user();
-
-        $packages = Package::select(['id','user_id'])->where('user_id', $user->id)->get();
+        $packages = Package::select(['id','user_id'])->userHasAccess()->get();
         if ($packages->count() > 0) {
             foreach ($packages as $package) {
                 dispatch(new ProcessPackageSatis($package->id));
@@ -69,12 +63,16 @@ class MyPackages extends Component
 
     public function delete($id)
     {
-        $userId = auth()->user()->id;
+        $package = Package::where('id',$id)->userHasAccess()->with('teams')->first();
+        if ($package == null) {
+            return [];
+        }
 
+        if (!empty($package->teams)) {
+            $package->teams()->detach();
+        }
 
-        $findPackage = Package::where('id', $id)->where('user_id', $userId)->first();
-        $findPackage->teams()->detach();
-        $findPackage->delete();
+        $package->delete();
 
         session()->flash('message', 'Package deleted successfully.');
 
@@ -82,9 +80,7 @@ class MyPackages extends Component
 
     public function backgroundJobStatus()
     {
-        $userId = auth()->user()->id;
-
-        $findRunningPackages = Package::where('user_id', $userId)
+        $findRunningPackages = Package::userHasAccess()
             ->where('clone_status', Package::CLONE_STATUS_RUNNING)
             ->count();
 

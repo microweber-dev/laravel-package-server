@@ -52,8 +52,7 @@ class TeamPackages extends Component
         $this->team = $user->currentTeam;
 
         $getExistingPackages = Package::select(['team_owner_id','name','type','description','repository_url','id'])
-            ->whereIn('team_owner_id', $user->getTeamIdsWhereIsAdmin())
-            ->orWhere('user_id', $userId)
+            ->userHasAccess()
             ->get();
 
         if ($getExistingPackages != null) {
@@ -136,10 +135,7 @@ class TeamPackages extends Component
             if ($this->add_existing_repository_id) {
 
                 $package = Package::where('id',$this->add_existing_repository_id)
-                    ->where(function($query) use ($user) {
-                        $query->whereIn('team_owner_id', $user->getTeamIdsWhereIsAdmin());
-                        $query->orWhere('user_id', $user->id);
-                    })
+                    ->userHasAccess()
                     ->first();
 
                 if ($package !== null) {
@@ -183,10 +179,7 @@ class TeamPackages extends Component
         $user = auth()->user();
 
         $package = Package::where('id',$id)
-            ->where(function($query) use ($user) {
-                $query->whereIn('team_owner_id', $user->getTeamIdsWhereIsAdmin());
-                $query->orWhere('user_id', $user->id);
-            })
+            ->userHasAccess()
             ->first();
         if ($package == null) {
             return [];

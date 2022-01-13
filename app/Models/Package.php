@@ -15,6 +15,17 @@ class Package extends Model
     public const CLONE_STATUS_SUCCESS = 'success';
     public const CLONE_STATUS_FAILED = 'failed';
 
+    public function scopeUserHasAccess($query)
+    {
+        $user = auth()->user();
+
+        return $query->where(function($query) use ($user) {
+            $query->whereIn('team_owner_id', $user->getTeamIdsWhereIsAdmin());
+            $query->orWhere('user_id', $user->id);
+        });
+
+    }
+
     public function screenshot()
     {
         return str_replace('https://example.com/', config('app.url'), $this->screenshot);
