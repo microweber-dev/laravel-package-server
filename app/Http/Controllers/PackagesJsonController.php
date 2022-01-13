@@ -50,7 +50,7 @@ class PackagesJsonController extends Controller
                     $downloadStats->name = $download['name'];
                     $downloadStats->version = $download['version'];
                     $downloadStats->ip_address = $data['ip_address'];
-                    $downloadStats->authorization = json_encode($data['headers']['authorization']);
+                    $downloadStats->authorization = $data['headers']['authorization'];
                     $downloadStats->host = $data['headers']['host'];
                     $downloadStats->user_agent = $data['headers']['user-agent'];
                     $downloadStats->save();
