@@ -26,6 +26,11 @@ class Package extends Model
 
     }
 
+    public function downloadStats()
+    {
+        return $this->hasMany(PackageDownloadStats::class);
+    }
+
     public function screenshot()
     {
         return str_replace('https://example.com/', config('app.url'), $this->screenshot);

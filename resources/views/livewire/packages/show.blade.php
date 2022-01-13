@@ -6,7 +6,32 @@
         </h2>
     </x-slot>
 
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <script type="text/javascript" src="//www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages':['bar']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable({!! json_encode($this->download_stats) !!});
+
+            var options = {
+                chart: {
+                    title: 'Download statistic',
+                    subtitle: 'The statistic of package downloads',
+                }
+            };
+
+            var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+
+            chart.draw(data, google.charts.Bar.convertOptions(options));
+        }
+    </script>
+
+    <div class="container p-3" style="background: #fff;">
+        <div id="columnchart_material" style="width: 100%; height: 500px;"></div>
+    </div>
+
+    <ul class="nav nav-tabs mt-5" id="myTab" role="tablist">
         <li class="nav-item" role="Information" wire:ignore >
             <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#Information" type="button" role="tab" aria-controls="Information" aria-selected="true">
                 Information
