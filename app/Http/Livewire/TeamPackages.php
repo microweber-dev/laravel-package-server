@@ -156,7 +156,7 @@ class TeamPackages extends Component
         }
 
         if ($this->add_existing_repository_url) {
-            return redirect(route('my-packages.add') . '?repository_url=' . $this->add_existing_repository_url.'&team_id=' . $teamId.'&team_owner_id='.$teamId);
+            return redirect(route('my-packages.add') . '?repository_url=' . trim($this->add_existing_repository_url).'&team_id=' . $teamId.'&team_owner_id='.$teamId);
         }
 
         $this->show_add_team_package_form = false;
