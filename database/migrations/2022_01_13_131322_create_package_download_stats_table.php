@@ -18,7 +18,7 @@ class CreatePackageDownloadStatsTable extends Migration
             $table->foreignId('package_id');
             $table->string('name');
             $table->string('version');
-            $table->string('authorization');
+            $table->longText('authorization');
             $table->string('host');
             $table->string('user_agent');
             $table->string('ip_address');
