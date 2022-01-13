@@ -158,10 +158,16 @@
 
                     <td>{{$teamPackage->updated_at}}</td>
                     <td>
-                        <a class="btn btn-outline-dark" href="{{route('my-packages.show', $teamPackage->package->id)}}">View</a>
-                        <button type="button" class="btn btn-outline-dark" wire:click="packageUpdate({{ $teamPackage->package->id }})" wire:loading.attr="disabled">Update</button>
-                        <a href="{{route('team-packages.edit', $teamPackage->id)}}" class="btn btn-outline-dark">Edit</a>
-                        <button type="button" class="btn btn-outline-dark" wire:click="teamPackageRemove({{ $teamPackage->id }})" wire:loading.attr="disabled">Remove</button>
+                        <a class="btn btn-outline-dark btn-sm" href="{{route('my-packages.show', $teamPackage->package->id)}}">View</a>
+                        <button type="button" class="btn btn-outline-dark btn-sm" wire:click="packageUpdate({{ $teamPackage->package->id }})" wire:loading.attr="disabled">Update</button>
+                        <a href="{{route('team-packages.edit', $teamPackage->id)}}" class="btn btn-outline-dark btn-sm">Edit</a>
+
+                        @if($confirming_delete_id === $teamPackage->id)
+                            <button wire:click="delete({{ $teamPackage->id }})" class="btn btn-outline-danger btn-sm">Sure?</button>
+                        @else
+                            <button wire:click="confirmDelete({{ $teamPackage->id }})" class="btn btn-outline-dark btn-sm">Delete</button>
+                        @endif
+
                     </td>
                 </tr>
             @endforeach

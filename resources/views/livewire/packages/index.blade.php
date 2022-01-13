@@ -6,7 +6,7 @@
         </h2>
     </x-slot>
 
-    @if ($check_background_job)
+    @if ($checkBackgroundJob)
         <div wire:poll="backgroundJobStatus">
             <div class="col-md-12">
                 <div class="alert alert-success align-items-center" role="alert">
@@ -102,7 +102,13 @@
                         <a class="btn btn-outline-dark btn-sm" href="{{route('my-packages.show', $package->id)}}">View</a>
                         <button type="button" class="btn btn-outline-dark btn-sm" wire:click="update({{ $package->id }})" wire:loading.attr="disabled">Update</button>
                         <a href="{{route('my-packages.edit', $package->id)}}" class="btn btn-outline-dark btn-sm">Edit</a>
-                        <button type="button" class="btn btn-outline-dark btn-sm" wire:click="delete({{ $package->id }})" wire:loading.attr="disabled">Delete</button>
+
+                        @if($confirmingDeleteId === $package->id)
+                            <button wire:click="delete({{ $package->id }})" class="btn btn-outline-danger btn-sm">Sure?</button>
+                        @else
+                            <button wire:click="confirmDelete({{ $package->id }})"  class="btn btn-outline-dark btn-sm">Delete</button>
+                        @endif
+
                     </td>
                 </tr>
             @endforeach

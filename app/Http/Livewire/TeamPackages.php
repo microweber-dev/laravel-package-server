@@ -23,6 +23,7 @@ class TeamPackages extends Component
     public $keyword = '';
     public $check_background_job = false;
 
+    public $confirming_delete_id = true;
     public $add_existing_repository_url = '';
     public $add_existing_repository_id = false;
     public $show_add_team_package_form = false;
@@ -160,7 +161,13 @@ class TeamPackages extends Component
         $this->add_existing_repository_id = false;
     }
 
-    public function teamPackageRemove($id)
+
+    public function confirmDelete($id)
+    {
+        $this->confirming_delete_id = $id;
+    }
+
+    public function delete($id)
     {
         $user = auth()->user();
         $team = $user->currentTeam;
@@ -171,7 +178,6 @@ class TeamPackages extends Component
 
         $findTeamPackage = TeamPackage::where('id', $id)->where('team_id', $team->id)->first();
         $findTeamPackage->delete();
-
     }
 
     public function packageUpdate($id)

@@ -17,14 +17,15 @@ class MyPackages extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $keyword = '';
-    public $check_background_job = false;
+    public $checkBackgroundJob = false;
+    public $confirmingDeleteId = false;
 
     public function render()
     {
         $keyword = $this->keyword;
 
         if (request()->get('check_for_background_job') == 1) {
-            $this->check_background_job = true;
+            $this->checkBackgroundJob = true;
         }
 
         $packages = Package::when(!empty($keyword), function ($q) use ($keyword) {
@@ -45,7 +46,7 @@ class MyPackages extends Component
 
         dispatch(new ProcessPackageSatis($package->id));
 
-        $this->check_background_job = true;
+        $this->checkBackgroundJob = true;
 
     }
 
@@ -56,9 +57,14 @@ class MyPackages extends Component
             foreach ($packages as $package) {
                 dispatch(new ProcessPackageSatis($package->id));
             }
-            $this->check_background_job = true;
+            $this->checkBackgroundJob = true;
         }
 
+    }
+
+    public function confirmDelete($id)
+    {
+        $this->confirmingDeleteId = $id;
     }
 
     public function delete($id)
@@ -85,9 +91,9 @@ class MyPackages extends Component
             ->count();
 
         if ($findRunningPackages > 0) {
-            $this->check_background_job = true;
+            $this->checkBackgroundJob = true;
         } else {
-            $this->check_background_job = false;
+            $this->checkBackgroundJob = false;
         }
     }
 }
