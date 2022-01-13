@@ -51,15 +51,8 @@ class TeamPackages extends Component
         $teamId = $user->currentTeam->id;
         $this->team = $user->currentTeam;
 
-        $userAdminInTeams = [];
-        foreach ($user->allTeams() as $team) {
-            if ($user->hasTeamRole($team, 'admin')) {
-                $userAdminInTeams[] = $team->id;
-            }
-        }
-
         $getExistingPackages = Package::select(['team_owner_id','name','type','description','repository_url','id'])
-            ->whereIn('team_owner_id', $userAdminInTeams)
+            ->whereIn('team_owner_id', $user->getTeamIdsWhereIsAdmin())
             ->orWhere('user_id', $userId)
             ->get();
 
@@ -141,7 +134,14 @@ class TeamPackages extends Component
 
         if ($this->add_from_existing) {
             if ($this->add_existing_repository_id) {
-                $package = Package::where('id', $this->add_existing_repository_id)->first();
+
+                $package = Package::where('id',$this->add_existing_repository_id)
+                    ->where(function($query) use ($user) {
+                        $query->whereIn('team_owner_id', $user->getTeamIdsWhereIsAdmin());
+                        $query->orWhere('user_id', $user->id);
+                    })
+                    ->first(); 
+
                 if ($package !== null) {
                     $findTeamPacakge = TeamPackage::where('team_id', $teamId)->where('package_id', $package->id)->first();
                     if ($findTeamPacakge == null) {
@@ -181,17 +181,9 @@ class TeamPackages extends Component
     public function packageUpdate($id)
     {
         $user = auth()->user();
-        $teams = $user->allTeams();
-
-        $userAdminInTeams = [];
-        foreach ($teams as $team) {
-            if ($user->hasTeamRole($team, 'admin')) {
-                $userAdminInTeams[] = $team->id;
-            }
-        }
 
         $package = Package::where('id', $id)->with('teams')->first();
-        if (!in_array($package->team_owner_id, $userAdminInTeams)) {
+        if (!in_array($package->team_owner_id, $user->getTeamIdsWhereIsAdmin())) {
             return [];
         }
 

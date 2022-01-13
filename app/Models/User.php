@@ -96,4 +96,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(Credential::class);
     }
+
+    public function getTeamIdsWhereIsAdmin()
+    {
+        $userAdminInTeams = [];
+        foreach ($this->allTeams() as $team) {
+            if ($this->hasTeamRole($team, 'admin')) {
+                $userAdminInTeams[] = $team->id;
+            }
+        }
+        return $userAdminInTeams;
+    }
 }
