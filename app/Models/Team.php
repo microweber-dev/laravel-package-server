@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 use Laravel\Jetstream\Events\TeamCreated;
 use Laravel\Jetstream\Events\TeamDeleted;
 use Laravel\Jetstream\Events\TeamUpdated;
@@ -52,14 +53,25 @@ class Team extends JetstreamTeam
         parent::boot();
 
         self::creating(function ($model) {
+            if (empty($model->slug)) {
+                $model->generateSlug();
+            }
             $model->generateToken();
         });
 
         self::updating(function ($model) {
+            if (empty($model->slug)) {
+                $model->generateSlug();
+            }
             if (empty($model->token)) {
                 $model->generateToken();
             }
         });
+    }
+
+    public function generateSlug()
+    {
+        $this->slug = Str::slug($this->name);
     }
 
     public function generateToken()
