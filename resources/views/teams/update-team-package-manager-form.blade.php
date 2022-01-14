@@ -22,7 +22,7 @@
                              class="{{ $errors->has('package_manager_templates_demo_domain') ? 'is-invalid' : '' }}"
                              wire:model.defer="settings.package_manager_templates_demo_domain"
                              :disabled="! Gate::check('update', $team)" />
-                <small>Example: https://template.yoursite.com</small>
+                <small>Example: template.yoursite.com</small>
 
                 <x-jet-input-error for="package_manager_templates_demo_domain" />
             </div>
