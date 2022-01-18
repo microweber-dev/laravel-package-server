@@ -46,6 +46,9 @@ class MyPackagesShow extends Component
                 return abort(404, "Package  not found");
             }
 
+
+            $this->readme = $package->readme();
+
             $this->download_stats = [];
 
             $chartOptions = [

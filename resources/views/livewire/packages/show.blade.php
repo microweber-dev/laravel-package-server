@@ -33,6 +33,9 @@
                 <div class="tab-pane fade show active" id="Information" role="tabpanel" aria-labelledby="Information-tab"
                      wire:ignore.self>
 
+                    <br />
+                    <br />
+                    {!! $readme !!}
 
                 </div>
                 <div class="tab-pane fade" id="Changelog" role="tabpanel" aria-labelledby="Changelog-tab" wire:ignore.self>

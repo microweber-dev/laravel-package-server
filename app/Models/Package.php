@@ -36,6 +36,11 @@ class Package extends Model
         return str_replace('https://example.com/', config('app.url'), $this->screenshot);
     }
 
+    public function readme()
+    {
+        return @file_get_contents(str_replace('https://example.com/', config('app.url'), $this->readme));
+    }
+
     public function displayName()
     {
         if (!empty($this->description)) {
