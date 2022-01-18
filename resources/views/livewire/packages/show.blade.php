@@ -59,21 +59,17 @@
             document.addEventListener('livewire:load', function () {
                 window.livewire.on('chart-data', chartData => {
 
-                    download_statistic.data.datasets.pop();
-
+                    download_statistic.data.labels = [];
+                    download_statistic.data.datasets = [];
+                    download_statistic.update();
+                    
                     Object.entries(chartData.data.datasets).forEach(([key, dataset]) => {
-                        download_statistic.data.datasets.push({
-                            label: dataset.label,
-                            data: dataset.data
-                        });
+                        download_statistic.data.datasets.push(dataset);
                     });
 
-                    download_statistic.data.labels = chartData.data.labels;
-
-                   /* download_statistic.data.datasets.push({
-                        label: 1,
-                        data: {}
-                    });*/
+                    Object.entries(chartData.data.labels).forEach(([key, labels]) => {
+                        download_statistic.data.labels.push(labels);
+                    });
 
                     download_statistic.update();
 
