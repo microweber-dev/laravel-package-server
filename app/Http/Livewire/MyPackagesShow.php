@@ -19,6 +19,7 @@ class MyPackagesShow extends Component
     public $credentials = [];
     public $period_stats = 'monthly';
     public $download_stats = false;
+    public $confirming_delete_id = false;
     public $credential_id;
 
     public function render()
@@ -33,6 +34,10 @@ class MyPackagesShow extends Component
         $this->package_id = $id;
     }
 
+    public function confirmDelete($id)
+    {
+        $this->confirming_delete_id = $id;
+    }
 
     public function updateChart()
     {
@@ -46,10 +51,7 @@ class MyPackagesShow extends Component
                 return abort(404, "Package  not found");
             }
 
-
-            $this->description = $package->description;
-            $this->screenshot = $package->screenshot();
-            $this->readme = $package->readme();
+            $this->package = $package;
 
             $this->download_stats = [];
 
