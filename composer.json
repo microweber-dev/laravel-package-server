@@ -17,7 +17,6 @@
         "laravel/jetstream": "^2.5",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "laraveldaily/laravel-charts": "^0.1.29",
         "livewire/livewire": "dev-master",
         "symfony/filesystem": "^5.4",
         "symplify/git-wrapper": "^9.3"

@@ -2,18 +2,12 @@
 
 namespace App\Http\Livewire;
 
-use App\Jobs\ProcessPackageSatis;
 use App\Jobs\ProcessPackageSubmit;
+use App\MicroweberChart;
 use App\Models\Package;
 use App\Models\PackageDownloadStats;
-use App\Models\Team;
-use App\Rules\CanAddRepositoryToTeamRule;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use LaravelDaily\LaravelCharts\Classes\LaravelChart;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class MyPackagesShow extends Component
 {
@@ -30,34 +24,50 @@ class MyPackagesShow extends Component
 
     public function render()
     {
-        return view('livewire.packages.show');
-    }
-
-    public function mount($id = false)
-    {
         $user = auth()->user();
 
-        $this->package_id = $id;
-
         if ($this->package_id) {
+
             $package = Package::where('id', $this->package_id)->first();
             if ($package == null) {
                 return abort(404, "Package  not found");
             }
 
             $this->download_stats = [];
-            $this->period_stats = 'monthly';
 
-            $chartOptions = [
-                'chart_title' => 'Downloads',
-                'report_type' => 'group_by_date',
-                'model' => PackageDownloadStats::class,
-                'group_by_field' => 'created_at',
-                'group_by_period' => 'day',
-                'chart_type' => 'bar',
-                'where_raw'=> 'package_id = ' . $package->id
-            ];
-            $chart = new LaravelChart($chartOptions);
+            if ($this->period_stats == 'monthly') {
+                $chartOptions = [
+                    'chart_title' => 'Downloads by month',
+                    'report_type' => 'group_by_date',
+                    'model' => PackageDownloadStats::class,
+                    'group_by_field' => 'created_at',
+                    'group_by_period' => 'month',
+                    'chart_type' => 'bar',
+                    'where_raw'=> 'package_id = ' . $package->id
+                ];
+            } else if ($this->period_stats == 'daily') {
+                $chartOptions = [
+                    'chart_title' => 'Downloads by day',
+                    'report_type' => 'group_by_date',
+                    'model' => PackageDownloadStats::class,
+                    'group_by_field' => 'created_at',
+                    'group_by_period' => 'day',
+                    'chart_type' => 'bar',
+                    'where_raw'=> 'package_id = ' . $package->id
+                ];
+            } else {
+                $chartOptions = [
+                    'chart_title' => 'Downloads by hour',
+                    'report_type' => 'group_by_date',
+                    'model' => PackageDownloadStats::class,
+                    'group_by_field' => 'created_at',
+                    'group_by_period' => 'hour',
+                    'chart_type' => 'bar',
+                    'where_raw'=> 'package_id = ' . $package->id
+                ];
+            }
+
+            $chart = new MicroweberChart($chartOptions);
             $this->chart_html = $chart->renderHtml()->render();
             $this->chart_js_library = $chart->renderChartJsLibrary();
             $this->chart_js = $chart->renderJs()->render();
@@ -68,6 +78,14 @@ class MyPackagesShow extends Component
         }
 
         $this->credentials = $user->credentials()->get();
+
+        return view('livewire.packages.show');
     }
+
+    public function mount($id = false)
+    {
+        $this->package_id = $id;
+    }
+
 
 }

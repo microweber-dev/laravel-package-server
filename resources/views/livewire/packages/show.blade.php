@@ -8,6 +8,18 @@
 
 
     <div class="container p-3" style="background: #fff;">
+
+        <div class="w-md-75 mb-4">
+            <div class="form-group">
+                <x-jet-label for="period_stats" value="{{ __('Period stats') }}" />
+                <select id="period_stats" name="period_stats" wire:model="period_stats" class="form-control">
+                    <option value="hourly">Hourly</option>
+                    <option value="daily">Daily</option>
+                    <option value="monthly">Monthly</option>
+                </select>
+            </div>
+        </div>
+
         {!! $chart_html !!}
 
         {!! $chart_js_library !!}
