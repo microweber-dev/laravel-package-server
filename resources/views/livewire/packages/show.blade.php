@@ -20,10 +20,14 @@
             </div>
         </div>
 
-        {!! $chart_html !!}
+        @dump($chart_js)
+        
+        <canvas id="download_statistic"></canvas>
 
-        {!! $chart_js_library !!}
-        {!! $chart_js !!}
+        <script>
+            var ctx = document.getElementById("download_statistic");
+            var downloadStatistic = new Chart(ctx, {});
+        </script>
     </div>
 
     <ul class="nav nav-tabs mt-5" id="myTab" role="tablist">

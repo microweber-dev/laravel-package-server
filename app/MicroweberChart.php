@@ -33,7 +33,11 @@ class MicroweberChart
     {
         foreach (func_get_args() as $arg) {
             $this->options = $arg;
-            $this->options['chart_name'] = strtolower(Str::slug($arg['chart_title'], '_'));
+            if (isset($arg['chart_name'])) {
+                $this->options['chart_name'] = $arg['chart_name'];
+            } else {
+                $this->options['chart_name'] = strtolower(Str::slug($arg['chart_title'], '_'));
+            }
             $this->datasets[] = $this->prepareData();
         }
     }
@@ -273,12 +277,22 @@ class MicroweberChart
         }
     }
 
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    public function getDataSets()
+    {
+        return $this->datasets;
+    }
+
     /**
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function renderHtml()
     {
-        return view('laravelchart::html', ['options' => $this->options]);
+        return view('laravelchart.html', ['options' => $this->options]);
     }
 
     /**
@@ -286,13 +300,21 @@ class MicroweberChart
      */
     public function renderJs()
     {
-        return view('laravelchart::javascript', ['options' => $this->options, 'datasets' => $this->datasets]);
+        return view('laravelchart.javascript', ['options' => $this->options, 'datasets' => $this->datasets]);
+    }
+
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function renderJson()
+    {
+        return view('laravelchart.json', ['options' => $this->options, 'datasets' => $this->datasets]);
     }
 
     /**
      * @return string
      */
-    public function renderChartJsLibrary() 
+    public function renderChartJsLibrary()
     {
         return '<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>';
     }

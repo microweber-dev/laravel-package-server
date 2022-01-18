@@ -37,6 +37,7 @@ class MyPackagesShow extends Component
 
             if ($this->period_stats == 'monthly') {
                 $chartOptions = [
+                    'chart_name'=>'download_statistic',
                     'chart_title' => 'Downloads by month',
                     'report_type' => 'group_by_date',
                     'model' => PackageDownloadStats::class,
@@ -47,6 +48,7 @@ class MyPackagesShow extends Component
                 ];
             } else if ($this->period_stats == 'daily') {
                 $chartOptions = [
+                    'chart_name'=>'download_statistic',
                     'chart_title' => 'Downloads by day',
                     'report_type' => 'group_by_date',
                     'model' => PackageDownloadStats::class,
@@ -57,6 +59,7 @@ class MyPackagesShow extends Component
                 ];
             } else {
                 $chartOptions = [
+                    'chart_name'=>'download_statistic',
                     'chart_title' => 'Downloads by hour',
                     'report_type' => 'group_by_date',
                     'model' => PackageDownloadStats::class,
@@ -68,9 +71,7 @@ class MyPackagesShow extends Component
             }
 
             $chart = new MicroweberChart($chartOptions);
-            $this->chart_html = $chart->renderHtml()->render();
-            $this->chart_js_library = $chart->renderChartJsLibrary();
-            $this->chart_js = $chart->renderJs()->render();
+            $this->chart_js = $chart->getDataSets();
 
             $this->repository_url = $package->repository_url;
             $this->credential_id = $package->credential_id;
