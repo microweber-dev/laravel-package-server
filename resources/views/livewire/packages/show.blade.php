@@ -20,14 +20,68 @@
             </div>
         </div>
 
-        @dump($chart_js)
-        
         <canvas id="download_statistic"></canvas>
 
         <script>
-            var ctx = document.getElementById("download_statistic");
-            var downloadStatistic = new Chart(ctx, {});
+            var download_statistic_data = {
+                type: 'bar',
+                data: {
+                    labels: [
+                        "2022-01",
+                    ],
+                    datasets: [
+                        {
+                            label: 'Downloads by month',
+                            data: [
+                                4,
+                            ],
+                            borderWidth: 2
+                        },
+                    ]
+                },
+                options: {
+                    tooltips: {
+                        mode: 'point'
+                    },
+                    height: '300px',
+                    scales: {
+                        xAxes: [],
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero:true
+                            }
+                        }]
+                    },
+                }
+            };
+            var download_statistic = new Chart(document.getElementById("download_statistic"), download_statistic_data);
+
+            document.addEventListener('livewire:load', function () {
+                window.livewire.on('chart-data', chartData => {
+
+                    download_statistic.data.datasets.pop();
+
+                    Object.entries(chartData.data.datasets).forEach(([key, dataset]) => {
+                        download_statistic.data.datasets.push({
+                            label: dataset.label,
+                            data: dataset.data
+                        });
+                    });
+
+                    download_statistic.data.labels = chartData.data.labels;
+
+                   /* download_statistic.data.datasets.push({
+                        label: 1,
+                        data: {}
+                    });*/
+
+                    download_statistic.update();
+
+                });
+            });
         </script>
+
+
     </div>
 
     <ul class="nav nav-tabs mt-5" id="myTab" role="tablist">

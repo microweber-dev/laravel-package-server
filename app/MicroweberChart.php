@@ -308,7 +308,27 @@ class MicroweberChart
      */
     public function renderJson()
     {
-        return view('laravelchart.json', ['options' => $this->options, 'datasets' => $this->datasets]);
+        $json = [];
+        $json['type'] = 'bar';
+
+        if (count($this->datasets) > 0) {
+            foreach ($this->datasets[0]['data'] as $group => $result) {
+                $json['data']['labels'][] = $group;
+            }
+
+            foreach ($this->datasets as $dataset) {
+                $data = [];
+                foreach ($dataset['data'] as $group => $result) {
+                    $data[] = $result;
+                }
+                $json['data']['datasets'][] = [
+                    'label'=> $dataset['name'],
+                    'data'=>$data,
+                ];
+            }
+        }
+
+       return $json;
     }
 
     /**

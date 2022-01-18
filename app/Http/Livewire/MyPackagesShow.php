@@ -71,7 +71,9 @@ class MyPackagesShow extends Component
             }
 
             $chart = new MicroweberChart($chartOptions);
-            $this->chart_js = $chart->getDataSets();
+            $this->chart_js = $chart->renderJs()->render();
+
+            $this->emit('chart-data', $chart->renderJson());
 
             $this->repository_url = $package->repository_url;
             $this->credential_id = $package->credential_id;
