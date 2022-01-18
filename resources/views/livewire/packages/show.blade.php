@@ -58,7 +58,7 @@
                             @endif
 
                             <div class="mt-3">
-                                Clone status: 
+                                Clone status:
                             @if($package->clone_status == \App\Models\Package::CLONE_STATUS_SUCCESS)
                                 <span class="badge bg-success">{{$package->clone_status}}</span>
                             @else
@@ -66,7 +66,7 @@
                             @endif
                             </div>
 
-                            <div class="mt-3">
+                            <div class="mt-3"> 
                                 <b>Last update: {{$package->updated_at}}</b>
                             </div>
 

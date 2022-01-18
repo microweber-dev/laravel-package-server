@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Jobs\ProcessPackageSatis;
 use App\Jobs\ProcessPackageSubmit;
 use App\MicroweberChart;
 use App\Models\Package;
@@ -37,6 +38,17 @@ class MyPackagesShow extends Component
     public function confirmDelete($id)
     {
         $this->confirming_delete_id = $id;
+    }
+
+    public function update($id)
+    {
+        $package = Package::where('id', $id)->userHasAccess()->first();
+
+        dispatch(new ProcessPackageSatis($package->id));
+
+        $this->package = $package;
+        $this->check_background_job = true;
+
     }
 
     public function updateChart()
