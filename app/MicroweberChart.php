@@ -287,26 +287,7 @@ class MicroweberChart
         return $this->datasets;
     }
 
-    /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function renderHtml()
-    {
-        return view('laravelchart.html', ['options' => $this->options]);
-    }
-
-    /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function renderJs()
-    {
-        return view('laravelchart.javascript', ['options' => $this->options, 'datasets' => $this->datasets]);
-    }
-
-    /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function renderJson()
+    public function renderArray()
     {
         $json = [];
         $json['type'] = 'bar';
@@ -331,11 +312,4 @@ class MicroweberChart
        return $json;
     }
 
-    /**
-     * @return string
-     */
-    public function renderChartJsLibrary()
-    {
-        return '<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>';
-    }
 }

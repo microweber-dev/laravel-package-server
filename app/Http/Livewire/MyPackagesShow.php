@@ -18,13 +18,26 @@ class MyPackagesShow extends Component
     public $team_ids = [];
     public $credentials = [];
     public $period_stats = 'monthly';
-    public $chart_html = '';
     public $download_stats = false;
     public $credential_id;
 
     public function render()
     {
+        $this->updateChart();
+
+        return view('livewire.packages.show');
+    }
+
+    public function mount($id = false)
+    {
+        $this->package_id = $id;
+    }
+
+
+    public function updateChart()
+    {
         $user = auth()->user();
+        $this->credentials = $user->credentials()->get();
 
         if ($this->package_id) {
 
@@ -35,60 +48,36 @@ class MyPackagesShow extends Component
 
             $this->download_stats = [];
 
+            $chartOptions = [
+                'chart_name'=>'download_statistic',
+                'chart_title' => 'Hourly downloads',
+                'report_type' => 'group_by_date',
+                'model' => PackageDownloadStats::class,
+                'group_by_field' => 'created_at',
+                'group_by_period' => 'hour',
+                'chart_type' => 'bar',
+                'where_raw'=> 'package_id = ' . $package->id
+            ];
+
             if ($this->period_stats == 'monthly') {
-                $chartOptions = [
-                    'chart_name'=>'download_statistic',
-                    'chart_title' => 'Downloads by month',
-                    'report_type' => 'group_by_date',
-                    'model' => PackageDownloadStats::class,
-                    'group_by_field' => 'created_at',
-                    'group_by_period' => 'month',
-                    'chart_type' => 'bar',
-                    'where_raw'=> 'package_id = ' . $package->id
-                ];
+                $chartOptions['chart_title'] = 'Monthly downloads';
+                $chartOptions['group_by_period'] = 'month';
+            } else if ($this->period_stats == 'yearly') {
+                $chartOptions['chart_title'] = 'Yearly downloads';
+                $chartOptions['group_by_period'] = 'year';
             } else if ($this->period_stats == 'daily') {
-                $chartOptions = [
-                    'chart_name'=>'download_statistic',
-                    'chart_title' => 'Downloads by day',
-                    'report_type' => 'group_by_date',
-                    'model' => PackageDownloadStats::class,
-                    'group_by_field' => 'created_at',
-                    'group_by_period' => 'day',
-                    'chart_type' => 'bar',
-                    'where_raw'=> 'package_id = ' . $package->id
-                ];
-            } else {
-                $chartOptions = [
-                    'chart_name'=>'download_statistic',
-                    'chart_title' => 'Downloads by hour',
-                    'report_type' => 'group_by_date',
-                    'model' => PackageDownloadStats::class,
-                    'group_by_field' => 'created_at',
-                    'group_by_period' => 'hour',
-                    'chart_type' => 'bar',
-                    'where_raw'=> 'package_id = ' . $package->id
-                ];
+                $chartOptions['chart_title'] = 'Daily downloads';
+                $chartOptions['group_by_period'] = 'day';
             }
 
             $chart = new MicroweberChart($chartOptions);
-            $this->chart_js = $chart->renderJs()->render();
 
-            $this->emit('chart-data', $chart->renderJson());
+            $this->emit('chartData', $chart->renderArray());
 
             $this->repository_url = $package->repository_url;
             $this->credential_id = $package->credential_id;
             $this->team_ids = $package->teams()->pluck('team_id')->toArray();
         }
-
-        $this->credentials = $user->credentials()->get();
-
-        return view('livewire.packages.show');
     }
-
-    public function mount($id = false)
-    {
-        $this->package_id = $id;
-    }
-
 
 }

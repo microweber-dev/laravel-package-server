@@ -53,10 +53,7 @@ class PackagesJsonController extends Controller
                     $downloadStats->authorization = $data['headers']['authorization'];
                     $downloadStats->host = $data['headers']['host'];
                     $downloadStats->user_agent = $data['headers']['user-agent'];
-                    $downloadStats->stats_hour = date('H');
-                    $downloadStats->stats_day = date('d');
-                    $downloadStats->stats_month = date('m');
-                    $downloadStats->stats_year = date('Y');
+
                     $downloadStats->save();
 
                 }

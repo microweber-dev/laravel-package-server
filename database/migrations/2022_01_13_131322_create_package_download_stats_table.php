@@ -22,10 +22,6 @@ class CreatePackageDownloadStatsTable extends Migration
             $table->string('host');
             $table->string('user_agent');
             $table->string('ip_address');
-            $table->integer('stats_hour');
-            $table->integer('stats_day');
-            $table->integer('stats_month');
-            $table->integer('stats_year');
             $table->timestamps();
         });
     }

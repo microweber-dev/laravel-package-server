@@ -16,6 +16,7 @@
                     <option value="hourly">Hourly</option>
                     <option value="daily">Daily</option>
                     <option value="monthly">Monthly</option>
+                    <option value="yearly">Yearly</option>
                 </select>
             </div>
         </div>
@@ -26,15 +27,11 @@
             var download_statistic_data = {
                 type: 'bar',
                 data: {
-                    labels: [
-                        "2022-01",
-                    ],
+                    labels: [],
                     datasets: [
                         {
                             label: 'Downloads by month',
-                            data: [
-                                4,
-                            ],
+                            data: [],
                             borderWidth: 2
                         },
                     ]
@@ -55,14 +52,12 @@
                 }
             };
             var download_statistic = new Chart(document.getElementById("download_statistic"), download_statistic_data);
-
             document.addEventListener('livewire:load', function () {
-                window.livewire.on('chart-data', chartData => {
-
+                window.livewire.on('chartData', chartData => {
                     download_statistic.data.labels = [];
                     download_statistic.data.datasets = [];
                     download_statistic.update();
-                    
+
                     Object.entries(chartData.data.datasets).forEach(([key, dataset]) => {
                         download_statistic.data.datasets.push(dataset);
                     });
@@ -72,11 +67,11 @@
                     });
 
                     download_statistic.update();
-
                 });
+                @this.updateChart();
             });
-        </script>
 
+        </script>
 
     </div>
 
