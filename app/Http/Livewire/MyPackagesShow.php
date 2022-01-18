@@ -11,6 +11,7 @@ use App\Rules\CanAddRepositoryToTeamRule;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use LaravelDaily\LaravelCharts\Classes\LaravelChart;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -23,6 +24,7 @@ class MyPackagesShow extends Component
     public $team_ids = [];
     public $credentials = [];
     public $period_stats = 'monthly';
+    public $chart_html = '';
     public $download_stats = false;
     public $credential_id;
 
@@ -44,46 +46,21 @@ class MyPackagesShow extends Component
             }
 
             $this->download_stats = [];
-
             $this->period_stats = 'monthly';
 
-            if ($this->period_stats == 'monthly') {
-                // monthly group
-                $this->download_stats[] = ['Month', 'Downloads'];
-                $packageDownloadStats = PackageDownloadStats::select(
-                    DB::raw("month(created_at) as stats_date")ls,
-                    DB::raw("SUM(id) as total_ids"))
-                    ->where('package_id', $package->id)
-                    ->orderBy(DB::raw("month(created_at)"))
-                    ->groupBy(DB::raw("month(created_at)"))
-                    ->get();
-            } else if ($this->period_stats == 'daily') {
-                // daily group
-                $this->download_stats[] = ['Day', 'Downloads'];
-                $packageDownloadStats = PackageDownloadStats::select(
-                    DB::raw("day(created_at) as stats_date"),
-                    DB::raw("SUM(id) as total_ids"))
-                    ->where('package_id', $package->id)
-                    ->orderBy(DB::raw("day(created_at)"))
-                    ->groupBy(DB::raw("day(created_at)"))
-                    ->get();
-            } else {
-                // hourly group
-                $this->download_stats[] = ['Hour', 'Downloads'];
-                $packageDownloadStats = PackageDownloadStats::select(
-                    DB::raw("hour(created_at) as stats_date"),
-                    DB::raw("SUM(id) as total_ids"))
-                    ->where('package_id', $package->id)
-                    ->orderBy(DB::raw("hour(created_at)"))
-                    ->groupBy([DB::raw("hour(created_at)")])
-                    ->get();
-            }
-
-            if ($packageDownloadStats->count() > 0) {
-                foreach ($packageDownloadStats as $packageStatsKey => $packageStats) {
-                    $this->download_stats[++$packageStatsKey] = [$packageStats->stats_date, (int)$packageStats->total_ids];
-                }
-            }
+            $chartOptions = [
+                'chart_title' => 'Downloads',
+                'report_type' => 'group_by_date',
+                'model' => PackageDownloadStats::class,
+                'group_by_field' => 'created_at',
+                'group_by_period' => 'day',
+                'chart_type' => 'bar',
+                'where_raw'=> 'package_id = ' . $package->id
+            ];
+            $chart = new LaravelChart($chartOptions);
+            $this->chart_html = $chart->renderHtml()->render();
+            $this->chart_js_library = $chart->renderChartJsLibrary();
+            $this->chart_js = $chart->renderJs()->render();
 
             $this->repository_url = $package->repository_url;
             $this->credential_id = $package->credential_id;
