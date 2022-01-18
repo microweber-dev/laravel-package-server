@@ -47,6 +47,8 @@ class MyPackagesShow extends Component
             }
 
 
+            $this->description = $package->description;
+            $this->screenshot = $package->screenshot();
             $this->readme = $package->readme();
 
             $this->download_stats = [];

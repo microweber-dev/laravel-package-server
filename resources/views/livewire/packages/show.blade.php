@@ -2,7 +2,7 @@
 
     <x-slot name="header">
         <h2 class="h4 font-weight-bold">
-            {{ __('Show package') }}
+            {{ __('Show package') }} >  {{$description}}
         </h2>
     </x-slot>
 
@@ -33,6 +33,9 @@
                 <div class="tab-pane fade show active" id="Information" role="tabpanel" aria-labelledby="Information-tab"
                      wire:ignore.self>
 
+                    <br />
+                    <br />
+                    <img src="{{$screenshot}}" />
                     <br />
                     <br />
                     {!! $readme !!}
