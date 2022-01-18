@@ -22,7 +22,7 @@ class MyPackagesShow extends Component
     public $repository_url;
     public $team_ids = [];
     public $credentials = [];
-    public $period_stats = 'hourly';
+    public $period_stats = 'monthly';
     public $download_stats = false;
     public $credential_id;
 
@@ -45,50 +45,44 @@ class MyPackagesShow extends Component
 
             $this->download_stats = [];
 
+            $this->period_stats = 'monthly';
+
             if ($this->period_stats == 'monthly') {
                 // monthly group
-                $groupBy = ['stats_year', 'stats_month'];
+                $this->download_stats[] = ['Month', 'Downloads'];
+                $packageDownloadStats = PackageDownloadStats::select(
+                    DB::raw("month(created_at) as stats_date")ls,
+                    DB::raw("SUM(id) as total_ids"))
+                    ->where('package_id', $package->id)
+                    ->orderBy(DB::raw("month(created_at)"))
+                    ->groupBy(DB::raw("month(created_at)"))
+                    ->get();
             } else if ($this->period_stats == 'daily') {
                 // daily group
-                $groupBy = ['stats_year', 'stats_month','stats_day'];
+                $this->download_stats[] = ['Day', 'Downloads'];
+                $packageDownloadStats = PackageDownloadStats::select(
+                    DB::raw("day(created_at) as stats_date"),
+                    DB::raw("SUM(id) as total_ids"))
+                    ->where('package_id', $package->id)
+                    ->orderBy(DB::raw("day(created_at)"))
+                    ->groupBy(DB::raw("day(created_at)"))
+                    ->get();
             } else {
                 // hourly group
-                $groupBy = ['stats_year', 'stats_month', 'stats_day', 'stats_hour'];
+                $this->download_stats[] = ['Hour', 'Downloads'];
+                $packageDownloadStats = PackageDownloadStats::select(
+                    DB::raw("hour(created_at) as stats_date"),
+                    DB::raw("SUM(id) as total_ids"))
+                    ->where('package_id', $package->id)
+                    ->orderBy(DB::raw("hour(created_at)"))
+                    ->groupBy([DB::raw("hour(created_at)")])
+                    ->get();
             }
 
-            //$this->download_stats[] = ['Month', 'Downloads'];
-            $this->download_stats[] = ['Hour', 'Downloads'];
-          //  $this->download_stats[] = ['Day', 'Downloads'];
-
-            $packageDownloadStats = PackageDownloadStats::where('package_id', $package->id)
-               ->groupBy($groupBy)
-                ->get();
-
             if ($packageDownloadStats->count() > 0) {
-
-                $groupedStats = [];
-                foreach ($packageDownloadStats as $packageStats) {
-
-                    if ($this->period_stats == 'monthly') {
-                        $groupedStatsKey = $packageStats->stats_year . '-' . $packageStats->stats_month;
-                    } else if ($this->period_stats == 'daily') {
-                        $groupedStatsKey = $packageStats->stats_year . '-' . $packageStats->stats_month . '-' . $packageStats->stats_day;
-                    } else {
-                        $groupedStatsKey = $packageStats->stats_year . '-' . $packageStats->stats_month . '-' . $packageStats->stats_day . '-' . $packageStats->stats_hour;
-                    }
-
-                    if (!isset( $groupedStats[$groupedStatsKey])) {
-                        $groupedStats[$groupedStatsKey] = 0;
-                    }
-                   $groupedStats[$groupedStatsKey]++;
+                foreach ($packageDownloadStats as $packageStatsKey => $packageStats) {
+                    $this->download_stats[++$packageStatsKey] = [$packageStats->stats_date, (int)$packageStats->total_ids];
                 }
-
-                if (!empty($groupedStats)) {
-                    foreach ($groupedStats as $statsDate=>$statsCount) {
-                        $this->download_stats[] = [$statsDate, $statsCount];
-                    }
-                }
-
             }
 
             $this->repository_url = $package->repository_url;
