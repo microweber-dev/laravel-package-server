@@ -22,7 +22,7 @@ class MyPackagesShow extends Component
     public $repository_url;
     public $team_ids = [];
     public $credentials = [];
-    public $period_stats = 'daily';
+    public $period_stats = 'hourly';
     public $download_stats = false;
     public $credential_id;
 
@@ -43,21 +43,52 @@ class MyPackagesShow extends Component
                 return abort(404, "Package  not found");
             }
 
+            $this->download_stats = [];
 
-            if ($this->period_stats = 'daily') {
+            if ($this->period_stats == 'monthly') {
+                // monthly group
+                $groupBy = ['stats_year', 'stats_month'];
+            } else if ($this->period_stats == 'daily') {
+                // daily group
+                $groupBy = ['stats_year', 'stats_month','stats_day'];
+            } else {
+                // hourly group
+                $groupBy = ['stats_year', 'stats_month', 'stats_day', 'stats_hour'];
+            }
 
-                $this->download_stats = [];
-                $this->download_stats[] = ['Day', 'Downloads'];
+            //$this->download_stats[] = ['Month', 'Downloads'];
+            $this->download_stats[] = ['Hour', 'Downloads'];
+          //  $this->download_stats[] = ['Day', 'Downloads'];
 
-                $packageDownloadStats = PackageDownloadStats::where('package_id', $package->id)
-                   ->groupBy(['stats_year', 'stats_month','stats_day'])
-                    ->get();
+            $packageDownloadStats = PackageDownloadStats::where('package_id', $package->id)
+               ->groupBy($groupBy)
+                ->get();
 
-                if ($packageDownloadStats->count() > 0) {
-                    foreach ($packageDownloadStats as $packageStats) {
-                        $this->download_stats[] = ['All', 2];
+            if ($packageDownloadStats->count() > 0) {
+
+                $groupedStats = [];
+                foreach ($packageDownloadStats as $packageStats) {
+
+                    if ($this->period_stats == 'monthly') {
+                        $groupedStatsKey = $packageStats->stats_year . '-' . $packageStats->stats_month;
+                    } else if ($this->period_stats == 'daily') {
+                        $groupedStatsKey = $packageStats->stats_year . '-' . $packageStats->stats_month . '-' . $packageStats->stats_day;
+                    } else {
+                        $groupedStatsKey = $packageStats->stats_year . '-' . $packageStats->stats_month . '-' . $packageStats->stats_day . '-' . $packageStats->stats_hour;
+                    }
+
+                    if (!isset( $groupedStats[$groupedStatsKey])) {
+                        $groupedStats[$groupedStatsKey] = 0;
+                    }
+                   $groupedStats[$groupedStatsKey]++;
+                }
+
+                if (!empty($groupedStats)) {
+                    foreach ($groupedStats as $statsDate=>$statsCount) {
+                        $this->download_stats[] = [$statsDate, $statsCount];
                     }
                 }
+
             }
 
             $this->repository_url = $package->repository_url;
