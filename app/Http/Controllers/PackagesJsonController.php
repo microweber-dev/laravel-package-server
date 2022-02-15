@@ -113,6 +113,9 @@ class PackagesJsonController extends Controller
         $json = [];
         $json['packages'] = [];
 
+        $yml = [];
+        $format = $request->get('format', false);
+
         if ($teamPackages->count() > 0) {
             foreach ($teamPackages as $teamPackage) {
 
@@ -130,9 +133,16 @@ class PackagesJsonController extends Controller
                             'is_paid'=>$teamPackage->is_paid,
                             'team_settings'=>$teamSettings
                         ]);
+                        if (strpos($packageName, 'template') !== false) {
+                            $yml[] = $packageName;
+                        }
                     };
                 }
             }
+        }
+
+        if ($format == 'yml') {
+            return json_encode($yml, JSON_PRETTY_PRINT);
         }
 
         return $json;
