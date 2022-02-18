@@ -32,6 +32,8 @@ class UpdateTeamName implements UpdatesTeamNames
         $parse = parse_url($domain);
         if (isset($parse['host'])) {
             $host = $parse['host'];
+        } else {
+            $host = $domain;
         }
 
         $team->forceFill([
