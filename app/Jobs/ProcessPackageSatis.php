@@ -108,7 +108,7 @@ class ProcessPackageSatis implements ShouldQueue
 
         $satisCommand = [];
         $satisCommand[] = 'php';
-        //$satisCommand[] = '-d memory_limit=-1 max_execution_time=600';
+        $satisCommand[] = '-d memory_limit=-1 max_execution_time=6000';
         $satisCommand[] = '-c '.base_path().'/php.ini';
         $satisCommand[] = $satisBinPath;
         $satisCommand[] = 'build';
