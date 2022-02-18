@@ -46,7 +46,7 @@ class UpdateTeamPackageManagerForm extends Component
         if (isset($this->settings['package_manager_templates_demo_domain'])) {
             $demoDomainParsed = parse_url($this->settings['package_manager_templates_demo_domain']);
             if (isset($demoDomainParsed['host'])) {
-            $this->settings['package_manager_templates_demo_domain'] = $demoDomainParsed['host'];
+                  $this->settings['package_manager_templates_demo_domain'] = $demoDomainParsed['host'];
             }
         }
 

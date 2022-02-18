@@ -55,6 +55,21 @@
             </div>
         </div>
 
+        <!-- Team Domain -->
+        <div class="w-md-75 mt-3">
+            <div class="form-group">
+                <x-jet-label for="domain" value="{{ __('Team Domain') }}" />
+
+                <x-jet-input id="domain"
+                             type="text"
+                             class="{{ $errors->has('domain') ? 'is-invalid' : '' }}"
+                             wire:model.defer="state.domain"
+                             :disabled="! Gate::check('update', $team)" />
+
+                <x-jet-input-error for="domain" />
+            </div>
+        </div>
+
         <!-- Team Private -->
         <div class="w-md-75 mt-3">
             <div class="form-group">

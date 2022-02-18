@@ -32,7 +32,6 @@ class UpdateTeamNameForm extends Component
     public function mount($team)
     {
         $this->team = $team;
-
         $this->state = $team->withoutRelations()->toArray();
     }
 
@@ -50,10 +49,13 @@ class UpdateTeamNameForm extends Component
             $this->state['slug'] = Str::slug($this->state['slug']);
         }
 
+        if (isset($this->state['domain'])) {
+            $this->state['domain'] = $this->state['domain'];
+        }
+
         $updater->update($this->user, $this->team, $this->state);
 
         $this->emit('saved');
-
         $this->emit('refresh-navigation-menu');
     }
 

@@ -11,23 +11,16 @@ use Illuminate\Http\Request;
 
 class PackagesJsonController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $json = [];
-        $json['packages'] = [];
+        $host = $request->getHost();
+        $findTeam = Team::where('domain', $host)->first();
 
- /*       $getPackages = Package::where('clone_status', Package::CLONE_STATUS_SUCCESS)->get();
-        if ($getPackages->count() > 0) {
-            foreach ($getPackages as $package) {
-                $package['package_json'] = str_replace('https://example.com/', config('app.url'), $package['package_json']);
-                $packageContent = json_decode($package['package_json'],true);
-                if (!empty($packageContent)) {
-                    $json['packages'] = array_merge($packageContent, $json['packages']);
-                }
-            }
-        }*/
+        if ($findTeam == null) {
+            return [];
+        }
 
-        return $json;
+        return $this->getTeamPackages($findTeam->id);
     }
 
     public function downloadNotify(Request $request) {
@@ -62,15 +55,28 @@ class PackagesJsonController extends Controller
 
     }
 
-    public function team(Request $request, $slug = false) {
-
-        ini_set('memory_limit', '512M');
+    public function team(Request $request, $slug = false)
+    {
 
         if (!$slug) {
             return [];
         }
 
         $findTeam = Team::where('slug', $slug)->first();
+        if ($findTeam == null) {
+            return [];
+        }
+
+        return $this->getTeamPackages($findTeam->id);
+    }
+
+    protected function getTeamPackages($teamId) {
+
+        ini_set('memory_limit', '512M');
+
+        $request = request();
+
+        $findTeam = Team::where('id', $teamId)->first();
         if ($findTeam == null) {
             return [];
         }

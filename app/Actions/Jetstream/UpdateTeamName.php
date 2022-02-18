@@ -23,12 +23,21 @@ class UpdateTeamName implements UpdatesTeamNames
 
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
+            'domain' => ['string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', Rule::unique('teams')->ignore($team->id, 'id')],
         ])->validateWithBag('updateTeamName');
+
+        $host = false;
+        $domain = $input['domain'];
+        $parse = parse_url($domain);
+        if (isset($parse['host'])) {
+            $host = $parse['host'];
+        }
 
         $team->forceFill([
             'name' => $input['name'],
             'slug' => $input['slug'],
+            'domain' => $host,
             'is_private' => $input['is_private'],
         ])->save();
     }
