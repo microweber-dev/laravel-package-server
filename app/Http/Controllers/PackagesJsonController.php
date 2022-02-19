@@ -23,7 +23,8 @@ class PackagesJsonController extends Controller
         return $this->getTeamPackages($findTeam->id);
     }
 
-    public function downloadNotify(Request $request) {
+    public function downloadNotify(Request $request)
+    {
 
         $data = [];
         $data['request'] = $request->all();
@@ -70,7 +71,8 @@ class PackagesJsonController extends Controller
         return $this->getTeamPackages($findTeam->id);
     }
 
-    protected function getTeamPackages($teamId) {
+    protected function getTeamPackages($teamId)
+    {
 
         ini_set('memory_limit', '512M');
 
@@ -83,7 +85,7 @@ class PackagesJsonController extends Controller
 
         $teamPackages = TeamPackage::where('team_id', $findTeam->id)
             ->whereHas('package', function (Builder $query) {
-                $query->where('clone_status',Package::CLONE_STATUS_SUCCESS);
+                $query->where('clone_status', Package::CLONE_STATUS_SUCCESS);
             })
             ->where('is_visible', 1)
             ->with('package')
@@ -129,15 +131,15 @@ class PackagesJsonController extends Controller
                 $packageJson = $package->package_json;
 
                 $packageJson = str_replace('https://example.com/', config('app.url'), $packageJson);
-                $packageContent = json_decode($packageJson,true);
+                $packageContent = json_decode($packageJson, true);
                 if (!empty($packageContent)) {
-                    foreach ($packageContent as $packageName=>$packageVersions) {
-                        $json['packages'][$packageName] = $this->_prepareVersions($packageVersions,[
-                            'token_authenticated'=>$logged,
-                            'whmcs_product_ids'=>$teamPackage->whmcs_product_ids,
-                            'is_visible'=>$teamPackage->is_visible,
-                            'is_paid'=>$teamPackage->is_paid,
-                            'team_settings'=>$teamSettings
+                    foreach ($packageContent as $packageName => $packageVersions) {
+                        $json['packages'][$packageName] = $this->_prepareVersions($packageVersions, [
+                            'token_authenticated' => $logged,
+                            'whmcs_product_ids' => $teamPackage->whmcs_product_ids,
+                            'is_visible' => $teamPackage->is_visible,
+                            'is_paid' => $teamPackage->is_paid,
+                            'team_settings' => $teamSettings
                         ]);
                         if (strpos($packageName, 'template') !== false) {
                             $yml[] = $packageName;
@@ -155,17 +157,19 @@ class PackagesJsonController extends Controller
 
     }
 
-    private function _prepareVersions($versions, $teamPackage) {
+    private function _prepareVersions($versions, $teamPackage)
+    {
 
         $prepareVersions = [];
-        foreach ($versions as $version=>$package) {
+        foreach ($versions as $version => $package) {
             $prepareVersions[$version] = $this->_preparePackage($package, $teamPackage);
         }
 
         return $prepareVersions;
     }
 
-    private function _preparePackage($package, $teamPackage) {
+    private function _preparePackage($package, $teamPackage)
+    {
 
         if (isset($package['extra']['preview_url'])) {
             if (isset($teamPackage['team_settings']['package_manager_templates_demo_domain'])) {
@@ -191,19 +195,19 @@ class PackagesJsonController extends Controller
 
                 $licensed = false;
 
-                if(isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])){
+                if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
                     $_SERVER["HTTP_AUTHORIZATION"] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
                 }
 
-                if (isset($_SERVER["HTTP_AUTHORIZATION"]) && (strpos(strtolower($_SERVER["HTTP_AUTHORIZATION"]),'basic') !== false)) {
+                if (isset($_SERVER["HTTP_AUTHORIZATION"]) && (strpos(strtolower($_SERVER["HTTP_AUTHORIZATION"]), 'basic') !== false)) {
 
                     ///  file_put_contents(base_path().'/lic.txt', print_r((substr($_SERVER["HTTP_AUTHORIZATION"], 6)),1));
 
                     $userLicenseKeys = base64_decode(substr($_SERVER["HTTP_AUTHORIZATION"], 6));
 
-                    if(is_string($userLicenseKeys) and (strpos(strtolower($userLicenseKeys),'license:') !== false)){
-                        $userLicenseKeys =  substr($userLicenseKeys, 8);
-                        $userLicenseKeys =  base64_decode($userLicenseKeys);
+                    if (is_string($userLicenseKeys) and (strpos(strtolower($userLicenseKeys), 'license:') !== false)) {
+                        $userLicenseKeys = substr($userLicenseKeys, 8);
+                        $userLicenseKeys = base64_decode($userLicenseKeys);
                     }
 
                     $userLicenseKeysJson = json_decode($userLicenseKeys, true);
@@ -214,7 +218,7 @@ class PackagesJsonController extends Controller
                         $userLicenseKeysForValidation = $userLicenseKeysJson;
                     } else {
                         // when is not empty
-                        if($userLicenseKeys and trim($userLicenseKeys) != '' and $userLicenseKeys !='[]'){
+                        if ($userLicenseKeys and trim($userLicenseKeys) != '' and $userLicenseKeys != '[]') {
                             $userLicenseKeysForValidation[]['local_key'] = $userLicenseKeys;
 
                         }
@@ -262,15 +266,62 @@ class PackagesJsonController extends Controller
         return $package;
     }
 
-    private function _validateLicenseKey($whmcsUrl, $key) {
+    public static $key_status_check_cache = [];
+    private function _validateLicenseKey($whmcsUrl, $key)
+    {
 
-        $checkWhmcs = file_get_contents($whmcsUrl . '/index.php?m=microweber_addon&function=validate_license&license_key=' . $key);
-        $checkWhmcs = json_decode($checkWhmcs, TRUE);
-        if (isset($checkWhmcs['status']) && $checkWhmcs['status'] == 'success') {
-            return true;
+//        $checkWhmcs = file_get_contents($whmcsUrl . '/index.php?m=microweber_addon&function=validate_license&license_key=' . $key);
+//        $checkWhmcs = json_decode($checkWhmcs, TRUE);
+
+        if(isset(self::$key_status_check_cache[$key])){
+            return self::$key_status_check_cache[$key];
         }
 
+        $checkWhmcs = $this->_validateLicenseMakeRequest($whmcsUrl,$key);
+        if (isset($checkWhmcs['status']) && $checkWhmcs['status'] == 'success') {
+            self::$key_status_check_cache[$key] = true;
+            return true;
+        }
+        self::$key_status_check_cache[$key] = false;
         return false;
     }
 
+
+    private function _validateLicenseMakeRequest($whmcsUrl,$key)
+    {
+        $curl = curl_init();
+
+
+        $checkWhmcsUrl = ($whmcsUrl . '/index.php?m=microweber_addon&function=validate_license&license_key=' . $key);
+
+        $opts = [
+            CURLOPT_URL => $checkWhmcsUrl,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+
+        ];
+
+        curl_setopt_array($curl, $opts);
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+           // return ["error" => "cURL Error #:" . $err];
+            return [];
+        } else {
+            $getResponse = json_decode($response, true);
+
+            if (isset($getResponse['status'])) {
+                return $getResponse;
+            }
+            return [];
+        }
+    }
 }
