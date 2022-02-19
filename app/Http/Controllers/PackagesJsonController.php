@@ -190,7 +190,6 @@ class PackagesJsonController extends Controller
             if (isset($teamPackage['whmcs_product_ids']) && !empty($teamPackage['whmcs_product_ids'])) {
 
                 $licensed = false;
-                file_put_contents(base_path().'/server.txt', print_r($_SERVER,1));
 
                 if(isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])){
                     $_SERVER["HTTP_AUTHORIZATION"] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
@@ -215,19 +214,23 @@ class PackagesJsonController extends Controller
                         $userLicenseKeysForValidation = $userLicenseKeysJson;
                     } else {
                         // when is not empty
-                        $userLicenseKeysForValidation[]['local_key'] = $userLicenseKeys;
+                        if($userLicenseKeys and trim($userLicenseKeys) != '' and $userLicenseKeys !='[]'){
+                            $userLicenseKeysForValidation[]['local_key'] = $userLicenseKeys;
+
+                        }
                     }
 
                     $userLicenseKeysMap = [];
                     if ($userLicenseKeysForValidation && !empty($userLicenseKeysForValidation) && is_array($userLicenseKeysForValidation)) {
                         foreach ($userLicenseKeysForValidation as $userLicenseKey) {
-                            if (isset($userLicenseKey['local_key'])) {
+                            if (isset($userLicenseKey['local_key']) and trim($userLicenseKey['local_key']) != '') {
                                 $userLicenseKeysMap[] = $userLicenseKey['local_key'];
                             }
                         }
 
                         if (!empty($userLicenseKeysMap)) {
                             foreach ($userLicenseKeysMap as $userLicenseKey) {
+
                                 if ($this->_validateLicenseKey($whmcsUrl, $userLicenseKey)) {
                                     $licensed = true;
                                 }
