@@ -33,7 +33,8 @@ class CanAddRepositoryToTeamRule implements Rule
         foreach ($value as $teamKey=>$teamValue) {
             foreach (auth()->user()->allTeams() as $team) {
                 if ($teamValue == $team->id) {
-                    if (auth()->user()->hasTeamPermission($team, 'repository:create')) {
+                    if (auth()->user()->hasTeamPermission($team, 'repository:create')
+                    or auth()->user()->hasTeamPermission($team, 'update')) {
                         $teamIdsFound[$teamKey] = $teamValue;
                     }
                 }

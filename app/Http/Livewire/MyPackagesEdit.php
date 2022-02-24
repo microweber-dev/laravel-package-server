@@ -45,7 +45,7 @@ class MyPackagesEdit extends Component
         $this->package_id = $id;
 
         if ($this->package_id) {
-            $package = Package::where('user_id', $user->id)->where('id', $this->package_id)->first();
+            $package = Package::where('id', $this->package_id)->userHasAccess()->first();
             if ($package == null) {
                 return abort(404, "Package  not found");
             }

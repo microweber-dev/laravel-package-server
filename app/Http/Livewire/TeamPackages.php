@@ -185,7 +185,7 @@ class TeamPackages extends Component
         $user = auth()->user();
 
         $package = Package::where('id',$id)
-            ->userHasAccess()
+           // ->userHasAccess()
             ->first();
         if ($package == null) {
             return [];
