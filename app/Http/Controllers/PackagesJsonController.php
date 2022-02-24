@@ -118,6 +118,16 @@ class PackagesJsonController extends Controller
             }
         }
 
+        if ($request->header('authorization', null)) {
+            $authDecode = $request->header('authorization');
+            $authDecode = str_replace('Basic','',$authDecode);
+            $authDecode = trim($authDecode);
+            $authDecode = base64_decode($authDecode);
+            if (str_contains($authDecode, 'plesk|')) {
+                $logged = true;
+            }
+        }
+
         $json = [];
         $json['packages'] = [];
 
