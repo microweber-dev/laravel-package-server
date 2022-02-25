@@ -5,12 +5,9 @@ namespace App\Http\Livewire;
 use App\Jobs\ProcessPackageSatis;
 use App\Jobs\ProcessPackageSubmit;
 use App\Models\Package;
-use App\Models\Team;
 use App\Rules\CanAddRepositoryToTeamRule;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Http\Request;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class MyPackagesEdit extends Component
 {
@@ -68,6 +65,11 @@ class MyPackagesEdit extends Component
 
         if (empty($this->package_id)) {
             $validation['repository_url'] = ['required', 'url', 'unique:packages'];
+        }
+
+        $this->repository_url = strtolower($this->repository_url);
+        if (strpos($this->repository_url, '.git') !== false) {
+           $this->repository_url = substr($this->repository_url, 0, -4);
         }
 
         $this->validate($validation);
