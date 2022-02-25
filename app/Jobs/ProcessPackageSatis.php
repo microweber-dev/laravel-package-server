@@ -44,7 +44,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
 
     public function uniqueId()
     {
-        return $this->packageId;
+        return 'proc-pack-sat-' . $this->packageId;
     }
 
     /**
