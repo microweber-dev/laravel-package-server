@@ -11,7 +11,6 @@ use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
@@ -19,9 +18,17 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use Symplify\GitWrapper\GitWrapper;
 
-class ProcessPackageSatis implements ShouldQueue
+class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    /**
+     * The number of seconds after which the job will no longer stay unique.
+     *
+     * @var int
+     */
+
+    public $uniqueFor = 60;
 
     public $packageId;
 
@@ -35,14 +42,9 @@ class ProcessPackageSatis implements ShouldQueue
         $this->packageId = $packageId;
     }
 
-    /**
-     * Get the middleware the job should pass through.
-     *
-     * @return array
-     */
-    public function middleware()
+    public function uniqueId()
     {
-        return [(new WithoutOverlapping($this->packageId))->releaseAfter(60)];
+        return 'proc-pack-satis-' . $this->packageId;
     }
 
     /**
