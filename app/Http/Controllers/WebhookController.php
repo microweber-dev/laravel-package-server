@@ -12,23 +12,20 @@ class WebhookController extends Controller
     {
         $hookJson = $request->json()->all();
 
-        $repositoryName = false;
+        if (isset($hookJson['project']['web_url'])) {
+            $findPackage = Package::where('repository_url', $hookJson['project']['web_url'])->first();
+            if ($findPackage != null) {
+                dispatch(new ProcessPackageSatis($findPackage->id));
+                return ['success' => true];
+            }
+        }
 
         // Github webhook
         if (isset($hookJson['repository']['full_name'])) {
-            $repositoryName = $hookJson['repository']['full_name'];
-        }
-
-        // Gitlab webhook
-        if (isset($hookJson['project']['path_with_namespace'])) {
-            $repositoryName = $hookJson['project']['path_with_namespace'];
-        }
-
-        if ($repositoryName) {
-            $findPackage = Package::where('name', $repositoryName)->first();
+            $findPackage = Package::where('name', $hookJson['repository']['full_name'])->first();
             if ($findPackage != null) {
                 dispatch(new ProcessPackageSatis($findPackage->id));
-                return ['success'=>true];
+                return ['success' => true];
             }
         }
 
