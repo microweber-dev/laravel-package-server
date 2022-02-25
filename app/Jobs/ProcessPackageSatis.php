@@ -22,6 +22,14 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    /**
+     * The number of seconds after which the job will no longer stay unique.
+     *
+     * @var int
+     */
+
+    public $uniqueFor = 3600;
+
     public $packageId;
 
     /**
@@ -36,7 +44,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
 
     public function uniqueId()
     {
-        return $this->packageId; 
+        return $this->packageId;
     }
 
     /**
