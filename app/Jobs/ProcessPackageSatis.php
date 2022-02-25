@@ -18,7 +18,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use Symplify\GitWrapper\GitWrapper;
 
-class ProcessPackageSatis implements ShouldQueue
+class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -32,6 +32,11 @@ class ProcessPackageSatis implements ShouldQueue
     public function __construct($packageId)
     {
         $this->packageId = $packageId;
+    }
+
+    public function uniqueId()
+    {
+        return $this->packageId; 
     }
 
     /**
