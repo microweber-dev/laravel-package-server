@@ -102,7 +102,7 @@ class PackagesJsonController extends Controller
             ->whereHas('package', function (Builder $query) use ($filter) {
 
                 if (isset($filter['package_id'])) {
-                    $query->where('id', $filter['package_id']);  
+                    $query->where('id', $filter['package_id']);
                 }
 
                 $query->where('clone_status', Package::CLONE_STATUS_SUCCESS);
