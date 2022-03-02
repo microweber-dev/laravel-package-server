@@ -25,7 +25,6 @@ class PackagesJsonController extends Controller
 
     public function downloadNotify(Request $request)
     {
-
         $data = [];
         $data['request'] = $request->all();
         $data['headers'] = collect($request->header())->transform(function ($item) {
@@ -58,7 +57,6 @@ class PackagesJsonController extends Controller
 
     public function team(Request $request, $slug = false)
     {
-
         if (!$slug) {
             return [];
         }
@@ -71,9 +69,26 @@ class PackagesJsonController extends Controller
         return $this->getTeamPackages($findTeam->id);
     }
 
-    protected function getTeamPackages($teamId)
+    public function singlePackage($vendor, $package, Request $request)
     {
+        $packageName = $vendor . '/' . $package;
+        $findPackageByName = Package::where('name', $packageName)->first();
+        if ($findPackageByName != null) {
 
+            $host = $request->getHost();
+            $findTeam = Team::where('domain', $host)->first();
+
+            if ($findTeam == null) {
+                return [];
+            }
+
+            return $this->getTeamPackages($findTeam->id, ['package_id'=>$findPackageByName->id]);
+
+        }
+    }
+
+    protected function getTeamPackages($teamId, $filter = [])
+    {
         ini_set('memory_limit', '512M');
 
         $request = request();
@@ -84,7 +99,12 @@ class PackagesJsonController extends Controller
         }
 
         $teamPackages = TeamPackage::where('team_id', $findTeam->id)
-            ->whereHas('package', function (Builder $query) {
+            ->whereHas('package', function (Builder $query) use ($filter) {
+
+                if (isset($filter['package_id'])) {
+                    $query->where('id', $filter['package_id']);  
+                }
+
                 $query->where('clone_status', Package::CLONE_STATUS_SUCCESS);
             })
             ->where('is_visible', 1)
