@@ -115,6 +115,7 @@
                     <td>
                         <div><b> {{$teamPackage->package->description}}</b></div>
                         <div> {{$teamPackage->package->repository_url}}</div>
+                        <div> <pre>{{$teamPackage->package->name}}</pre></div>
 
                         @if($teamPackage->package->version > 0)
                             <div> <span class="badge bg-success">v{{$teamPackage->package->version}}</span></div>
@@ -156,7 +157,7 @@
                         {{$teamPackage->package->owner->name}}
                     </td>
 
-                    <td>{{$teamPackage->updated_at}}</td>
+                     <td>{{$teamPackage->updated_at}}</td>
                     <td>
                         <a class="btn btn-outline-dark btn-sm" href="{{route('my-packages.show', $teamPackage->package->id)}}">View</a>
                         <button type="button" class="btn btn-outline-dark btn-sm" wire:click="packageUpdate({{ $teamPackage->package->id }})" wire:loading.attr="disabled">Update</button>

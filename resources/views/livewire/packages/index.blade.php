@@ -79,6 +79,7 @@
                     <td>
                         <div><b> {{$package->description}}</b></div>
                         <div> {{$package->repository_url}}</div>
+                        <div> <pre>{{$teamPackage->package->name}}</pre></div>
 
                         @if($package->version > 0)
                            <div> <span class="badge bg-success">v{{$package->version}}</span></div>
