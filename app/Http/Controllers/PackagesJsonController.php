@@ -148,6 +148,17 @@ class PackagesJsonController extends Controller
             }
         }
 
+        $headers = collect($request->header())->transform(function ($item) {
+            return $item[0];
+        });
+
+        $composerRequest = false;
+        if (isset($headers['user-agent'])) {
+            if (stripos($headers['user-agent'], 'Composer') !== false) {
+                $composerRequest = true;
+            }
+        }
+
         $json = [];
         $json['packages'] = [];
 
@@ -169,6 +180,7 @@ class PackagesJsonController extends Controller
                             'whmcs_product_ids' => $teamPackage->whmcs_product_ids,
                             'is_visible' => $teamPackage->is_visible,
                             'is_paid' => $teamPackage->is_paid,
+                            'composer_request' => $composerRequest,
                             'team_settings' => $teamSettings
                         ]);
                         if (strpos($packageName, 'template') !== false) {
@@ -192,7 +204,15 @@ class PackagesJsonController extends Controller
 
         $prepareVersions = [];
         foreach ($versions as $version => $package) {
-            $prepareVersions[$version] = $this->_preparePackage($package, $teamPackage);
+            $preparedPackage = $this->_preparePackage($package, $teamPackage);
+
+            if($preparedPackage['dist']['type'] == 'license_key') {
+                if (isset($teamPackage['composer_request']) && $teamPackage['composer_request']) {
+                    continue;
+                }
+            }
+
+            $prepareVersions[$version] = $preparedPackage;
         }
 
         return $prepareVersions;
