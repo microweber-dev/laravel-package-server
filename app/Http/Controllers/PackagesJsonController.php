@@ -138,13 +138,28 @@ class PackagesJsonController extends Controller
             }
         }
 
-        if ($request->header('authorization', null)) {
-            $authDecode = $request->header('authorization');
-            $authDecode = str_replace('Basic','',$authDecode);
+        $authHeader = $request->header('authorization', false);
+        if ($authHeader) {
+            $authDecode = str_replace('Basic','', $authHeader);
             $authDecode = trim($authDecode);
             $authDecode = base64_decode($authDecode);
+
             if (str_contains($authDecode, 'plesk|')) {
-                $logged = true;
+                // Request from plesk
+                $authDecodeLicenses = json_decode($authDecode, true);
+                if (!empty($authDecodeLicenses)) {
+                    foreach ($authDecodeLicenses as $decodeLicense) {
+                        if (str_contains($decodeLicense, 'plesk|')) {
+                            $decodeLicense = str_replace('plesk|', false, $decodeLicense);
+                            $decodeLicenseData = json_decode(base64_decode($decodeLicense), true);
+                            if (isset($decodeLicenseData['lim_date'])
+                                && isset($decodeLicenseData['active'])
+                                && $decodeLicenseData['active'] == true) {
+                                $logged = true;
+                            }
+                        }
+                    }
+                }
             }
         }
 
