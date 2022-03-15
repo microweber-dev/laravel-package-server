@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,54 +13,42 @@
 |
 */
 
-Auth::routes();
+Route::get('/', function () {
+    return view('welcome');
+});
 
-use Laravel\Socialite\Facades\Socialite;
 
-Route::get('/auth/{driver}/redirect', function ($driver) {
-    return Socialite::driver($driver)
-        ->scopes(['read_api'])
-        ->redirect();
-})->name('auth.redirect');
+Route::namespace('\App\Http\Controllers')->group(function() {
 
-Route::get('/auth/{driver}/callback', 'GitSyncController@authCallback')->name('auth.callback');
-Route::post('/git-sync-save', 'GitSyncController@save')->name('gitsync.save');
+    Route::any('webhook', 'WebhookController@index')
+        ->middleware(\Illuminate\Routing\Middleware\ThrottleRequests::class)
+        ->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class)
+        ->name('webhook');
 
-Route::middleware(['allowed_ips'])->group(function () {
+    Route::any('packages.json', 'PackagesJsonController@index')->name('packages.json');
+    Route::any('packages/{slug}/packages.json', 'PackagesJsonController@team')->name('packages.team.packages.json');
+    Route::any('packages/{vendor}/{package}.json', 'PackagesJsonController@singlePackage')->name('packages.team.single-package.json');
+});
 
-    Route::get('/', function () {
+Route::namespace('\App\Http\Controllers')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])->group(function() {
+    Route::post('packages/download-notify', 'PackagesJsonController@downloadNotify')->name('packages.download-notify');
+});
 
-        $file = 'domains/' . \App\Helpers::getEnvName() . '/index.html';
+Route::middleware(['auth:sanctum', 'verified'])->group(function() {
 
-        if (is_file($file)) {
-            echo file_get_contents($file);
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
 
-        } else {
-            return view('welcome');
-        }
 
-    });
+    Route::any('team-packages', \App\Http\Livewire\TeamPackages::class)->name('team-packages');
+    Route::any('team-packages/{id}/edit', \App\Http\Livewire\TeamPackagesEdit::class)->name('team-packages.edit');
 
-    Route::get('packages.json', 'PackagesController@index')->name('packages-json');
-    Route::get('packages.json/test', 'PackagesController@test');
-    Route::get('home', 'HomeController@index')->name('home');
-
-    Route::get('add-repo', 'RepositoryController@edit')->name('add-repo');
-    Route::post('add-repo', 'RepositoryController@save');
-
-    Route::get('edit-repo', 'RepositoryController@edit')->name('edit-repo');
-    Route::post('edit-repo', 'RepositoryController@save');
-
-    Route::get('build-repo', 'RepositoryController@build')->name('build-repo');
-    Route::get('build-repo-run', 'RepositoryController@buildRun')->name('build-repo-run');
-
-    Route::get('delete-repo', 'RepositoryController@delete');
-
-    Route::get('configure', 'ConfigureController@index')->name('configure');
-    Route::post('configure', 'ConfigureController@save')->name('configure-save');
-
-    Route::get('configure-whmcs', 'WhmcsController@index')->name('configure-whmcs');
-    Route::post('configure-whmcs', 'WhmcsController@save')->name('configure-whmcs-save');
-    Route::post('configure-whmcs-connection-status', 'WhmcsController@getConnectionStatus')->name('configure-whmcs-connection-status');
+    Route::any('my-packages', \App\Http\Livewire\MyPackages::class)->name('my-packages');
+    Route::any('my-packages/add', \App\Http\Livewire\MyPackagesEdit::class)->name('my-packages.add');
+    Route::any('my-packages/{id}/edit', \App\Http\Livewire\MyPackagesEdit::class)->name('my-packages.edit');
+    Route::any('my-packages/{id}/show', \App\Http\Livewire\MyPackagesShow::class)->name('my-packages.show');
 
 });
+
+
