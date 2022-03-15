@@ -115,8 +115,9 @@
                     <td>
                         <div><b> {{$teamPackage->package->description}}</b></div>
                         <div> {{$teamPackage->package->repository_url}}</div>
+                        @if($teamPackage->package)
                         <div> <pre>{{$teamPackage->package->name}}</pre></div>
-
+                        @endif
                         @if($teamPackage->package->version > 0)
                             <div> <span class="badge bg-success">v{{$teamPackage->package->version}}</span></div>
                         @endif
