@@ -62,13 +62,15 @@
             @if(!empty($this->whmcs_product_types))
                 @foreach($this->whmcs_product_types as $whmcs_product_type_name=>$whmcs_product_type)
 
+                     <optgroup label="{{ucfirst($whmcs_product_type_name)}}">
                     @foreach($whmcs_product_type as $whmcs_product)
                         <option value="{{ $whmcs_product['pid']}}">{{$whmcs_product['name']}}</option>
                     @endforeach
+                     </optgroup>
 
                 @endforeach
             @endif
-             </select> 
+             </select>
 
         <br />
 
