@@ -55,6 +55,25 @@
         @if($this->is_paid == 1)
 
             <hr />
+            <h5>Primary License</h5>
+            <p>Select primary license to generate buy link on premium packages</p>
+
+             <select class="form-control" name="whmcs_primary_product_id" wire:model.defer="whmcs_primary_product_id">
+            @if(!empty($this->whmcs_product_types))
+                @foreach($this->whmcs_product_types as $whmcs_product_type_name=>$whmcs_product_type)
+
+                    @foreach($whmcs_product_type as $whmcs_product)
+                        <option value="{{ $whmcs_product['pid']}}">{{$whmcs_product['name']}}</option>
+                    @endforeach
+
+                @endforeach
+            @endif
+             </select> 
+
+        <br />
+
+
+            <hr />
             <h5>
                 Purchased Plan Requirements To Access This Repository
             </h5>
