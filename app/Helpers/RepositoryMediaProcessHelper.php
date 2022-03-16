@@ -71,7 +71,8 @@ class RepositoryMediaProcessHelper
             // Parse mark down
             if ($markDownReadmeFile) {
                 $markDownReadmeFile = realpath($markDownReadmeFile);
-                $markDownReadmeContent = file_put_contents($markDownReadmeFile);
+                $markDownReadmeContent = file_get_contents($markDownReadmeFile);
+
                 $parseDown = new \Parsedown();
                 $parseDownHtml = $parseDown->text($markDownReadmeContent);
                 if ($parseDownHtml) {
