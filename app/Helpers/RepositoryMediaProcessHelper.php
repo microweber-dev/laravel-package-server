@@ -79,7 +79,7 @@ class RepositoryMediaProcessHelper
                 }
 
                 $realPathInside = str_replace($metaFolder,'', $markDownReadmeFile);
-                $packageVersion['extra']['_meta'][$file->getFilenameWithoutExtension()] = $metaFolderPublicUrl . $realPathInside;
+                $packageVersion['extra']['_meta']['readme'] = $metaFolderPublicUrl . $realPathInside;
             }
 
             // Remove all files without media files
