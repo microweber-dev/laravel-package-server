@@ -26,6 +26,8 @@ class TeamPackagesEdit extends Component
     public $whmcs_product_ids = [];
     public $whmcs_product_types;
     public $repository_url;
+    public $buy_url_from;
+    public $buy_url;
 
     public function render()
     {
@@ -74,6 +76,8 @@ class TeamPackagesEdit extends Component
         $this->is_paid = $findTeamPackage->is_paid;
         $this->package_id = $findTeamPackage->package->id;
         $this->repository_url = $findTeamPackage->package->repository_url;
+        $this->buy_url_from = $findTeamPackage->package->buy_url_from;
+        $this->buy_url = $findTeamPackage->package->buy_url;
 
     }
 

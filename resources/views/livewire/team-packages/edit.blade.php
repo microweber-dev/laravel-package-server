@@ -72,6 +72,28 @@
             @endif
              </select>
 
+            <br />
+
+            Generate Buy link from:
+            <select class="form-control" name="buy_url_from" wire:model="buy_url_from">
+                <option value="license">Get from license</option>
+                <option value="custom">Custom</option>
+            </select>
+
+            @if ($this->buy_url_from == 'custom')
+                <br />
+            <div class="mb-3 has-validation">
+                <label for="inputBuyUrl" class="form-label">Buy Link</label>
+                <input type="text" value="{{$buy_url}}" wire:model="buy_url" class="form-control @error('buy_url') is-invalid @enderror" id="inputBuyUrl" aria-describedby="buyUrlHelp">
+                <div id="buyUrlHelp" class="form-text">The url of package purchase</div>
+                <div class="invalid-feedback">
+                    @error('buy_url')
+                    {{ $message }}
+                    @enderror
+                </div>
+            </div>
+            @endif
+
         <br />
 
 
