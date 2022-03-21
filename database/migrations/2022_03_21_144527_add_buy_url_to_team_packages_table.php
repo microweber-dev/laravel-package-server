@@ -14,8 +14,8 @@ class AddBuyUrlToTeamPackagesTable extends Migration
     public function up()
     {
         Schema::table('team_packages', function (Blueprint $table) {
-            $table->integer('buy_url')->nullable()->default(0);
-            $table->integer('buy_url_from')->nullable()->default(0);
+            $table->string('buy_url')->nullable();
+            $table->string('buy_url_from')->nullable();
         });
     }
 
