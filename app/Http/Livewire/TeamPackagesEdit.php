@@ -92,6 +92,8 @@ class TeamPackagesEdit extends Component
         $findTeamPackage->is_paid = $this->is_paid;
         $findTeamPackage->whmcs_product_ids = $this->whmcs_product_ids;
         $findTeamPackage->whmcs_primary_product_id = $this->whmcs_primary_product_id;
+        $findTeamPackage->buy_url_from = $this->buy_url_from;
+        $findTeamPackage->buy_url = $this->buy_url;
         $findTeamPackage->save();
 
         $this->redirect(route('team-packages'));
