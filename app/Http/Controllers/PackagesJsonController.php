@@ -196,6 +196,8 @@ class PackagesJsonController extends Controller
                             'whmcs_product_ids' => $teamPackage->whmcs_product_ids,
                             'is_visible' => $teamPackage->is_visible,
                             'is_paid' => $teamPackage->is_paid,
+                            'buy_url' => $teamPackage->buy_url,
+                            'buy_url_from' => $teamPackage->buy_url_from,
                             'composer_request' => $composerRequest,
                             'team_settings' => $teamSettings
                         ]);
@@ -326,20 +328,20 @@ class PackagesJsonController extends Controller
                 $package['license_ids'] = $teamPackage['whmcs_product_ids'];
                 $package['extra']['whmcs']['whmcs_product_ids'] = $teamPackage['whmcs_product_ids'];
 
-                $package['extra']['whmcs']['add_to_cart_link'] = $whmcsUrl;
-                $package['extra']['whmcs']['buy_link'] = $whmcsUrl;
-
-
                 // Default buy link from first whmcs product id
                 $whmcProductId = $teamPackage['whmcs_product_ids'][0];
-                $package['extra']['whmcs']['add_to_cart_link'] = $whmcsUrl . '/cart.php?a=add&pid=' . $whmcProductId;
+               // $package['extra']['whmcs']['add_to_cart_link'] = $whmcsUrl . '/cart.php?a=add&pid=' . $whmcProductId;
                 $package['extra']['whmcs']['buy_link'] = $whmcsUrl . '/cart.php?a=add&pid=' . $whmcProductId;
 
                 // Primary product id buy link
                 if ($teamPackage['whmcs_primary_product_id'] > 0) {
                     $whmcProductId = $teamPackage['whmcs_primary_product_id'];
-                    $package['extra']['whmcs']['add_to_cart_link'] = $whmcsUrl . '/cart.php?a=add&pid=' . $whmcProductId;
+                  //  $package['extra']['whmcs']['add_to_cart_link'] = $whmcsUrl . '/cart.php?a=add&pid=' . $whmcProductId;
                     $package['extra']['whmcs']['buy_link'] = $whmcsUrl . '/cart.php?a=add&pid=' . $whmcProductId;
+                }
+
+                if ($teamPackage['buy_url_from'] == 'custom') {
+                    $package['extra']['whmcs']['buy_link'] = $teamPackage['buy_url'];
                 }
 
             }
