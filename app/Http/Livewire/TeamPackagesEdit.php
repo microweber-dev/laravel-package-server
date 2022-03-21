@@ -74,10 +74,10 @@ class TeamPackagesEdit extends Component
         $this->team_package_id = $findTeamPackage->id;
         $this->is_visible = $findTeamPackage->is_visible;
         $this->is_paid = $findTeamPackage->is_paid;
+        $this->buy_url_from = $findTeamPackage->buy_url_from;
+        $this->buy_url = $findTeamPackage->buy_url;
         $this->package_id = $findTeamPackage->package->id;
         $this->repository_url = $findTeamPackage->package->repository_url;
-        $this->buy_url_from = $findTeamPackage->package->buy_url_from;
-        $this->buy_url = $findTeamPackage->package->buy_url;
 
     }
 
@@ -92,7 +92,7 @@ class TeamPackagesEdit extends Component
         $findTeamPackage->is_paid = $this->is_paid;
         $findTeamPackage->whmcs_product_ids = $this->whmcs_product_ids;
         $findTeamPackage->whmcs_primary_product_id = $this->whmcs_primary_product_id;
-        $findTeamPackage->buy_url_from = $this->buy_url_from; 
+        $findTeamPackage->buy_url_from = $this->buy_url_from;
         $findTeamPackage->buy_url = $this->buy_url;
         $findTeamPackage->save();
 

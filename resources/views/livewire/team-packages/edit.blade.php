@@ -84,7 +84,7 @@
                 <br />
             <div class="mb-3 has-validation">
                 <label for="inputBuyUrl" class="form-label">Buy Link</label>
-                <input type="text" value="{{$buy_url}}" wire:model.defer="buy_url" class="form-control @error('buy_url') is-invalid @enderror" id="inputBuyUrl" aria-describedby="buyUrlHelp">
+                <input type="text" value="{{$this->buy_url}}" name="buy_url" wire:model.defer="buy_url" class="form-control @error('buy_url') is-invalid @enderror" id="inputBuyUrl" aria-describedby="buyUrlHelp">
                 <div id="buyUrlHelp" class="form-text">The url of package purchase</div>
                 <div class="invalid-feedback">
                     @error('buy_url')
