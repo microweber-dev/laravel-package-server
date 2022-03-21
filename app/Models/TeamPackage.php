@@ -20,6 +20,8 @@ class TeamPackage extends Model
         'is_paid',
         'is_visible',
         'whmcs_product_ids',
+        'buy_url',
+        'buy_url_from',
     ];
 
     public $casts = [
