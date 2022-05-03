@@ -13,6 +13,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
@@ -54,7 +55,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
      */
     public function handle()
     {
-        \Artisan::call('queue:flush');
+     //   \Artisan::call('queue:flush');
 
         $packageModel = Package::where('id', $this->packageId)
             ->with('credential')
@@ -62,8 +63,12 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
 
         if ($packageModel->clone_status == Package::CLONE_STATUS_RUNNING) {
             // job already running
+            $packageModel->clone_log = "Already running.";
+            $packageModel->save();
             return;
         }
+
+      //  Log::info($packageModel->toArray());
 
         $packageModel->clone_log = "Job is started.";
         $packageModel->clone_status = Package::CLONE_STATUS_RUNNING;
@@ -246,8 +251,11 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
             mkdir($outputPublicMeta, 0755, true);
         }
 
-        shell_exec("rsync -ah  $satisRepositoryOutputPath/dist/ $outputPublicDist"); 
-        shell_exec("rsync -ah  $satisRepositoryOutputPath/meta/ $outputPublicMeta");
+        shell_exec("rsync -a $satisRepositoryOutputPath/dist/ $outputPublicDist > /dev/null &");
+        shell_exec("rsync -a $satisRepositoryOutputPath/meta/ $outputPublicMeta > /dev/null &");
+
+        $packageModel->debug_count = $packageModel->debug_count + 1;
+
         if (!empty($lastVersionMetaData)) {
             foreach ($lastVersionMetaData as $metaData=>$metaDataValue) {
                 $packageModel->$metaData = $metaDataValue;
