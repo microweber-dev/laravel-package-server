@@ -59,6 +59,7 @@
         <table class="table table-bordered bg-white">
             <thead>
             <tr>
+                <th scope="col">#</th>
                 <th scope="col">Details</th>
                 <th scope="col">Repository Url</th>
                 <th scope="col">Status</th>
@@ -69,6 +70,7 @@
             <tbody>
             @foreach ($packages as $package)
                 <tr>
+                    <td><b> {{$package->id}}</b></td>
                     <td>
                         @if(!empty($package->screenshot))
                           <div style="max-height:100px;text-align:center;overflow: hidden;">
@@ -87,7 +89,7 @@
                            <div> <span class="badge bg-success">v{{$package->version}}</span></div>
                         @endif
 
-                        @if($package->clone_status != \App\Models\Package::CLONE_STATUS_SUCCESS)
+                        @if($package->clone_status == \App\Models\Package::CLONE_STATUS_FAILED)
                             <div style="max-height: 100px;max-width: 700px;overflow: scroll" class="text-danger">
                                 {{$package->clone_log}}
                             </div>
@@ -96,8 +98,10 @@
                     <td>
                         @if($package->clone_status == \App\Models\Package::CLONE_STATUS_SUCCESS)
                         <span class="badge bg-success">{{$package->clone_status}}</span>
-                        @else
+                        @elseif($package->clone_status == \App\Models\Package::CLONE_STATUS_FAILED)
                             <span class="badge bg-danger">{{$package->clone_status}}</span>
+                        @else
+                            <span class="badge bg-primary">{{$package->clone_status}}</span>
                         @endif
                     </td>
                     <td>{{$package->updated_at}}</td>
