@@ -56,7 +56,14 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
     {
         \Artisan::call('queue:flush');
 
-        $packageModel = Package::where('id', $this->packageId)->with('credential')->first();
+        $packageModel = Package::where('id', $this->packageId)
+            ->with('credential')
+            ->first();
+
+        if ($packageModel->clone_status == Package::CLONE_STATUS_RUNNING) {
+            // job already running
+            return;
+        }
 
         $packageModel->clone_log = "Job is started.";
         $packageModel->clone_status = Package::CLONE_STATUS_RUNNING;
