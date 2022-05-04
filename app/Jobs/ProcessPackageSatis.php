@@ -251,8 +251,10 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
             mkdir($outputPublicMeta, 0755, true);
         }
 
-        shell_exec("rsync -a $satisRepositoryOutputPath/dist/ $outputPublicDist");
-        shell_exec("rsync -a $satisRepositoryOutputPath/meta/ $outputPublicMeta");
+      //  shell_exec("rsync -a $satisRepositoryOutputPath/dist/ $outputPublicDist");
+     //  shell_exec("rsync -a $satisRepositoryOutputPath/meta/ $outputPublicMeta");
+        shell_exec("yes | cp -rf $satisRepositoryOutputPath/dist/ $outputPublicDist");
+        shell_exec("yes | cp -rf $satisRepositoryOutputPath/meta/ $outputPublicMeta");
 
         $packageModel->debug_count = $packageModel->debug_count + 1;
 
