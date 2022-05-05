@@ -26,6 +26,16 @@ class ProcessPackageSatisRsync implements ShouldQueue, ShouldBeUnique
     public $packageId;
 
     /**
+     * Create a new job instance.
+     *
+     * @return void
+     */
+    public function __construct($packageId)
+    {
+        $this->packageId = $packageId;
+    }
+
+    /**
      * Execute the job.
      *
      * @return void
@@ -50,7 +60,7 @@ class ProcessPackageSatisRsync implements ShouldQueue, ShouldBeUnique
         //shell_exec("rsync -a $satisRepositoryOutputPath/meta/ $outputPublicMeta");
 
         $packageModel->debug_count = $packageModel->debug_count + 1;
-
+        $packageModel->clone_status = Package::CLONE_STATUS_SUCCESS;
         $packageModel->is_cloned = 1;
         $packageModel->save();
     }
