@@ -28,9 +28,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
      *
      * @var int
      */
-
     public $uniqueFor = 60;
-
     public $packageId;
 
     /**
@@ -241,19 +239,6 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
             $foundedPackages = array_merge($foundedPackages, $preparedPackages);
         }
 
-        $outputPublicDist = public_path() . '/dist/';
-        if (!is_dir($outputPublicDist)) {
-            mkdir($outputPublicDist, 0755, true);
-        }
-
-        $outputPublicMeta = public_path() . '/meta/';
-        if (!is_dir($outputPublicMeta)) {
-            mkdir($outputPublicMeta, 0755, true);
-        }
-
-        shell_exec("rsync -a $satisRepositoryOutputPath/dist/ $outputPublicDist");
-        shell_exec("rsync -a $satisRepositoryOutputPath/meta/ $outputPublicMeta");
-
         $packageModel->debug_count = $packageModel->debug_count + 1;
 
         if (!empty($lastVersionMetaData)) {
@@ -265,14 +250,16 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         $packageModel->package_json = json_encode($foundedPackages,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
         $packageModel->clone_log = $output;
         $packageModel->clone_status = Package::CLONE_STATUS_SUCCESS;
-        $packageModel->is_cloned = 1;
+        $packageModel->is_cloned = 0;
         $packageModel->save();
+
+        // Maker rsync on another job
+
     }
 
     public function failed($error)
     {
         $packageModel = Package::where('id', $this->packageId)->first();
-
         $packageModel->clone_log = $error->getMessage();
         $packageModel->clone_status = Package::CLONE_STATUS_FAILED;
         $packageModel->save();
