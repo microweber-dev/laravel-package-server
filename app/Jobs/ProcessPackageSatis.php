@@ -31,6 +31,27 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
     public $timeout = 120 * 6;
 
     /**
+     * Indicate if the job should be marked as failed on timeout.
+     *
+     * @var bool
+     */
+    public $failOnTimeout = false;
+
+    /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 25;
+
+    /**
+     * The maximum number of unhandled exceptions to allow before failing.
+     *
+     * @var int
+     */
+    public $maxExceptions = 5;
+
+    /**
      * The number of seconds after which the job will no longer stay unique.
      *
      * @var int
