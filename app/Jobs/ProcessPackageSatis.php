@@ -185,11 +185,12 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
                 foreach ($includedPackageContent['packages'] as $packageKey=>$packageVersions) {
                     $preparedPackageVerions = [];
                     foreach ($packageVersions as $packageVersionKey=>$packageVersion) {
+
                         if (strpos($packageVersionKey, 'dev') !== false) {
                             continue;
                         }
 
-                        // $packageVersion = RepositoryMediaProcessHelper::preparePackageMedia($packageVersion, $satisRepositoryOutputPath);
+                        $packageVersion = RepositoryMediaProcessHelper::preparePackageMedia($packageVersion, $satisRepositoryOutputPath);
 
                         if (isset($packageVersion['name'])) {
                             $lastVersionMetaData['name'] = $packageVersion['name'];
