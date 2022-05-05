@@ -42,7 +42,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
      *
      * @var int
      */
-    public $tries = 26;
+    public $tries = 100;
 
     /**
      * The maximum number of unhandled exceptions to allow before failing.
