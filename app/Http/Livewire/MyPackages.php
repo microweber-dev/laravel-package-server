@@ -66,6 +66,20 @@ class MyPackages extends Component
 
     }
 
+    public function updateAllFailedPacakges()
+    {
+        $packages = Package::select(['id','user_id'])->where('clone_status', Package::CLONE_STATUS_FAILED)->userHasAccess()->get();
+        if ($packages->count() > 0) {
+            foreach ($packages as $package) {
+                $package->clone_status = Package::CLONE_STATUS_WAITING;
+                $package->save();
+                dispatch(new ProcessPackageSatis($package->id));
+            }
+            $this->checkBackgroundJob = true;
+        }
+
+    }
+
     public function confirmDelete($id)
     {
         $this->confirmingDeleteId = $id;

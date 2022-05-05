@@ -47,10 +47,15 @@
                      Add Package
                     </a>
                 </div>
-                <div class="col-md-2">
-                    <button type="button" wire:click="updateAllPacakges" class="btn btn-outline-dark">
-                     Update all
-                    </button>
+                <div class="col-md-3">
+                    <div class="btn-group">
+                        <button type="button" wire:click="updateAllPacakges" class="btn btn-outline-dark">
+                         Update all
+                        </button>
+                        <button type="button" wire:click="updateAllFailedPacakges" class="btn btn-outline-danger">
+                         Update all failed
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
