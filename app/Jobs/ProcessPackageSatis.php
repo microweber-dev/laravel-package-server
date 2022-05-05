@@ -24,11 +24,22 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
+     * The number of seconds the job can run before timing out.
+     *
+     * @var int
+     */
+    public $timeout = 120 * 6;
+
+    /**
      * The number of seconds after which the job will no longer stay unique.
      *
      * @var int
      */
     public $uniqueFor = 60;
+
+    /**
+     * @var int
+     */
     public $packageId;
 
     /**
@@ -41,6 +52,9 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         $this->packageId = $packageId;
     }
 
+    /**
+     * @return string
+     */
     public function uniqueId()
     {
         return 'proc-pack-satis-' . $this->packageId;
