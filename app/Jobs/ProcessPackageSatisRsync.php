@@ -44,9 +44,7 @@ class ProcessPackageSatisRsync implements ShouldQueue, ShouldBeUnique
      */
     public function handle()
     {
-        $packageModel = Package::where('id', $this->packageId)
-            ->with('credential')
-            ->first();
+        $packageModel = Package::where('id', $this->packageId)->first();
 
         $outputPublicDist = public_path() . '/dist/';
         if (!is_dir($outputPublicDist)) {
@@ -69,6 +67,7 @@ class ProcessPackageSatisRsync implements ShouldQueue, ShouldBeUnique
 
     public function failed($error)
     {
+        dd($error);
         $packageModel = Package::where('id', $this->packageId)->first();
 
         $packageModel->clone_log = $error->getMessage();

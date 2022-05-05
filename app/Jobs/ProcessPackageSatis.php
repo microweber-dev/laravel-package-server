@@ -253,7 +253,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         $packageModel->save();
 
         // Maker rsync on another job
-        dispatch(new ProcessPackageSatisRsync([
+        dispatch_sync(new ProcessPackageSatisRsync([
             'packageId'=>$packageModel->id,
             'satisRepositoryOutputPath'=>$satisRepositoryOutputPath
         ]));
@@ -261,6 +261,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
 
     public function failed($error)
     {
+        dd($error);
         $packageModel = Package::where('id', $this->packageId)->first();
         $packageModel->clone_log = $error->getMessage();
         $packageModel->clone_status = Package::CLONE_STATUS_FAILED;
