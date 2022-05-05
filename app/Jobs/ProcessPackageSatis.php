@@ -28,7 +28,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
      *
      * @var int
      */
-    public $timeout = 120 * 6;
+    public $timeout = 320 * 6;
 
     /**
      * Indicate if the job should be marked as failed on timeout.
@@ -42,14 +42,14 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
      *
      * @var int
      */
-    public $tries = 25;
+    public $tries = 26;
 
     /**
      * The maximum number of unhandled exceptions to allow before failing.
      *
      * @var int
      */
-    public $maxExceptions = 5;
+    public $maxExceptions = 6;
 
     /**
      * The number of seconds after which the job will no longer stay unique.
