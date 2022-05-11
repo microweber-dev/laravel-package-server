@@ -130,16 +130,18 @@
                     </td>
 
                     <td>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" wire:model="is_visible.{{$teamPackage->id}}" value="1" type="checkbox" id="flexSwitchCheckIsVisible">
-                            <label class="form-check-label" for="flexSwitchCheckIsVisible">
-                                @if($teamPackage->is_visible == 1)
-                                    Yes
-                                @else
-                                    No
-                                @endif
-                            </label>
-                        </div>
+                        @if($confirming_is_visible === $teamPackage->id)
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" wire:model="is_visible.{{$teamPackage->id}}" value="1" type="checkbox" id="flexSwitchCheckIsVisible">
+                                <label class="form-check-label" for="flexSwitchCheckIsVisible">
+                                    @if($teamPackage->is_visible == 1) Yes @else No @endif
+                                </label>
+                            </div>
+                        @else
+                            <b> @if($teamPackage->is_visible == 1) <span class="badge badge bg-success"> Yes</span> @else <span class="badge badge bg-danger">No</span> @endif
+                                <button type="button" wire:click="confirmIsVisible({{ $teamPackage->id }})" class="btn btn-outline-primary btn-sm">Change</button>
+                            </b>
+                        @endif
                     </td>
 
                     <td>

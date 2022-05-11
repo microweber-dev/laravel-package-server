@@ -53,12 +53,10 @@
             </div>
 
         @if($this->is_paid == 1)
-
             <br />
-
             <h5>Generate Buy link from:</h5>
             <select class="form-control" name="buy_url_from" wire:model="buy_url_from">
-                <option value="license">WHMCS Plan</option>
+                <option value="license">WHMCS Plan\License</option>
                 <option value="custom">Custom</option>
             </select>
 
@@ -76,19 +74,17 @@
             </div>
             @else
                 <br />
-                <b>Required WHMCS License for Install Package</b>
-                <p>Select whmcs license to generate buy link on premium packages</p>
+                <b>Required WHMCS Plan\License for Install Package</b>
+                <p>Select whmcs plan\license to generate buy link on premium packages</p>
 
                 <select class="form-control" name="whmcs_primary_product_id" wire:model.defer="whmcs_primary_product_id">
                     @if(!empty($this->whmcs_product_types))
                         @foreach($this->whmcs_product_types as $whmcs_product_type_name=>$whmcs_product_type)
-
                             <optgroup label="{{ucfirst($whmcs_product_type_name)}}">
                                 @foreach($whmcs_product_type as $whmcs_product)
                                     <option value="{{ $whmcs_product['pid']}}">{{$whmcs_product['name']}}</option>
                                 @endforeach
                             </optgroup>
-
                         @endforeach
                     @endif
                 </select>

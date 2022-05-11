@@ -23,7 +23,6 @@ class TeamPackages extends Component
     public $keyword = '';
     public $check_background_job = false;
 
-    public $confirming_delete_id = true;
     public $add_existing_repository_url = '';
     public $add_existing_repository_id = false;
     public $show_add_team_package_form = false;
@@ -32,6 +31,10 @@ class TeamPackages extends Component
 
     public $is_visible = [];
     public $is_paid = [];
+
+    public $confirming_delete_id = true;
+    public $confirming_is_visible = true;
+    public $confirming_is_paid = true;
 
     public function showAddTeamPackageForm()
     {
@@ -165,6 +168,16 @@ class TeamPackages extends Component
     public function confirmDelete($id)
     {
         $this->confirming_delete_id = $id;
+    }
+
+    public function confirmIsVisible($id)
+    {
+        $this->confirming_is_visible = $id;
+    }
+
+    public function confirmIsPaid($id)
+    {
+        $this->confirming_is_paid = $id;
     }
 
     public function delete($id)
