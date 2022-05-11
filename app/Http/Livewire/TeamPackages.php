@@ -88,6 +88,8 @@ class TeamPackages extends Component
                    if (((int) $findTeamPackageEdit->is_visible) != $isVisible) {
                        $findTeamPackageEdit->is_visible = $isVisible;
                        $findTeamPackageEdit->save();
+
+                       $this->confirming_is_visible = false;
                    }
                }
            }
@@ -104,6 +106,8 @@ class TeamPackages extends Component
                    if (((int) $findTeamPackageEdit->is_paid) != $isPaid) {
                        $findTeamPackageEdit->is_paid = $isPaid;
                        $findTeamPackageEdit->save();
+
+                       $this->confirming_is_paid = false;
                    }
                }
            }

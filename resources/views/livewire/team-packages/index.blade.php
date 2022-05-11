@@ -138,23 +138,25 @@
                                 </label>
                             </div>
                         @else
-                            <b> @if($teamPackage->is_visible == 1) <span class="badge badge bg-success"> Yes</span> @else <span class="badge badge bg-danger">No</span> @endif
+                            <b> @if($teamPackage->is_visible == 1) <span class="badge badge bg-success"> VISIBLE</span> @else <span class="badge badge bg-danger">HIDDEN</span> @endif
                                 <button type="button" wire:click="confirmIsVisible({{ $teamPackage->id }})" class="btn btn-outline-primary btn-sm">Change</button>
                             </b>
                         @endif
                     </td>
 
                     <td>
+                        @if($confirming_is_paid === $teamPackage->id)
                         <div class="form-check form-switch">
                             <input class="form-check-input" wire:model="is_paid.{{$teamPackage->id}}" value="1" type="checkbox" id="flexSwitchCheckIsPaid">
                             <label class="form-check-label" for="flexSwitchCheckIsPaid">
-                                @if($teamPackage->is_paid == 1)
-                                    Yes
-                                @else
-                                    No
-                                @endif
+                                @if($teamPackage->is_paid == 1) Yes @else No @endif
                             </label>
                         </div>
+                        @else
+                            <b> @if($teamPackage->is_paid == 1) <span class="badge badge bg-success"> PAID</span> @else <span class="badge badge bg-danger">FREE</span> @endif
+                                <button type="button" wire:click="confirmIsPaid({{ $teamPackage->id }})" class="btn btn-outline-primary btn-sm">Change</button>
+                            </b>
+                        @endif
                     </td>
                     <td>
                         {{$teamPackage->package->owner->name}}
