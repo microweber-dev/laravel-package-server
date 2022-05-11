@@ -65,8 +65,9 @@
             <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Details</th>
-                <th scope="col">Repository Url</th>
+                <th scope="col" style="width: 20px">Screenshot</th>
+                <th scope="col" style="width: 500px">Details</th>
+                <th scope="col" style="width: 20px">Provider</th>
                 <th scope="col">Status</th>
                 <th scope="col">Last Update</th>
                 <th scope="col">Action</th>
@@ -99,6 +100,11 @@
                                 {{$package->clone_log}}
                             </div>
                         @endif
+                    </td>
+                    <td style="text-align: center;margin-top: 15px">
+                        <a href="{{$package->repository_url}}" target="_blank" title="Visit the repository">
+                            <img src="{{asset('/')}}images/{{\App\Helpers\RepositoryPathHelper::getRepositoryProviderByUrl($package->repository_url)}}.svg" />
+                        </a>
                     </td>
                     <td>
                         @if($package->clone_status == \App\Models\Package::CLONE_STATUS_SUCCESS)
