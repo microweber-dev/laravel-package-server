@@ -60,9 +60,9 @@ class TeamPackagesTable extends DataTableComponent
                     return '';
                 }),
 
-            Column::make('Position', 'position')
+          /*  Column::make('Position', 'position')
                 ->sortable()
-                ->excludeFromColumnSelect(),
+                ->excludeFromColumnSelect(),*/
             BooleanSwitchColumn::make('Is Visible', 'is_visible')
                 ->sortable()
                 ->searchable(),

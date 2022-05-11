@@ -27,6 +27,8 @@ class BooleanSwitchColumn extends Column
         $value = $this->getValue($row);
 
         return view($this->getView())
+            ->withColumn($this)
+            ->withRow($row)
             ->withComponent($this->getComponent())
             ->withSuccessValue($this->getSuccessValue())
             ->withType($this->getType())
