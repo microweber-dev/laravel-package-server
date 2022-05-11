@@ -95,10 +95,9 @@
             <tr>
                 <th scope="col">Screenshot</th>
                 <th scope="col">Details</th>
-                <th scope="col">Provider</th>
+                <th scope="col" style="width: 20px">Provider</th>
                 <th scope="col">Is visible</th>
                 <th scope="col">Is paid</th>
-                <th scope="col">Owner</th>
                 <th scope="col">Last Update</th>
                 <th scope="col">Action</th>
             </tr>
@@ -114,10 +113,11 @@
                         @endif
                     </td>
                     <td>
-                        <div><b> {{$teamPackage->package->description}}</b></div>
+                        <div><b> {{\Illuminate\Support\Str::limit($teamPackage->package->description, 40)}}</b></div>
                         @if($teamPackage->package)
-                        <div> <pre>{{$teamPackage->package->name}}</pre></div>
+                        <div> {{$teamPackage->package->name}}</div>
                         @endif
+                        <div>Added by: <b>{{$teamPackage->package->owner->name}}</b></div>
                         @if($teamPackage->package->version > 0)
                             <div> <span class="badge bg-success">v{{$teamPackage->package->version}}</span></div>
                         @endif
@@ -128,7 +128,7 @@
                             </div>
                         @endif
                     </td>
-                    <td>
+                    <td style="text-align: center;margin-top: 15px">
                         <a href="{{$teamPackage->package->repository_url}}" target="_blank" title="Visit the repository">
                             <img src="{{asset('/')}}images/{{\App\Helpers\RepositoryPathHelper::getRepositoryProviderByUrl($teamPackage->package->repository_url)}}.svg" />
                         </a>
@@ -143,9 +143,10 @@
                                 </label>
                             </div>
                         @else
-                            <b> @if($teamPackage->is_visible == 1) <span class="badge badge bg-success"> VISIBLE</span> @else <span class="badge badge bg-black">HIDDEN</span> @endif
-                                <button type="button" wire:click="confirmIsVisible({{ $teamPackage->id }})" class="btn btn-outline-primary btn-sm mt-2">Change</button>
-                            </b>
+                            <div>
+                             @if($teamPackage->is_visible == 1) <span class="badge badge bg-success"> VISIBLE</span> @else <span class="badge badge bg-black">HIDDEN</span> @endif
+                            <button type="button" wire:click="confirmIsVisible({{ $teamPackage->id }})" class="btn btn-outline-primary btn-sm mt-2">Change</button>
+                            </div>
                         @endif
                     </td>
 
@@ -158,13 +159,10 @@
                             </label>
                         </div>
                         @else
-                            <b> @if($teamPackage->is_paid == 1) <span class="badge badge bg-primary"> PAID</span> @else <span class="badge badge bg-success">FREE</span> @endif
+                            <b> @if($teamPackage->is_paid == 1) <span class="badge badge bg-primary"> $ PAID</span> @else <span class="badge badge bg-success">FREE</span> @endif
                                 <button type="button" wire:click="confirmIsPaid({{ $teamPackage->id }})" class="btn btn-outline-primary btn-sm mt-2">Change</button>
                             </b>
                         @endif
-                    </td>
-                    <td>
-                        {{$teamPackage->package->owner->name}}
                     </td>
 
                      <td>{{$teamPackage->updated_at}}</td>
