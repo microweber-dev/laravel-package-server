@@ -90,6 +90,11 @@
     </div>
 
     <div class="col-md-12">
+
+        <hr />
+
+        <livewire:team-packages-table theme="bootstrap-5" />
+
         <table class="table table-bordered bg-white">
             <thead>
             <tr>
