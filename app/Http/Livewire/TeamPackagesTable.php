@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Models\TeamPackage;
 use App\View\Columns\BooleanSwitchColumn;
+use App\View\Columns\ScreenshotColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
@@ -20,7 +21,7 @@ class TeamPackagesTable extends DataTableComponent
     {
         $this->setPrimaryKey('id')
             ->setReorderEnabled()
-            ->setDefaultReorderSort('position', 'desc')
+            ->setDefaultReorderSort('position', 'asc')
             ->setReorderMethod('changePosition')
             ->setFilterLayoutSlideDown()
             ->setRememberColumnSelectionDisabled()
@@ -51,20 +52,16 @@ class TeamPackagesTable extends DataTableComponent
     public function columns(): array
     {
         return [
-            ImageColumn::make('Screenshot')
+            ScreenshotColumn::make('Screenshot','package.screenshot')
                 ->location(function($row) {
                     if (!empty($row->package->screenshot)) {
-                       return $row->package()->screenshot();
+                       return $row->package->screenshot();
                     }
                     return '';
-                })
-                ->attributes(function($row) {
-                    return [
-                        'class' => 'w-8 h-8 rounded-full',
-                    ];
                 }),
+
             Column::make('Position', 'position')
-                ->collapseOnMobile()
+                ->sortable()
                 ->excludeFromColumnSelect(),
             BooleanSwitchColumn::make('Is Visible', 'is_visible')
                 ->sortable()
@@ -106,14 +103,15 @@ class TeamPackagesTable extends DataTableComponent
         $team = $user->currentTeam;
 
         $query = TeamPackage::query();
-        $query->select(['id']);
+        $query->select(['id','team_id','package_id']);
         $query->where('team_id', $team->id);
         $query->whereHas('package', function (Builder $query) {
-                //     $query->where('clone_status',Package::CLONE_STATUS_SUCCESS);
-            });
+            //$query->where('clone_status',Package::CLONE_STATUS_SUCCESS);
+        });
         $query->whereHas('team');
         $query->with('package');
         $query->with('team');
+        $query->orderBy('position','asc');
 
         return $query;
     }
