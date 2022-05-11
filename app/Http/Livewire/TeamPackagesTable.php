@@ -106,6 +106,7 @@ class TeamPackagesTable extends DataTableComponent
         $team = $user->currentTeam;
 
         $query = TeamPackage::query();
+        $query->select(['id']);
         $query->where('team_id', $team->id);
         $query->whereHas('package', function (Builder $query) {
                 //     $query->where('clone_status',Package::CLONE_STATUS_SUCCESS);
