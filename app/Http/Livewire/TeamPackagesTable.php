@@ -21,7 +21,7 @@ class TeamPackagesTable extends DataTableComponent
         $this->setPrimaryKey('id')
             ->setReorderEnabled()
             ->setDefaultReorderSort('position', 'desc')
-            ->setReorderMethod('changeOrder')
+            ->setReorderMethod('changePosition')
             ->setFilterLayoutSlideDown()
             ->setRememberColumnSelectionDisabled()
             ->setSecondaryHeaderTrAttributes(function($rows) {
@@ -63,8 +63,7 @@ class TeamPackagesTable extends DataTableComponent
                         'class' => 'w-8 h-8 rounded-full',
                     ];
                 }),
-            Column::make('Order', 'sort')
-                ->sortable()
+            Column::make('Position', 'position')
                 ->collapseOnMobile()
                 ->excludeFromColumnSelect(),
             BooleanSwitchColumn::make('Is Visible', 'is_visible')
@@ -140,9 +139,10 @@ class TeamPackagesTable extends DataTableComponent
         $this->clearSelected();
     }
 
-    public function reorder($items): void
+    public function changePosition($items): void
     {
         foreach ($items as $item) {
+            dd($items);
             TeamPackage::find((int)$item['value'])->update(['position' => (int)$item['order']]);
         }
     }
