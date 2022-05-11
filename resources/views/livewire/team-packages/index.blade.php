@@ -95,6 +95,7 @@
             <tr>
                 <th scope="col">Screenshot</th>
                 <th scope="col">Details</th>
+                <th scope="col">Provider</th>
                 <th scope="col">Is visible</th>
                 <th scope="col">Is paid</th>
                 <th scope="col">Owner</th>
@@ -114,7 +115,6 @@
                     </td>
                     <td>
                         <div><b> {{$teamPackage->package->description}}</b></div>
-                        <div> {{$teamPackage->package->repository_url}}</div>
                         @if($teamPackage->package)
                         <div> <pre>{{$teamPackage->package->name}}</pre></div>
                         @endif
@@ -128,18 +128,23 @@
                             </div>
                         @endif
                     </td>
+                    <td>
+                        <a href="{{$teamPackage->package->repository_url}}" target="_blank" title="Visit the repository">
+                            <img src="{{asset('/')}}images/{{\App\Helpers\RepositoryPathHelper::getRepositoryProviderByUrl($teamPackage->package->repository_url)}}.svg" />
+                        </a>
+                    </td>
 
                     <td>
                         @if($confirming_is_visible === $teamPackage->id)
                             <div class="form-check form-switch">
                                 <input class="form-check-input" wire:model="is_visible.{{$teamPackage->id}}" value="1" type="checkbox" id="flexSwitchCheckIsVisible">
                                 <label class="form-check-label" for="flexSwitchCheckIsVisible">
-                                    @if($teamPackage->is_visible == 1) Yes @else No @endif
+                                    Visible
                                 </label>
                             </div>
                         @else
-                            <b> @if($teamPackage->is_visible == 1) <span class="badge badge bg-success"> VISIBLE</span> @else <span class="badge badge bg-danger">HIDDEN</span> @endif
-                                <button type="button" wire:click="confirmIsVisible({{ $teamPackage->id }})" class="btn btn-outline-primary btn-sm">Change</button>
+                            <b> @if($teamPackage->is_visible == 1) <span class="badge badge bg-success"> VISIBLE</span> @else <span class="badge badge bg-black">HIDDEN</span> @endif
+                                <button type="button" wire:click="confirmIsVisible({{ $teamPackage->id }})" class="btn btn-outline-primary btn-sm mt-2">Change</button>
                             </b>
                         @endif
                     </td>
@@ -149,12 +154,12 @@
                         <div class="form-check form-switch">
                             <input class="form-check-input" wire:model="is_paid.{{$teamPackage->id}}" value="1" type="checkbox" id="flexSwitchCheckIsPaid">
                             <label class="form-check-label" for="flexSwitchCheckIsPaid">
-                                @if($teamPackage->is_paid == 1) Yes @else No @endif
+                                Paid
                             </label>
                         </div>
                         @else
-                            <b> @if($teamPackage->is_paid == 1) <span class="badge badge bg-success"> PAID</span> @else <span class="badge badge bg-danger">FREE</span> @endif
-                                <button type="button" wire:click="confirmIsPaid({{ $teamPackage->id }})" class="btn btn-outline-primary btn-sm">Change</button>
+                            <b> @if($teamPackage->is_paid == 1) <span class="badge badge bg-primary"> PAID</span> @else <span class="badge badge bg-success">FREE</span> @endif
+                                <button type="button" wire:click="confirmIsPaid({{ $teamPackage->id }})" class="btn btn-outline-primary btn-sm mt-2">Change</button>
                             </b>
                         @endif
                     </td>

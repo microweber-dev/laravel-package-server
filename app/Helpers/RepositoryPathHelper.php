@@ -31,4 +31,17 @@ class RepositoryPathHelper
         return $path;
     }
 
+    public static function getRepositoryProviderByUrl($repositoryUrl) {
+
+        $parse = parse_url($repositoryUrl);
+        if (isset($parse['host'])) {
+            $host = $parse['host'];
+            $host = str_replace('.com', '', $host);
+            $host = str_replace('.net', '', $host);
+            $host = str_replace('.org', '', $host);
+            return $host;
+        }
+
+        return 'unknown';
+    }
 }
