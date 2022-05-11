@@ -17,6 +17,7 @@ class TeamPackage extends Model
     ];
 
     public $fillable = [
+        'position',
         'is_paid',
         'is_visible',
         'whmcs_product_ids',
@@ -25,6 +26,7 @@ class TeamPackage extends Model
     ];
 
     public $casts = [
+        'position'=>'int',
         'is_paid'=>'int',
         'is_visible'=>'int',
         'whmcs_product_ids'=>'array'

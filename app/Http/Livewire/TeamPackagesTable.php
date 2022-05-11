@@ -143,7 +143,6 @@ class TeamPackagesTable extends DataTableComponent
     public function changePosition($items): void
     {
         foreach ($items as $item) {
-            dd($items);
             TeamPackage::find((int)$item['value'])->update(['position' => (int)$item['order']]);
         }
     }
