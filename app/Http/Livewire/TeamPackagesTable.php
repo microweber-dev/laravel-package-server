@@ -20,6 +20,8 @@ class TeamPackagesTable extends DataTableComponent
     {
         $this->setPrimaryKey('id')
             ->setReorderEnabled()
+            ->setDefaultReorderSort('position', 'desc')
+            ->setReorderMethod('changeOrder')
             ->setFilterLayoutSlideDown()
             ->setRememberColumnSelectionDisabled()
             ->setSecondaryHeaderTrAttributes(function($rows) {
@@ -52,7 +54,7 @@ class TeamPackagesTable extends DataTableComponent
             ImageColumn::make('Screenshot')
                 ->location(function($row) {
                     if (!empty($row->package->screenshot)) {
-                       return $row->package->screenshot();
+                       return $row->package()->screenshot();
                     }
                     return '';
                 })
@@ -105,13 +107,13 @@ class TeamPackagesTable extends DataTableComponent
         $team = $user->currentTeam;
 
         $query = TeamPackage::query();
-        $query->where('team_id', $team->id)
-            ->whereHas('package', function (Builder $query) {
+        $query->where('team_id', $team->id);
+        $query->whereHas('package', function (Builder $query) {
                 //     $query->where('clone_status',Package::CLONE_STATUS_SUCCESS);
-            })
-            ->whereHas('team')
-            ->with('package')
-            ->with('team');
+            });
+        $query->whereHas('team');
+        $query->with('package');
+        $query->with('team');
 
         return $query;
     }
@@ -141,7 +143,7 @@ class TeamPackagesTable extends DataTableComponent
     public function reorder($items): void
     {
         foreach ($items as $item) {
-            TeamPackage::find((int)$item['value'])->update(['sort' => (int)$item['order']]);
+            TeamPackage::find((int)$item['value'])->update(['position' => (int)$item['order']]);
         }
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddSortToTeamPackagesTable extends Migration
+class AddPositionToTeamPackagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddSortToTeamPackagesTable extends Migration
     public function up()
     {
         Schema::table('team_packages', function (Blueprint $table) {
-            $table->integer('sort')->nullable();
+            $table->integer('position')->nullable();
         });
     }
 
