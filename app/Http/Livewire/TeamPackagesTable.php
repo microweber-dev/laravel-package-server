@@ -152,11 +152,6 @@ class TeamPackagesTable extends DataTableComponent
                     return '';
                 }),
 
-            /*HtmlColumn::make('Status','package.clone_status')
-           ->setOutputHtml(function($row) {
-               return $row->package->clone_status;
-           }),*/
-
             HtmlColumn::make('Details')
                 ->setOutputHtml(function($row) {
                     $html = '<div><b>'.Str::limit($row->package->description, 40).'</b></div>';
@@ -166,6 +161,17 @@ class TeamPackagesTable extends DataTableComponent
                         $html .= '<div> <span class="badge bg-success">v'.$row->package->version.'</span></div>';
                     }
                     return $html;
+                }),
+
+            HtmlColumn::make('Clone Status','package.clone_status')
+                ->setOutputHtml(function($row) {
+                    if ($row->package->clone_status=='success') {
+                        return '<span class="badge badge bg-success text-uppercase">Success</span>';
+                    }
+                    if ($row->package->clone_status=='running') {
+                        return '<span class="badge badge bg-black text-uppercase">Running</span>';
+                    }
+                    return '';
                 }),
 
             ImageWithLinkColumn::make('Provider')
@@ -191,14 +197,6 @@ class TeamPackagesTable extends DataTableComponent
                 ])
                 ->sortable()
                 ->searchable(),
-
-           /* BooleanSwitchColumn::make('Clone Status', 'package.clone_status')
-                ->options([
-                    'success' => '<span class="badge badge bg-success text-uppercase">Success</span>',
-                    'running' => '<span class="badge badge bg-primary text-uppercase">Running</span>',
-                ])
-                ->sortable()
-                ->searchable(),*/
 
             Column::make('Last Update', 'updated_at')
                 ->sortable()
@@ -337,19 +335,24 @@ class TeamPackagesTable extends DataTableComponent
 
     public function packageDelete($id = false)
     {
-        if (!$id) {
-            $id = $this->getSelected();
+        $ids = [];
+        if ($id) {
+            $ids = $id;
+        } else {
+            $ids = $this->getSelected();
             $this->clearSelected();
         }
 
-        $user = auth()->user();
-        $team = $user->currentTeam;
+        foreach ($ids as $id) {
+            $user = auth()->user();
+            $team = $user->currentTeam;
 
-        if (!$user->hasTeamRole($team, 'admin')) {
-            return [];
+            if (!$user->hasTeamRole($team, 'admin')) {
+                return [];
+            }
+
+            $findTeamPackage = TeamPackage::where('id', $id)->where('team_id', $team->id)->first();
+            $findTeamPackage->delete();
         }
-
-        $findTeamPackage = TeamPackage::where('id', $id)->where('team_id', $team->id)->first();
-        $findTeamPackage->delete();
     }
 }

@@ -108,6 +108,7 @@ class PackagesJsonController extends Controller
                 $query->where('clone_status', Package::CLONE_STATUS_SUCCESS);
             })
             ->where('is_visible', 1)
+            ->orderBy('position','asc')
             ->with('package')
             ->get();
 
