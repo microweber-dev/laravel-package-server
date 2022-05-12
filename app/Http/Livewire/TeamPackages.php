@@ -197,21 +197,4 @@ class TeamPackages extends Component
         $findTeamPackage->delete();
     }
 
-    public function packageUpdate($id)
-    {
-        $user = auth()->user();
-
-        $package = Package::where('id',$id)
-           // ->userHasAccess()
-            ->first();
-        if ($package == null) {
-            return [];
-        }
-
-        dispatch(new ProcessPackageSatis($package->id));
-
-        $this->check_background_job = true;
-
-    }
-
 }

@@ -2,8 +2,12 @@
 
 namespace App\Http\Livewire;
 
+use App\Helpers\RepositoryPathHelper;
+use App\Jobs\ProcessPackageSatis;
+use App\Models\Package;
 use App\Models\TeamPackage;
 use App\View\Columns\BooleanSwitchColumn;
+use App\View\Columns\ButtonConfirmColumn;
 use App\View\Columns\ScreenshotColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
@@ -60,6 +64,11 @@ class TeamPackagesTable extends DataTableComponent
                     return '';
                 }),
 
+            ImageColumn::make('Provider','package.screenshot')
+                ->location(function($row) {
+                    return asset('images/' . RepositoryPathHelper::getRepositoryProviderByUrl($row->package->repository_url).'.svg');
+                }),
+
           /*  Column::make('Position', 'position')
                 ->sortable()
                 ->excludeFromColumnSelect(),*/
@@ -80,17 +89,55 @@ class TeamPackagesTable extends DataTableComponent
                     ];
                 })
                 ->buttons([
-                    LinkColumn::make('Edit')
-                        ->title(function($row){
-                            return 'Edit ' . $row->name;
+                    LinkColumn::make('View','view')
+                        ->title(function($row) {
+                            return 'View';
                         })
                         ->location(function($row) {
-                            return $row->name;
+                            return route('my-packages.show', $row->package->id);
                         })
                         ->attributes(function($row) {
                             return [
-                                'target' => '_blank',
-                                'class' => 'underline text-blue-500 hover:no-underline',
+                                'class' => 'btn btn-outline-dark btn-sm',
+                            ];
+                        }),
+                    ButtonConfirmColumn::make('Update','update')
+                        ->title(function($row){
+                            return 'Update';
+                        })
+                        ->attributes(function($row) {
+                            return [
+                                'wire:click'=>'packageUpdate('.$row->package->id.')',
+                                'wire:loading.attr'=>'disabled',
+                                'class' => 'btn btn-outline-dark btn-sm',
+                            ];
+                        }),
+
+                    LinkColumn::make('Edit','edit')
+                        ->title(function($row){
+                            return 'Edit';
+                        })
+                        ->location(function($row) {
+                            return route('my-packages.edit', $row->package->id);
+                        })
+                        ->attributes(function($row) {
+                            return [
+                                'class' => 'btn btn-outline-dark btn-sm',
+                            ];
+                        }),
+                    ButtonConfirmColumn::make('Delete','delete')
+                        ->title(function($row){
+                            return 'Delete';
+                        })
+                        ->attributesWhenConfirmed(function ($row) {
+                            return [
+                                'wire:click'=>'delete('.$row->package->id.')',
+                                'wire:loading.attr'=>'disabled',
+                            ];
+                        })
+                        ->attributes(function($row) {
+                            return [
+                                'class' => 'btn btn-outline-dark btn-sm',
                             ];
                         })
             ])
@@ -144,4 +191,19 @@ class TeamPackagesTable extends DataTableComponent
             TeamPackage::find((int)$item['value'])->update(['position' => (int)$item['order']]);
         }
     }
+
+    public function packageUpdate($id)
+    {
+        $package = Package::where('id',$id)
+            ->userHasAccess()
+            ->first();
+        if ($package == null) {
+            return [];
+        }
+
+        dispatch(new ProcessPackageSatis($package->id));
+
+        $this->check_background_job = true;
+    }
+
 }
