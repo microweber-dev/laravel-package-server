@@ -16,6 +16,9 @@ use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\Views\Columns\ButtonGroupColumn;
 use Rappasoft\LaravelLivewireTables\Views\Columns\ImageColumn;
 use Rappasoft\LaravelLivewireTables\Views\Columns\LinkColumn;
+use Rappasoft\LaravelLivewireTables\Views\Filters\DateFilter;
+use Rappasoft\LaravelLivewireTables\Views\Filters\SelectFilter;
+use Rappasoft\LaravelLivewireTables\Views\Filters\TextFilter;
 
 class TeamPackagesTable extends DataTableComponent
 {
@@ -53,6 +56,43 @@ class TeamPackagesTable extends DataTableComponent
             ->setHideBulkActionsWhenEmptyEnabled();
     }
 
+    public function filters(): array
+    {
+        return [
+           /* TextFilter::make('Package Name')
+                ->config([
+                    'maxlength' => 5,
+                    'placeholder' => 'Search Package Name',
+                ])
+                ->filter(function(Builder $builder, string $value) {
+                    $builder->where('package.name', 'like', '%'.$value.'%');
+                }),*/
+
+            SelectFilter::make('Cloned')
+                ->setFilterPillTitle('Cloned')
+                ->options([
+                    ''    => 'Any',
+                    'success' => 'Success',
+                    'running'  => 'Running',
+                ])
+                ->filter(function(Builder $builder, string $value) {
+                    if ($value === 'success') {
+                        $builder->whereHas('package', function (Builder $query) {
+                            $query->where('clone_status',Package::CLONE_STATUS_SUCCESS);
+                        });
+                    } elseif ($value === 'running') {
+                        $builder->whereHas('package', function (Builder $query) {
+                            $query->where('clone_status',Package::CLONE_STATUS_RUNNING);
+                        });
+                    }
+                }),
+
+            DateFilter::make('Updated at')
+                ->filter(function(Builder $builder, string $value) {
+                    $builder->where('updated_at', '>=', $value);
+                })
+        ];
+    }
 
     public function columns(): array
     {
