@@ -9,6 +9,7 @@ use App\Models\TeamPackage;
 use App\View\Columns\BooleanSwitchColumn;
 use App\View\Columns\ButtonConfirmColumn;
 use App\View\Columns\HtmlColumn;
+use App\View\Columns\ImageWithLinkColumn;
 use App\View\Columns\ScreenshotColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
@@ -152,9 +153,13 @@ class TeamPackagesTable extends DataTableComponent
                     return $html;
                 }),
 
-            ImageColumn::make('Provider','package.screenshot')
+            ImageWithLinkColumn::make('Provider')
                 ->location(function($row) {
-                    return asset('images/' . RepositoryPathHelper::getRepositoryProviderByUrl($row->package->repository_url).'.svg');
+                    return [
+                      'target'=>'_blank',
+                      'href'=>$row->package->repository_url,
+                      'location'=>  asset('images/' . RepositoryPathHelper::getRepositoryProviderByUrl($row->package->repository_url).'.svg')
+                    ];
                 }),
 
             BooleanSwitchColumn::make('Visible', 'is_visible')
