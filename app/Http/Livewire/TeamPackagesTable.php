@@ -129,14 +129,10 @@ class TeamPackagesTable extends DataTableComponent
                         ->title(function($row){
                             return 'Delete';
                         })
-                        ->attributesWhenConfirmed(function ($row) {
+                        ->attributes(function($row) {
                             return [
                                 'wire:click'=>'delete('.$row->package->id.')',
                                 'wire:loading.attr'=>'disabled',
-                            ];
-                        })
-                        ->attributes(function($row) {
-                            return [
                                 'class' => 'btn btn-outline-dark btn-sm',
                             ];
                         })
