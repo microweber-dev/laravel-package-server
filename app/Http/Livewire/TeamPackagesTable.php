@@ -227,13 +227,13 @@ class TeamPackagesTable extends DataTableComponent
                                 'class' => 'btn btn-outline-dark btn-sm',
                             ];
                         }),
-                    ButtonConfirmColumn::make('Delete','delete')
+                    ButtonConfirmColumn::make('Delete')
                         ->title(function($row){
                             return 'Delete';
                         })
                         ->attributes(function($row) {
                             return [
-                                'wire:click'=>'packageDelete('.$row->package->id.')',
+                                'wire:click'=>'packageDelete('.$row->id.')',
                                 'wire:loading.attr'=>'disabled',
                                 'class' => 'btn btn-outline-dark btn-sm',
                             ];
@@ -266,6 +266,7 @@ class TeamPackagesTable extends DataTableComponent
             'packageHidden' => 'Make hidden',
             'packagePaid' => 'Make paid',
             'packageFree' => 'Make free',
+            'packageDelete' => 'Delete',
         ];
     }
 
@@ -314,8 +315,13 @@ class TeamPackagesTable extends DataTableComponent
         $this->check_background_job = true;
     }
 
-    public function packageDelete($id)
+    public function packageDelete($id = false)
     {
+        if (!$id) {
+            $id = $this->getSelected();
+            $this->clearSelected();
+        }
+
         $user = auth()->user();
         $team = $user->currentTeam;
 
