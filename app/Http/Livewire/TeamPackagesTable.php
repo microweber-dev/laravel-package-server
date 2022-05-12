@@ -148,10 +148,18 @@ class TeamPackagesTable extends DataTableComponent
           /*  Column::make('Position', 'position')
                 ->sortable()
                 ->excludeFromColumnSelect(),*/
-            BooleanSwitchColumn::make('Is Visible', 'is_visible')
+            BooleanSwitchColumn::make('Visible', 'is_visible')
+                ->options([
+                    '0' => '<span class="badge badge bg-black text-uppercase">Hidden</span>',
+                    '1' => '<span class="badge badge bg-success text-uppercase">Visible</span>'
+                ])
                 ->sortable()
                 ->searchable(),
-            BooleanSwitchColumn::make('Is Paid', 'is_paid')
+            BooleanSwitchColumn::make('Paid', 'is_paid')
+                ->options([
+                    '0' => '<span class="badge badge bg-success text-uppercase">Free</span>',
+                    '1' => '<span class="badge badge bg-primary text-uppercase">$ Paid</span>',
+                ])
                 ->sortable()
                 ->searchable(),
             Column::make('Last Update', 'updated_at')
