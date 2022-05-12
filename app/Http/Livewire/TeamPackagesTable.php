@@ -337,22 +337,24 @@ class TeamPackagesTable extends DataTableComponent
     {
         $ids = [];
         if ($id) {
-            $ids = $id;
+            $ids[] = $id;
         } else {
             $ids = $this->getSelected();
             $this->clearSelected();
         }
 
-        foreach ($ids as $id) {
-            $user = auth()->user();
-            $team = $user->currentTeam;
+        if (empty($ids)) {
+            foreach ($ids as $id) {
+                $user = auth()->user();
+                $team = $user->currentTeam;
 
-            if (!$user->hasTeamRole($team, 'admin')) {
-                return [];
+                if (!$user->hasTeamRole($team, 'admin')) {
+                    return [];
+                }
+
+                $findTeamPackage = TeamPackage::where('id', $id)->where('team_id', $team->id)->first();
+                $findTeamPackage->delete();
             }
-
-            $findTeamPackage = TeamPackage::where('id', $id)->where('team_id', $team->id)->first();
-            $findTeamPackage->delete();
         }
     }
 }
