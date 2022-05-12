@@ -7,7 +7,7 @@ use Rappasoft\LaravelLivewireTables\Views\Column;
 
 class HtmlColumn extends Column
 {
-    protected string $view = 'livewire-tables::includes.columns.html';
+    protected string $view = 'livewire.tables.includes.columns.html';
 
     public function __construct(string $title, string $from = null)
     {
@@ -23,8 +23,15 @@ class HtmlColumn extends Column
         return $this;
     }
 
+    public function getView(): string
+    {
+        return $this->view;
+    }
+
     public function getContents(Model $row)
     {
-        return app()->call($this->outputHtmlCallback, ['row' => $row]);
+        return view($this->getView())
+            ->withColumn($this)
+            ->withHtml(app()->call($this->outputHtmlCallback, ['row' => $row]));
     }
 }

@@ -15,9 +15,6 @@ use Livewire\WithPagination;
 class TeamPackages extends Component
 {
     use AuthorizesRequests;
-    use WithPagination;
-
-    protected $paginationTheme = 'bootstrap';
 
     public $team;
     public $keyword = '';
@@ -28,13 +25,6 @@ class TeamPackages extends Component
     public $show_add_team_package_form = false;
     public $add_from_existing = false;
     public $existing_packages_grouped = [];
-
-    public $is_visible = [];
-    public $is_paid = [];
-
-    public $confirming_delete_id = true;
-    public $confirming_is_visible = true;
-    public $confirming_is_paid = true;
 
     public function showAddTeamPackageForm()
     {
@@ -77,7 +67,7 @@ class TeamPackages extends Component
             }
         }
 
-        // Is visible
+      /*  // Is visible
         if (!empty($this->is_visible)) {
            foreach ($this->is_visible as $packageId=>$isVisible) {
                $isVisible = intval($isVisible);
@@ -93,9 +83,9 @@ class TeamPackages extends Component
                    }
                }
            }
-        }
+        }*/
 
-        // Is paid
+       /* // Is paid
         if (!empty($this->is_paid)) {
            foreach ($this->is_paid as $packageId=>$isPaid) {
                $isPaid = intval($isPaid);
@@ -111,9 +101,9 @@ class TeamPackages extends Component
                    }
                }
            }
-        }
+        }*/
 
-        $teamPackages = TeamPackage::where('team_id', $teamId)
+    /*    $teamPackages = TeamPackage::where('team_id', $teamId)
             ->whereHas('package', function (Builder $query) {
            //     $query->where('clone_status',Package::CLONE_STATUS_SUCCESS);
             })
@@ -128,9 +118,9 @@ class TeamPackages extends Component
                 $this->is_visible[$teamPackage->id] = (int) $teamPackage->is_visible;
                 $this->is_paid[$teamPackage->id] = (int) $teamPackage->is_paid;
             }
-        }
+        }*/
 
-        return view('livewire.team-packages.index', compact('teamPackages'));
+        return view('livewire.team-packages.index');
 
     }
 
@@ -167,22 +157,5 @@ class TeamPackages extends Component
         $this->add_from_existing = false;
         $this->add_existing_repository_id = false;
     }
-
-
-    public function confirmDelete($id)
-    {
-        $this->confirming_delete_id = $id;
-    }
-
-    public function confirmIsVisible($id)
-    {
-        $this->confirming_is_visible = $id;
-    }
-
-    public function confirmIsPaid($id)
-    {
-        $this->confirming_is_paid = $id;
-    }
-
 
 }

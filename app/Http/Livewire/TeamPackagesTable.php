@@ -11,6 +11,7 @@ use App\View\Columns\ButtonConfirmColumn;
 use App\View\Columns\HtmlColumn;
 use App\View\Columns\ScreenshotColumn;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\Views\Columns\ButtonGroupColumn;
@@ -135,19 +136,27 @@ class TeamPackagesTable extends DataTableComponent
                     return '';
                 }),
 
+            /*HtmlColumn::make('Status','package.clone_status')
+           ->setOutputHtml(function($row) {
+               return $row->package->clone_status;
+           }),*/
+
+            HtmlColumn::make('Details')
+                ->setOutputHtml(function($row) {
+                    $html = '<div><b>'.Str::limit($row->package->description, 40).'</b></div>';
+                    $html .= '<div>'.$row->package->name.'</div>';
+                    $html .= '<div>Added by: <b>'.$row->package->owner->name.'</b></div>';
+                    if ($row->package->version > 0) {
+                        $html .= '<div> <span class="badge bg-success">v'.$row->package->version.'</span></div>';
+                    }
+                    return $html;
+                }),
+
             ImageColumn::make('Provider','package.screenshot')
                 ->location(function($row) {
                     return asset('images/' . RepositoryPathHelper::getRepositoryProviderByUrl($row->package->repository_url).'.svg');
                 }),
 
-            HtmlColumn::make('Status','package.clone_status')
-            ->setOutputHtml(function($row) {
-                return $row->package->clone_status;
-            }),
-
-          /*  Column::make('Position', 'position')
-                ->sortable()
-                ->excludeFromColumnSelect(),*/
             BooleanSwitchColumn::make('Visible', 'is_visible')
                 ->options([
                     '0' => '<span class="badge badge bg-black text-uppercase">Hidden</span>',
@@ -162,6 +171,15 @@ class TeamPackagesTable extends DataTableComponent
                 ])
                 ->sortable()
                 ->searchable(),
+
+           /* BooleanSwitchColumn::make('Clone Status', 'package.clone_status')
+                ->options([
+                    'success' => '<span class="badge badge bg-success text-uppercase">Success</span>',
+                    'running' => '<span class="badge badge bg-primary text-uppercase">Running</span>',
+                ])
+                ->sortable()
+                ->searchable(),*/
+
             Column::make('Last Update', 'updated_at')
                 ->sortable()
                 ->searchable(),
@@ -232,9 +250,7 @@ class TeamPackagesTable extends DataTableComponent
         $query = TeamPackage::query();
         $query->select(['id','team_id','package_id']);
         $query->where('team_id', $team->id);
-        $query->whereHas('package', function (Builder $query) {
-            //$query->where('clone_status',Package::CLONE_STATUS_SUCCESS);
-        });
+        $query->whereHas('package');
         $query->whereHas('team');
         $query->with('package');
         $query->with('team');
@@ -246,22 +262,34 @@ class TeamPackagesTable extends DataTableComponent
     public function bulkActions(): array
     {
         return [
-            'visible' => 'Is Visible',
-            'paid' => 'Is Paid',
+            'packageVisible' => 'Make Visible',
+            'packageHidden' => 'Make hidden',
+            'packagePaid' => 'Make paid',
+            'packageFree' => 'Make free',
         ];
     }
 
-    public function visible()
+    public function packageVisible()
     {
         TeamPackage::whereIn('id', $this->getSelected())->update(['is_visible' => 1]);
-
         $this->clearSelected();
     }
 
-    public function paid()
+    public function packageHidden()
+    {
+        TeamPackage::whereIn('id', $this->getSelected())->update(['is_visible' => 0]);
+        $this->clearSelected();
+    }
+
+    public function packagePaid()
     {
         TeamPackage::whereIn('id', $this->getSelected())->update(['is_paid' => 1]);
+        $this->clearSelected();
+    }
 
+    public function packageFree()
+    {
+        TeamPackage::whereIn('id', $this->getSelected())->update(['is_paid' => 0]);
         $this->clearSelected();
     }
 
