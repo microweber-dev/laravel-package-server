@@ -8,6 +8,7 @@ use App\Models\Package;
 use App\Models\TeamPackage;
 use App\View\Columns\BooleanSwitchColumn;
 use App\View\Columns\ButtonConfirmColumn;
+use App\View\Columns\HtmlColumn;
 use App\View\Columns\ScreenshotColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
@@ -68,6 +69,11 @@ class TeamPackagesTable extends DataTableComponent
                 ->location(function($row) {
                     return asset('images/' . RepositoryPathHelper::getRepositoryProviderByUrl($row->package->repository_url).'.svg');
                 }),
+
+            HtmlColumn::make('Status','package.clone_status')
+            ->setOutputHtml(function($row) {
+                return $row->package->clone_status;
+            }),
 
           /*  Column::make('Position', 'position')
                 ->sortable()
