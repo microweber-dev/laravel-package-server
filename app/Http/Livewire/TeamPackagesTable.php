@@ -70,6 +70,21 @@ class TeamPackagesTable extends DataTableComponent
                     $builder->where('package.name', 'like', '%'.$value.'%');
                 }),*/
 
+            SelectFilter::make('Provider')
+                ->setFilterPillTitle('Provider')
+                ->options([
+                    ''    => 'Any',
+                    'github' => 'Github',
+                    'gitlab'  => 'Gitlab',
+                ])
+                ->filter(function(Builder $builder, string $value) {
+                    if (!empty($value)) {
+                        $builder->whereHas('package', function (Builder $query) use($value) {
+                            $query->where('repository_url', 'like', '%'.$value.'%');
+                        });
+                    }
+                }),
+
             SelectFilter::make('Cloned')
                 ->setFilterPillTitle('Cloned')
                 ->options([
