@@ -87,6 +87,36 @@ class TeamPackagesTable extends DataTableComponent
                     }
                 }),
 
+            SelectFilter::make('Visible')
+                ->setFilterPillTitle('Visible')
+                ->options([
+                    '' => 'Any',
+                    '1' => 'Visible',
+                    '0' => 'Hidden',
+                ])
+                ->filter(function(Builder $builder, string $value) {
+                    if ($value === '1') {
+                        $builder->where('is_visible', 1);
+                    } elseif ($value === '0') {
+                        $builder->where('is_visible', 0);
+                    }
+                }),
+
+            SelectFilter::make('Paid')
+                ->setFilterPillTitle('Paid')
+                ->options([
+                    '' => 'Any',
+                    '1' => 'Paid',
+                    '0' => 'Free',
+                ])
+                ->filter(function(Builder $builder, string $value) {
+                    if ($value === '1') {
+                        $builder->where('is_paid', 1);
+                    } elseif ($value === '0') {
+                        $builder->where('is_paid', 0);
+                    }
+                }),
+
             DateFilter::make('Updated at')
                 ->filter(function(Builder $builder, string $value) {
                     $builder->where('updated_at', '>=', $value);
