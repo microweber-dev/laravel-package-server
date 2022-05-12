@@ -131,7 +131,7 @@ class TeamPackagesTable extends DataTableComponent
                         })
                         ->attributes(function($row) {
                             return [
-                                'wire:click'=>'delete('.$row->package->id.')',
+                                'wire:click'=>'pacakgeDelete('.$row->package->id.')',
                                 'wire:loading.attr'=>'disabled',
                                 'class' => 'btn btn-outline-dark btn-sm',
                             ];
@@ -202,4 +202,16 @@ class TeamPackagesTable extends DataTableComponent
         $this->check_background_job = true;
     }
 
+    public function pacakgeDelete($id)
+    {
+        $user = auth()->user();
+        $team = $user->currentTeam;
+
+        if (!$user->hasTeamRole($team, 'admin')) {
+            return [];
+        }
+
+        $findTeamPackage = TeamPackage::where('id', $id)->where('team_id', $team->id)->first();
+        $findTeamPackage->delete();
+    }
 }

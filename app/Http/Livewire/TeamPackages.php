@@ -184,17 +184,5 @@ class TeamPackages extends Component
         $this->confirming_is_paid = $id;
     }
 
-    public function delete($id)
-    {
-        $user = auth()->user();
-        $team = $user->currentTeam;
-
-        if (!$user->hasTeamRole($team, 'admin')) {
-           return [];
-        }
-
-        $findTeamPackage = TeamPackage::where('id', $id)->where('team_id', $team->id)->first();
-        $findTeamPackage->delete();
-    }
 
 }
