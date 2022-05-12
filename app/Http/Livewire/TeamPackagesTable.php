@@ -233,7 +233,7 @@ class TeamPackagesTable extends DataTableComponent
                         })
                         ->attributes(function($row) {
                             return [
-                                'wire:click'=>'pacakgeDelete('.$row->package->id.')',
+                                'wire:click'=>'packageDelete('.$row->package->id.')',
                                 'wire:loading.attr'=>'disabled',
                                 'class' => 'btn btn-outline-dark btn-sm',
                             ];
@@ -314,7 +314,7 @@ class TeamPackagesTable extends DataTableComponent
         $this->check_background_job = true;
     }
 
-    public function pacakgeDelete($id)
+    public function packageDelete($id)
     {
         $user = auth()->user();
         $team = $user->currentTeam;
