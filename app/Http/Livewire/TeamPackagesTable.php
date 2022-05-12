@@ -263,9 +263,9 @@ class TeamPackagesTable extends DataTableComponent
     {
         return [
             'packageVisible' => 'Make Visible',
-            'packageHidden' => 'Make hidden',
-            'packagePaid' => 'Make paid',
-            'packageFree' => 'Make free',
+            'packageHidden' => 'Make Hidden',
+            'packagePaid' => 'Make Paid',
+            'packageFree' => 'Make Free',
             'packageDelete' => 'Delete',
         ];
     }
