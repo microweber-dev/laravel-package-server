@@ -289,10 +289,10 @@ class TeamPackagesTable extends DataTableComponent
             $search = $this->getSearch();
             $search = trim(strtolower($search));
             $query->whereHas('package', function (Builder $subQuery) use ($search) {
-                $subQuery->whereRaw('LOWER(`name`) LIKE ? ',[$search.'%']);
-                $subQuery->orWhereRaw('LOWER(`keywords`) LIKE ? ',[$search.'%']);
-                $subQuery->orWhereRaw('LOWER(`description`) LIKE ? ',[$search.'%']);
-                $subQuery->orWhereRaw('LOWER(`repository_url`) LIKE ? ',[$search.'%']);
+                $subQuery->whereRaw('LOWER(`name`) LIKE ? ',['%'.$search.'%']);
+                $subQuery->orWhereRaw('LOWER(`keywords`) LIKE ? ',['%'.$search.'%']);
+                $subQuery->orWhereRaw('LOWER(`description`) LIKE ? ',['%'.$search.'%']);
+                $subQuery->orWhereRaw('LOWER(`repository_url`) LIKE ? ',['%'.$search.'%']);
             });
         }
 
