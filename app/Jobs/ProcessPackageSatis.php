@@ -297,7 +297,6 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
 
     public function failed($error)
     {
-        dd($error);
         $packageModel = Package::where('id', $this->packageId)->first();
         $packageModel->clone_log = $error->getMessage();
         $packageModel->clone_status = Package::CLONE_STATUS_FAILED;
