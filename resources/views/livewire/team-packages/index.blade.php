@@ -84,6 +84,7 @@
                 <button type="button" wire:click="addTeamPackage" class="btn btn-outline-success btn-sm">Save package</button>
             @else
                 <button type="button" wire:click="showAddTeamPackageForm" class="btn btn-outline-dark btn-sm">Add team package</button>
+                <button type="button" wire:click="reorderPackagesByNew" class="btn btn-outline-dark btn-sm">Reorder packages by new</button>
             @endif
         </div>
 

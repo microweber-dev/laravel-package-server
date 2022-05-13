@@ -124,6 +124,23 @@ class TeamPackages extends Component
 
     }
 
+    public function reorderPackagesByNew() {
+
+        $user = auth()->user();
+        $teamId = $user->currentTeam->id;
+
+        $teamPackages = TeamPackage::where('team_id', $teamId)->orderBy('id','desc')->get();
+        if (!empty($teamPackages)) {
+            $position = 1;
+            foreach ($teamPackages as $package) {
+                $package->position = $position;
+                $package->save();
+                $position++;
+            }
+        }
+        return $this->redirect(route('team-packages'));
+    }
+
     public function addTeamPackage()
     {
         $user = auth()->user();
