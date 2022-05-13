@@ -26,6 +26,10 @@ class TeamPackagesTable extends DataTableComponent
 {
     protected $model = TeamPackage::class;
 
+    public $columnSearch = [
+        'package.repository_url' => null,
+    ];
+
 
     public function configure(): void
     {
@@ -161,7 +165,7 @@ class TeamPackagesTable extends DataTableComponent
                         $html .= '<div> <span class="badge bg-success">v'.$row->package->version.'</span></div>';
                     }
                     return $html;
-                }),
+                })->searchable(),
 
             HtmlColumn::make('Clone Status','package.clone_status')
                 ->setOutputHtml(function($row) {
@@ -268,6 +272,12 @@ class TeamPackagesTable extends DataTableComponent
         $query = TeamPackage::query();
         $query->select(['id','team_id','package_id']);
         $query->where('team_id', $team->id);
+
+      //  dd($this->getSearch());
+
+      //  ->when($this->columnSearch['name'] ?? null, fn ($query, $name) => $query->where('users.name', 'like', '%' . $name . '%'))
+
+
         $query->whereHas('package');
         $query->whereHas('team');
         $query->with('package');
