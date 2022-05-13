@@ -273,12 +273,15 @@ class TeamPackagesTable extends DataTableComponent
         $query->select(['id','team_id','package_id']);
         $query->where('team_id', $team->id);
 
-      //  dd($this->getSearch());
-
-      //  ->when($this->columnSearch['name'] ?? null, fn ($query, $name) => $query->where('users.name', 'like', '%' . $name . '%'))
-
-
         $query->whereHas('package');
+
+        $search = $this->getSearch();
+        if (!empty($search)) {
+            $query->whereHas('package', function (Builder $subQuery) use($search) {
+                $subQuery->where('name', 'REGEXP', $search);
+            });
+        }
+
         $query->whereHas('team');
         $query->with('package');
         $query->with('team');
