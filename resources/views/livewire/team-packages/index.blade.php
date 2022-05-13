@@ -2,7 +2,7 @@
 
     <x-slot name="header">
         <h2 class="h4 font-weight-bold">
-            {{ __('Team Packages') }}
+            {{ $this->team->name }} {{ __('Packages') }}
         </h2>
         @if(!empty($this->team->slug))
             <div class="mt-2">

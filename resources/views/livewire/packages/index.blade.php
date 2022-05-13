@@ -2,7 +2,7 @@
 
     <x-slot name="header">
         <h2 class="h4 font-weight-bold">
-            {{ __('My Packages') }}
+            {{ __('General Packages') }}
         </h2>
     </x-slot>
 

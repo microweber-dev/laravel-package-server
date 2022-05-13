@@ -325,7 +325,7 @@ class TeamPackagesTable extends DataTableComponent
             ->userHasAccess()
             ->first();
         if ($package == null) {
-            return []; 
+            return [];
         }
 
         dispatch(new ProcessPackageSatis($package->id));

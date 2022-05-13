@@ -15,10 +15,10 @@
                     {{ __('Dashboard') }}
                 </x-jet-nav-link>
                 <x-jet-nav-link href="{{ route('my-packages') }}" :active="request()->routeIs('my-packages')">
-                    {{ __('My Packages') }}
+                    {{ __('General Packages') }}
                 </x-jet-nav-link>
                 <x-jet-nav-link href="{{ route('team-packages') }}" :active="request()->routeIs('team-packages')">
-                    {{ __('Team Packages') }}
+                    @if(Auth::user()->currentTeam) {{ Auth::user()->currentTeam->name }} @endif {{ __('Packages') }}
                 </x-jet-nav-link>
             </ul>
 
