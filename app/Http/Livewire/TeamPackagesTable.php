@@ -26,15 +26,11 @@ class TeamPackagesTable extends DataTableComponent
 {
     protected $model = TeamPackage::class;
 
-    public $columnSearch = [
-        'package.repository_url' => null,
-    ];
-
-
     public function configure(): void
     {
         $this->setPrimaryKey('id')
             ->setReorderEnabled()
+            ->setSearchEnabled()
             ->setDefaultReorderSort('position', 'asc')
             ->setReorderMethod('changePosition')
             ->setFilterLayoutSlideDown()
@@ -165,7 +161,7 @@ class TeamPackagesTable extends DataTableComponent
                         $html .= '<div> <span class="badge bg-success">v'.$row->package->version.'</span></div>';
                     }
                     return $html;
-                })->searchable(),
+                }),
 
             HtmlColumn::make('Clone Status','package.clone_status')
                 ->setOutputHtml(function($row) {
@@ -192,19 +188,16 @@ class TeamPackagesTable extends DataTableComponent
                     '0' => '<span class="badge badge bg-black text-uppercase">Hidden</span>',
                     '1' => '<span class="badge badge bg-success text-uppercase">Visible</span>'
                 ])
-                ->sortable()
-                ->searchable(),
+                ->sortable(),
             BooleanSwitchColumn::make('Paid', 'is_paid')
                 ->options([
                     '0' => '<span class="badge badge bg-success text-uppercase">Free</span>',
                     '1' => '<span class="badge badge bg-primary text-uppercase">$ Paid</span>',
                 ])
-                ->sortable()
-                ->searchable(),
+                ->sortable(),
 
             Column::make('Last Update', 'updated_at')
-                ->sortable()
-                ->searchable(),
+                ->sortable(),
 
             ButtonGroupColumn::make('Actions')
                 ->attributes(function($row) {
@@ -275,10 +268,13 @@ class TeamPackagesTable extends DataTableComponent
 
         $query->whereHas('package');
 
-        $search = $this->getSearch();
-        if (!empty($search)) {
-            $query->whereHas('package', function (Builder $subQuery) use($search) {
+        if ($this->hasSearch()) {
+            $search = $this->getSearch();
+            $query->whereHas('package', function (Builder $subQuery) use ($search) {
                 $subQuery->where('name', 'REGEXP', $search);
+                $subQuery->orWhere('keywords', 'REGEXP', $search);
+                $subQuery->orWhere('description', 'REGEXP', $search);
+                $subQuery->orWhere('repository_url', 'REGEXP', $search);
             });
         }
 
@@ -289,6 +285,15 @@ class TeamPackagesTable extends DataTableComponent
 
         return $query;
     }
+    /**
+     * Search the search query from the table array
+     */
+    public function clearSearch(): void
+    {
+        $this->{$this->getTableName()}['search'] = null;
+        $this->refresh = true;
+    }
+
 
     public function bulkActions(): array
     {
