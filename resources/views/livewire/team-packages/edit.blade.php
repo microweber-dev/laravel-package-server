@@ -74,7 +74,7 @@
 
         @if($this->is_paid == 1)
 
-                    <div class="bg-info mb-3 p-3">
+                    <div class="mb-3 p-3" style="background: #e9ecef">
             <h5>Generate Buy link from:</h5>
             <select class="form-control" name="buy_url_from" wire:model="buy_url_from">
                 <option value="license">WHMCS Plan\License</option>
@@ -115,7 +115,7 @@
 
             </div>
 
-                    <div class="bg-info mb-3 p-3">
+                    <div class="mb-3 p-3" style="background: #e9ecef">
             <h5>
                 Repository Access
             </h5>

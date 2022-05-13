@@ -44,6 +44,18 @@ class TeamPackagesTable extends DataTableComponent
                 }
                 return ['default' => true];
             })
+            ->setTdAttributes(function(Column $column, $rows) {
+                if($column->getTitle()=='Provider') {
+                    return ['class' => 'text-center'];
+                }
+                if($column->getTitle()=='Paid') {
+                    return ['class' => 'text-center'];
+                }
+                if($column->getTitle()=='Visible') {
+                    return ['class' => 'text-center'];
+                }
+                return [];
+            })
             ->setFooterTrAttributes(function($rows) {
                 return ['class' => 'bg-gray-100'];
             })
@@ -163,6 +175,15 @@ class TeamPackagesTable extends DataTableComponent
                     return $html;
                 }),
 
+            ImageWithLinkColumn::make('Provider','provider')
+                ->location(function($row) {
+                    return [
+                        'target'=>'_blank',
+                        'href'=>$row->package->repository_url,
+                        'location'=>  asset('images/' . RepositoryPathHelper::getRepositoryProviderByUrl($row->package->repository_url).'.svg')
+                    ];
+                }),
+
             HtmlColumn::make('Clone Status','package.clone_status')
                 ->setOutputHtml(function($row) {
                     if ($row->package->clone_status=='success') {
@@ -177,14 +198,6 @@ class TeamPackagesTable extends DataTableComponent
                     return '';
                 }),
 
-            ImageWithLinkColumn::make('Provider')
-                ->location(function($row) {
-                    return [
-                      'target'=>'_blank',
-                      'href'=>$row->package->repository_url,
-                      'location'=>  asset('images/' . RepositoryPathHelper::getRepositoryProviderByUrl($row->package->repository_url).'.svg')
-                    ];
-                }),
 
             BooleanSwitchColumn::make('Visible', 'is_visible')
                 ->options([

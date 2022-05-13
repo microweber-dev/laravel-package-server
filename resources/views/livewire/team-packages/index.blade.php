@@ -4,11 +4,6 @@
         <div class="font-weight-bold">
             {{ $this->team->name }} {{ __('Packages') }}
         </div>
-        @if(!empty($this->team->slug))
-            <div class="mt-2">
-                <a href="{{route('packages.team.packages.json', $this->team->slug)}}" target="_blank">{{route('packages.team.packages.json', $this->team->slug)}}</a>
-            </div>
-        @endif
     </x-slot>
 
     @if (session()->has('message'))
@@ -86,6 +81,14 @@
                 <button type="button" wire:click="showAddTeamPackageForm" class="btn btn-outline-dark btn-sm">Add team package</button>
                 <button type="button" wire:click="reorderPackagesByNew" class="btn btn-outline-dark btn-sm">Reorder packages by new</button>
             @endif
+
+            @if(!empty($this->team->slug))
+                <a href="{{route('packages.team.packages.json', $this->team->slug)}}"
+                   class="btn btn-outline-primary btn-sm"
+                   target="_blank">View package.json
+                </a>
+            @endif
+
         </div>
 
     </div>
