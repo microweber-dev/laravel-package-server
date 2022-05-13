@@ -235,7 +235,7 @@ class TeamPackagesTable extends DataTableComponent
                             return 'Edit';
                         })
                         ->location(function($row) {
-                            return route('my-packages.edit', $row->package->id);
+                            return route('team-packages.edit', $row->id);
                         })
                         ->attributes(function($row) {
                             return [

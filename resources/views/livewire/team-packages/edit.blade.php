@@ -2,16 +2,36 @@
 
     <x-slot name="header">
         <div class="font-weight-bold">
-            @if($package_id)
-                {{ __('Edit team package') }}
+            {{ $this->team->name }}  @if($package_id)
+                {{ __('Edit package') }}
             @else
-                {{ __('Add team package') }}
+                {{ __('Add package') }}
             @endif
         </div>
+        @if(!empty($this->team->slug))
+            <div class="mt-2">
+                <a href="{{route('packages.team.packages.json', $this->team->slug)}}" target="_blank">{{route('packages.team.packages.json', $this->team->slug)}}</a>
+            </div>
+        @endif
     </x-slot>
 
 
     <form wire:submit.prevent="edit">
+
+        <div class="row">
+
+            <div class="col-md-8">
+                <div class="bg-body p-3">
+                    <h3>{{ $this->team->name }} Package</h3>
+                    <b class="text-uppercase">{{$package->name}}</b>
+                    <br />
+                    <br />
+              <img src="{{$package->screenshot()}}" style="max-width: 100%" />
+             </div>
+            </div>
+
+            <div class="col-md-4">
+            <div class="bg-body p-3">
 
             <div class="mb-3 has-validation">
                 <label for="inputRepository" class="form-label">Repository Url</label>
@@ -53,7 +73,8 @@
             </div>
 
         @if($this->is_paid == 1)
-            <br />
+
+                    <div class="bg-info mb-3 p-3">
             <h5>Generate Buy link from:</h5>
             <select class="form-control" name="buy_url_from" wire:model="buy_url_from">
                 <option value="license">WHMCS Plan\License</option>
@@ -92,12 +113,13 @@
 
         <br />
 
+            </div>
 
-            <hr />
+                    <div class="bg-info mb-3 p-3">
             <h5>
-                Purchased Plan Requirements To Access This Repository
+                Repository Access
             </h5>
-            <p>Select the following WHMCS plans to access this repository</p>
+            <p>Select the following WHMCS plans\license to access this repository</p>
 
             @if(!empty($this->whmcs_product_types))
                 @foreach($this->whmcs_product_types as $whmcs_product_type_name=>$whmcs_product_type)
@@ -115,10 +137,13 @@
                 @endforeach
             @endif
 
+            </div>
             @endif
 
 
               <button type="submit" class="btn btn-outline-dark">Save Package</button>
+            </div>
+            </div>
+            </div>
         </form>
-
 </div>

@@ -40,6 +40,7 @@ class TeamPackagesEdit extends Component
     {
         $user = auth()->user();
         $teamId = $user->currentTeam->id;
+        $this->team = $user->currentTeam;
 
         $findTeamPackage = TeamPackage::where('id', $id)->with('package')->with('team')->where('team_id', $teamId)->first();
         if ($findTeamPackage == null) {
@@ -71,6 +72,7 @@ class TeamPackagesEdit extends Component
             $this->whmcs_primary_product_id = $findTeamPackage->whmcs_primary_product_id;
         }
 
+        $this->package = $findTeamPackage->package;
         $this->team_package_id = $findTeamPackage->id;
         $this->is_visible = $findTeamPackage->is_visible;
         $this->is_paid = $findTeamPackage->is_paid;
