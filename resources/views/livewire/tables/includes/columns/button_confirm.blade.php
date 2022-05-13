@@ -3,7 +3,7 @@
     {
         if (element.getAttribute('confirmed') == 1) {
             element.innerHTML = title;
-            element.removeAttribute('confirmed');
+            element.removeAttribute('confirmed');;
             return true;
         }
 

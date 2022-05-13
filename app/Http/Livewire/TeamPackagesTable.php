@@ -171,6 +171,9 @@ class TeamPackagesTable extends DataTableComponent
                     if ($row->package->clone_status=='running') {
                         return '<span class="badge badge bg-black text-uppercase">Running</span>';
                     }
+                    if ($row->package->clone_status=='waiting') {
+                        return '<span class="badge badge bg-info text-uppercase">Waiting</span>';
+                    }
                     return '';
                 }),
 
@@ -346,9 +349,13 @@ class TeamPackagesTable extends DataTableComponent
             return [];
         }
 
+        $package->clone_status = Package::CLONE_STATUS_WAITING;
+        $package->save();
+
         dispatch(new ProcessPackageSatis($package->id));
 
         $this->check_background_job = true;
+        $this->refresh = true;
     }
 
     public function packageDelete($id = false)
