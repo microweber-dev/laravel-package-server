@@ -1,9 +1,9 @@
 <div class="row">
 
     <x-slot name="header">
-        <h2 class="h4 font-weight-bold">
+        <div class="font-weight-bold">
             {{ $this->team->name }} {{ __('Packages') }}
-        </h2>
+        </div>
         @if(!empty($this->team->slug))
             <div class="mt-2">
                 <a href="{{route('packages.team.packages.json', $this->team->slug)}}" target="_blank">{{route('packages.team.packages.json', $this->team->slug)}}</a>

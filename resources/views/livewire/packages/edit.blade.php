@@ -1,13 +1,13 @@
 <div class="row">
 
     <x-slot name="header">
-        <h2 class="h4 font-weight-bold">
+        <div class="font-weight-bold">
             @if($package_id)
                 {{ __('Edit package') }}
             @else
                 {{ __('Add package') }}
             @endif
-        </h2>
+        </div>
     </x-slot>
 
 

@@ -1,9 +1,9 @@
 <div class="row">
 
     <x-slot name="header">
-        <h2 class="h4 font-weight-bold">
+        <div class="font-weight-bold">
             {{ __('General Packages') }}
-        </h2>
+        </div>
     </x-slot>
 
     @if ($checkBackgroundJob)

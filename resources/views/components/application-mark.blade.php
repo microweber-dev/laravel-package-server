@@ -1,5 +1,3 @@
 <div class="">
-    <b>Microweber Packages</b>
-    <br />
-    <small>Package Manager & Marketplace</small>
+    <b>Market.MicroweberApi.com</b>
 </div>

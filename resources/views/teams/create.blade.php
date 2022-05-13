@@ -1,8 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="h4 font-weight-bold">
+        <div class="font-weight-bold">
             {{ __('Create Team') }}
-        </h2>
+        </div>
     </x-slot>
 
     <div>
