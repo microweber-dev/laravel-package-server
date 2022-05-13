@@ -1,3 +1,3 @@
-<div class="">
-    <b>Market.MicroweberApi.com</b>
+<div>
+    <b class="text-uppercase">market.microweberapi.com</b>
 </div>

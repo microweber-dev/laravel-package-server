@@ -121,7 +121,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
                 "directory"=> "dist",
                 "format"=> "zip",
                 "skip-dev"=> true,
-                "checksum"=> false
+                //"checksum"=> false
             ],
         ];
 
