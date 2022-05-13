@@ -31,6 +31,7 @@ class TeamPackagesTable extends DataTableComponent
         $this->setPrimaryKey('id')
             ->setReorderEnabled()
             ->setSearchEnabled()
+            ->setSearchDebounce(0)
             ->setDefaultReorderSort('position', 'asc')
             ->setReorderMethod('changePosition')
             ->setFilterLayoutSlideDown()
@@ -286,11 +287,12 @@ class TeamPackagesTable extends DataTableComponent
 
         if ($this->hasSearch()) {
             $search = $this->getSearch();
+            $search = trim(strtolower($search));
             $query->whereHas('package', function (Builder $subQuery) use ($search) {
-                $subQuery->where('name', 'REGEXP', $search);
-                $subQuery->orWhere('keywords', 'REGEXP', $search);
-                $subQuery->orWhere('description', 'REGEXP', $search);
-                $subQuery->orWhere('repository_url', 'REGEXP', $search);
+                $subQuery->whereRaw('LOWER(`name`) LIKE ? ',[$search.'%']);
+                $subQuery->orWhereRaw('LOWER(`keywords`) LIKE ? ',[$search.'%']);
+                $subQuery->orWhereRaw('LOWER(`description`) LIKE ? ',[$search.'%']);
+                $subQuery->orWhereRaw('LOWER(`repository_url`) LIKE ? ',[$search.'%']);
             });
         }
 

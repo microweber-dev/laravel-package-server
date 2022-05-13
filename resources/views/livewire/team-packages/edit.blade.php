@@ -115,7 +115,7 @@
 
             </div>
 
-                    <div class="mb-3 p-3" style="background: #e9ecef">
+            <div class="mb-3 p-3" style="background: #e9ecef">
             <h5>
                 Repository Access
             </h5>
