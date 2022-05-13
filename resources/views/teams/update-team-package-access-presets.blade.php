@@ -26,32 +26,16 @@
 
                 <div class="w-md-75">
                     <div class="form-group">
-                        <x-jet-label for="description" value="{{ __('Description') }}"/>
+                        <x-jet-label for="name" value="{{ __('Name') }}"/>
 
-                        <x-jet-input id="description"
+                        <x-jet-input id="name"
                                      type="text"
-                                     class="{{ $errors->has('description') ? 'is-invalid' : '' }}"
-                                     wire:model.defer="description"/>
+                                     class="{{ $errors->has('name') ? 'is-invalid' : '' }}"
+                                     wire:model.defer="name"/>
 
-                        <x-jet-input-error for="description"/>
+                        <x-jet-input-error for="name"/>
                     </div>
                 </div>
-                    
-
-                <div class="w-md-75 mt-3">
-                    <div class="form-group">
-                        <x-jet-label for="domain" value="{{ __('Domain name for which these credentials should be used') }}"/>
-
-                        <x-jet-input id="domain"
-                                     type="text"
-                                     class="{{ $errors->has('domain') ? 'is-invalid' : '' }}"
-                                     wire:model.defer="domain"
-                        />
-
-                        <x-jet-input-error for="domain"/>
-                    </div>
-                </div>
-
 
 
 
@@ -76,7 +60,7 @@
                     <tbody>
                     @foreach ($presets as $preset)
                         <tr  @if($confirmingDeleteId === $preset->id) class="table-danger" @endif>
-                            <td>{{$preset->description}}</td>
+                            <td>{{$preset->name}}</td>
                             <td>{{$preset->updated_at}}</td>
                             <td>
                                 <button type="button" class="btn btn-outline-dark btn-sm" wire:click="edit({{ $preset->id }})">Edit</button>
