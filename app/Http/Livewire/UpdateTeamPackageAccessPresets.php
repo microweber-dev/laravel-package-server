@@ -55,9 +55,9 @@ class UpdateTeamPackageAccessPresets extends Component
         return view('teams.update-team-package-access-presets');
     }
 
-    public function showCredentialsForm()
+    public function showPresetForm()
     {
-        $this->showCredentialsForm = true;
+        $this->showPresetForm = true;
 
         $this->presetlId = false;
         $this->domain = '';
@@ -69,7 +69,7 @@ class UpdateTeamPackageAccessPresets extends Component
 
     public function hideCredentialsForm()
     {
-        $this->showCredentialsForm = false;
+        $this->showPresetForm = false;
     }
 
     public function confirmDelete($id)
@@ -91,7 +91,7 @@ class UpdateTeamPackageAccessPresets extends Component
         $user = auth()->user();
         $findCredential = Credential::where('user_id', $user->id)->where('id', $presetlId)->first();
         if ($findCredential != null) {
-            $this->showCredentialsForm = true;
+            $this->showPresetForm = true;
             $this->presetlEdit = true;
             $this->presetlId = $findCredential->id;
             $this->domain = $findCredential->domain;
@@ -127,6 +127,6 @@ class UpdateTeamPackageAccessPresets extends Component
         $presetl->authentication_data = $this->authenticationData;
         $presetl->save();
 
-        $this->showCredentialsForm = false;
+        $this->showPresetForm = false;
     }
 }
