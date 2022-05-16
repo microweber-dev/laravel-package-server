@@ -116,26 +116,30 @@
             </div>
 
             <div class="mb-3 p-3" style="background: #e9ecef">
-            <h5>
-                Repository Access
-            </h5>
-            <p>Select the following WHMCS plans\license to access this repository</p>
 
-            @if(!empty($this->whmcs_product_types))
-                @foreach($this->whmcs_product_types as $whmcs_product_type_name=>$whmcs_product_type)
-                    <b>{{ucfirst($whmcs_product_type_name)}}</b> <br />
-                    @foreach($whmcs_product_type as $whmcs_product)
+                    <div class="js-custom-access">
+                <h5>
+                    Repository Access
+                </h5>
+                <p>Select the following WHMCS plans\license to access this repository</p>
 
-                        <div class="form-check">
-                            <input class="form-check-input" id="inputWhmcsProduct{{ $whmcs_product['pid']}}" value="{{ $whmcs_product['pid'] }}" wire:model.defer="whmcs_product_ids" type="checkbox">
-                            <label class="form-check-label" for="inputWhmcsProduct{{ $whmcs_product['pid'] }}">
-                                {{$whmcs_product['name']}}
-                            </label>
-                        </div>
+                @if(!empty($this->whmcs_product_types))
+                    @foreach($this->whmcs_product_types as $whmcs_product_type_name=>$whmcs_product_type)
+                        <b>{{ucfirst($whmcs_product_type_name)}}</b> <br />
+                        @foreach($whmcs_product_type as $whmcs_product)
 
+                            <div class="form-check">
+                                <input class="form-check-input" id="inputWhmcsProduct{{ $whmcs_product['pid']}}" value="{{ $whmcs_product['pid'] }}" wire:model.defer="whmcs_product_ids" type="checkbox">
+                                <label class="form-check-label" for="inputWhmcsProduct{{ $whmcs_product['pid'] }}">
+                                    {{$whmcs_product['name']}}
+                                </label>
+                            </div>
+
+                        @endforeach
                     @endforeach
-                @endforeach
-            @endif
+                @endif
+
+                    </div>
 
             </div>
             @endif

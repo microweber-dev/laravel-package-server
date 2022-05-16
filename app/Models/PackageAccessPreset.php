@@ -10,7 +10,7 @@ class PackageAccessPreset extends Model
     use HasFactory;
 
     public $casts = [
-        'settings'=>'json'
+        'settings'=>'array'
     ];
 
     public function owner()

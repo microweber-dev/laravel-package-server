@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 use App\Models\Credential;
 use App\Models\PackageAccessPreset;
 use App\Rules\CanAddRepositoryToTeamRule;
+use App\WhmcsManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -26,6 +27,7 @@ class UpdateTeamPackageAccessPresets extends Component
     ];
 
     public $title = '';
+    public $whmcs_product_ids = [];
     public $showPresetForm = false;
     public $presetId = false;
     public $presetEdit = false;
@@ -40,6 +42,23 @@ class UpdateTeamPackageAccessPresets extends Component
     {
         $user = auth()->user();
         $team = $user->currentTeam;
+
+        $teamSettings = $team->settings()->get();
+
+        $whmcsManger = new WhmcsManager($teamSettings);
+        try {
+            $whmcsProducts = $whmcsManger->getProducts();
+        } catch (\Exception $e) {
+            $whmcsProducts = [];
+        }
+        $whmcsProductsTypes = [];
+        if (isset($whmcsProducts['products']['product'])) {
+            foreach ($whmcsProducts['products']['product'] as $product) {
+                $whmcsProductsTypes[$product['type']][] = $product;
+            }
+        }
+
+        $this->whmcs_product_types = $whmcsProductsTypes;
 
         $this->presets = $team->packageAccessPresets()->get();
 
@@ -83,6 +102,9 @@ class UpdateTeamPackageAccessPresets extends Component
             $this->presetEdit = true;
             $this->presetId = $findPreset->id;
             $this->name = $findPreset->name;
+            if (is_array($findPreset->settings['whmcs_product_ids'])) {
+                $this->whmcs_product_ids = $findPreset->settings['whmcs_product_ids'];
+            }
         }
     }
 
@@ -108,8 +130,11 @@ class UpdateTeamPackageAccessPresets extends Component
         }
 
         $preset->name = $this->name;
+        $preset->settings = ['whmcs_product_ids'=>$this->whmcs_product_ids];
         $preset->save();
 
+        $this->name = '';
+        $this->whmcs_product_ids = [];
         $this->showPresetForm = false;
     }
 }

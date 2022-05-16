@@ -37,9 +37,25 @@
                     </div>
                 </div>
 
+                    @if(!empty($this->whmcs_product_types))
+                        @foreach($this->whmcs_product_types as $whmcs_product_type_name=>$whmcs_product_type)
+                            <b>{{ucfirst($whmcs_product_type_name)}}</b> <br />
+                            <div style="max-height: 200px;overflow-x: scroll">
+                            @foreach($whmcs_product_type as $whmcs_product)
+                                <div class="form-check">
+                                    <input class="form-check-input" id="inputWhmcsProduct{{ $whmcs_product['pid']}}" value="{{ $whmcs_product['pid'] }}" wire:model.defer="whmcs_product_ids" type="checkbox">
+                                    <label class="form-check-label" for="inputWhmcsProduct{{ $whmcs_product['pid'] }}">
+                                        {{$whmcs_product['name']}}
+                                    </label>
+                                </div>
+                            @endforeach
+                            </div>
+                        @endforeach
+                    @endif
+
                 <div class="d-flex align-items-baseline">
                     @if ($presetEdit)
-                        <button type="button" wire:click="save({{$presetId}})" class="btn btn-outline-dark">Edit</button>
+                        <button type="button" wire:click="save({{$presetId}})" class="btn btn-outline-dark">Save</button>
                     @else
                         <button type="button" wire:click="save" class="btn btn-outline-dark">Create</button>
                     @endif
