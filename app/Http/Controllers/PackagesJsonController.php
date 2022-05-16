@@ -194,7 +194,7 @@ class PackagesJsonController extends Controller
                         $json['packages'][$packageName] = $this->_prepareVersions($packageVersions, [
                             'token_authenticated' => $logged,
                             'whmcs_primary_product_id' => $teamPackage->whmcs_primary_product_id,
-                            'whmcs_product_ids' => $teamPackage->whmcs_product_ids,
+                            'whmcs_product_ids' => $teamPackage->getWhmcsProductIds(),
                             'is_visible' => $teamPackage->is_visible,
                             'is_paid' => $teamPackage->is_paid,
                             'buy_url' => $teamPackage->buy_url,
