@@ -117,10 +117,22 @@
 
             <div class="mb-3 p-3" style="background: #e9ecef">
 
-                    <div class="js-custom-access">
                 <h5>
-                    Repository Access
+                    Package Access
                 </h5>
+
+                <select class="form-control" wire:model="package_access_preset_id">
+                    @if(!empty($package_access_presets))
+                        @foreach($package_access_presets as $preset)
+                             <option value="{{$preset->id}}">{{$preset->name}}</option>
+                        @endforeach
+                    @endif
+                    <option value="custom">Custom</option>
+                </select>
+
+                @if($package_access_preset_id == 'custom')
+                    <br />
+                <div class="js-custom-access">
                 <p>Select the following WHMCS plans\license to access this repository</p>
 
                 @if(!empty($this->whmcs_product_types))
@@ -140,6 +152,7 @@
                 @endif
 
                     </div>
+                @endif
 
             </div>
             @endif

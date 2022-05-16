@@ -28,11 +28,10 @@ class TeamPackagesEdit extends Component
     public $repository_url;
     public $buy_url_from;
     public $buy_url;
+    public $package_access_preset_id;
 
     public function render()
     {
-
-
         return view('livewire.team-packages.edit');
     }
 
@@ -72,7 +71,9 @@ class TeamPackagesEdit extends Component
             $this->whmcs_primary_product_id = $findTeamPackage->whmcs_primary_product_id;
         }
 
+        $this->package_access_presets = $this->team->packageAccessPresets()->get();
         $this->package = $findTeamPackage->package;
+        $this->package_access_preset_id = $findTeamPackage->package_access_preset_id;
         $this->team_package_id = $findTeamPackage->id;
         $this->is_visible = $findTeamPackage->is_visible;
         $this->is_paid = $findTeamPackage->is_paid;
@@ -94,6 +95,7 @@ class TeamPackagesEdit extends Component
         $findTeamPackage->is_paid = $this->is_paid;
         $findTeamPackage->whmcs_product_ids = $this->whmcs_product_ids;
         $findTeamPackage->whmcs_primary_product_id = $this->whmcs_primary_product_id;
+        $findTeamPackage->package_access_preset_id = $this->package_access_preset_id;
         $findTeamPackage->buy_url_from = $this->buy_url_from;
         $findTeamPackage->buy_url = $this->buy_url;
         $findTeamPackage->save();

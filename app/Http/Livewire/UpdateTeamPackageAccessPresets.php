@@ -71,12 +71,17 @@ class UpdateTeamPackageAccessPresets extends Component
 
         $this->presetId = false;
         $this->name = '';
+        $this->whmcs_product_ids = [];
 
     }
 
     public function hidePresetForm()
     {
         $this->showPresetForm = false;
+
+        $this->presetId = false;
+        $this->name = '';
+        $this->whmcs_product_ids = [];
     }
 
     public function confirmDelete($id)
