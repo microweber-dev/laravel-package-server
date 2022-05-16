@@ -37,8 +37,6 @@
                     </div>
                 </div>
 
-
-
                 <div class="d-flex align-items-baseline">
                     @if ($presetEdit)
                         <button type="button" wire:click="save({{$presetId}})" class="btn btn-outline-dark">Edit</button>
