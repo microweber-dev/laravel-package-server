@@ -39,8 +39,9 @@ class UpdateTeamPackageAccessPresets extends Component
     public function render()
     {
         $user = auth()->user();
+        $team = $user->currentTeam;
 
-        $this->presets = [];
+        $this->presets = $team->packageAccessPresets()->get();
 
         return view('teams.update-team-package-access-presets');
     }
@@ -48,7 +49,7 @@ class UpdateTeamPackageAccessPresets extends Component
     public function showPresetForm()
     {
         $this->showPresetForm = true;
- 
+
         $this->presetId = false;
         $this->name = '';
 
