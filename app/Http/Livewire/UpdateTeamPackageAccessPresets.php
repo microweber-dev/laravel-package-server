@@ -48,7 +48,7 @@ class UpdateTeamPackageAccessPresets extends Component
     public function showPresetForm()
     {
         $this->showPresetForm = true;
-
+ 
         $this->presetId = false;
         $this->name = '';
 
@@ -92,6 +92,7 @@ class UpdateTeamPackageAccessPresets extends Component
         $this->validate($validation);
 
         $user = auth()->user();
+        $teamId = $user->currentTeam->id;
 
         if ($presetId) {
             $findPreset = PackageAccessPreset::where('user_id', $user->id)->where('id', $presetId)->first();
@@ -102,6 +103,7 @@ class UpdateTeamPackageAccessPresets extends Component
         } else{
             $preset = new PackageAccessPreset();
             $preset->user_id = $user->id;
+            $preset->team_id = $teamId;
         }
 
         $preset->name = $this->name;
