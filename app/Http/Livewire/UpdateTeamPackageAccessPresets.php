@@ -2,6 +2,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\Credential;
+use App\Models\PackageAccessPreset;
 use App\Rules\CanAddRepositoryToTeamRule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -24,10 +25,7 @@ class UpdateTeamPackageAccessPresets extends Component
         'refresh-navigation-menu' => '$refresh',
     ];
 
-    public $domain = '';
-    public $authenticationType = 'github-oauth';
-    public $authenticationData = [];
-    public $description = '';
+    public $title = '';
     public $showPresetForm = false;
     public $presetId = false;
     public $presetEdit = false;
@@ -42,14 +40,6 @@ class UpdateTeamPackageAccessPresets extends Component
     {
         $user = auth()->user();
 
-        if ($this->authenticationType == 'github-oauth') {
-            $this->domain = 'github.com';
-        }
-
-        if ($this->authenticationType == 'gitlab-token') {
-            $this->domain = 'gitlab.com';
-        }
-
         $this->presets = [];
 
         return view('teams.update-team-package-access-presets');
@@ -59,15 +49,12 @@ class UpdateTeamPackageAccessPresets extends Component
     {
         $this->showPresetForm = true;
 
-        $this->presetlId = false;
-        $this->domain = '';
-        $this->authenticationType = 'github-oauth';
-        $this->authenticationData = [];
-        $this->description = '';
+        $this->presetId = false;
+        $this->name = '';
 
     }
 
-    public function hideCredentialsForm()
+    public function hidePresetForm()
     {
         $this->showPresetForm = false;
     }
@@ -77,55 +64,48 @@ class UpdateTeamPackageAccessPresets extends Component
         $this->confirmingDeleteId = $id;
     }
 
-    public function delete($presetlId)
+    public function delete($presetId)
     {
         $user = auth()->user();
-        $findCredential = Credential::where('user_id', $user->id)->where('id', $presetlId)->first();
-        if ($findCredential != null) {
-            $findCredential->delete();
+        $findPreset = PackageAccessPreset::where('user_id', $user->id)->where('id', $presetId)->first();
+        if ($findPreset != null) {
+            $findPreset->delete();
         }
     }
 
-    public function edit($presetlId) {
+    public function edit($presetId) {
 
         $user = auth()->user();
-        $findCredential = Credential::where('user_id', $user->id)->where('id', $presetlId)->first();
-        if ($findCredential != null) {
+        $findPreset = PackageAccessPreset::where('user_id', $user->id)->where('id', $presetId)->first();
+        if ($findPreset != null) {
             $this->showPresetForm = true;
-            $this->presetlEdit = true;
-            $this->presetlId = $findCredential->id;
-            $this->domain = $findCredential->domain;
-            $this->authenticationType = $findCredential->authentication_type;
-            $this->authenticationData = $findCredential->authentication_data;
-            $this->description = $findCredential->description;
+            $this->presetEdit = true;
+            $this->presetId = $findPreset->id;
+            $this->name = $findPreset->name;
         }
     }
 
-    public function save($presetlId = false)
+    public function save($presetId = false)
     {
-
         $validation = [];
-        $validation['description'] = ['required'];
+        $validation['name'] = ['required'];
         $this->validate($validation);
 
         $user = auth()->user();
 
-        if ($presetlId) {
-            $findCredential = Credential::where('user_id', $user->id)->where('id', $presetlId)->first();
-            if ($findCredential == null) {
+        if ($presetId) {
+            $findPreset = PackageAccessPreset::where('user_id', $user->id)->where('id', $presetId)->first();
+            if ($findPreset == null) {
                 return [];
             }
-            $presetl = $findCredential;
+            $preset = $findPreset;
         } else{
-            $presetl = new Credential();
-            $presetl->user_id = $user->id;
+            $preset = new PackageAccessPreset();
+            $preset->user_id = $user->id;
         }
 
-        $presetl->authentication_type = $this->authenticationType;
-        $presetl->domain = $this->domain;
-        $presetl->description = $this->description;
-        $presetl->authentication_data = $this->authenticationData;
-        $presetl->save();
+        $preset->name = $this->name;
+        $preset->save();
 
         $this->showPresetForm = false;
     }
