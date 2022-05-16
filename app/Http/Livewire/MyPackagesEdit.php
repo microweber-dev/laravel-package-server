@@ -77,7 +77,8 @@ class MyPackagesEdit extends Component
         $user = auth()->user();
 
         $newPackageAdd = false;
-        $package = Package::where('user_id', $user->id)->where('id', $this->package_id)->first();
+        $package = Package::where('id', $this->package_id)->userHasAccess()->first();
+
         if ($package == null) {
 
             $package = new Package();
