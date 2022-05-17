@@ -92,7 +92,9 @@ class UpdateTeamPackageAccessPresets extends Component
     public function delete($presetId)
     {
         $user = auth()->user();
-        $findPreset = PackageAccessPreset::where('user_id', $user->id)->where('id', $presetId)->first();
+        $teamId = $user->currentTeam->id;
+
+        $findPreset = PackageAccessPreset::where('team_id', $teamId)->where('id', $presetId)->first();
         if ($findPreset != null) {
             $findPreset->delete();
         }
@@ -101,7 +103,9 @@ class UpdateTeamPackageAccessPresets extends Component
     public function edit($presetId) {
 
         $user = auth()->user();
-        $findPreset = PackageAccessPreset::where('user_id', $user->id)->where('id', $presetId)->first();
+        $teamId = $user->currentTeam->id;
+
+        $findPreset = PackageAccessPreset::where('team_id', $teamId)->where('id', $presetId)->first();
         if ($findPreset != null) {
             $this->showPresetForm = true;
             $this->presetEdit = true;
@@ -123,7 +127,7 @@ class UpdateTeamPackageAccessPresets extends Component
         $teamId = $user->currentTeam->id;
 
         if ($presetId) {
-            $findPreset = PackageAccessPreset::where('user_id', $user->id)->where('id', $presetId)->first();
+            $findPreset = PackageAccessPreset::where('team_id', $teamId)->where('id', $presetId)->first();
             if ($findPreset == null) {
                 return [];
             }
