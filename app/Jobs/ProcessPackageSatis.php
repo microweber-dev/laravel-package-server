@@ -88,8 +88,6 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
      */
     public function handle()
     {
-     //   \Artisan::call('queue:flush');
-
         $packageModel = Package::where('id', $this->packageId)
             ->with('credential')
             ->first();
@@ -100,8 +98,6 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
             $packageModel->save();
             return;
         }
-
-      //  Log::info($packageModel->toArray());
 
         $packageModel->clone_log = "Job is started.";
         $packageModel->clone_status = Package::CLONE_STATUS_RUNNING;
@@ -117,7 +113,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
                 ]
             ],
             'require-all'=> true,
-             "archive" => [
+            "archive" => [
                 "directory"=> "dist",
                 "format"=> "zip",
                 "skip-dev"=> true,
@@ -144,138 +140,19 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
 
         $satisJson = json_encode($satisContent, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
         $saitsRepositoryPath = RepositoryPathHelper::getRepositoriesSatisPath($packageModel->id);
+        $satisFile = $saitsRepositoryPath . 'satis.json';
+        file_put_contents($satisFile, $satisJson);
 
-        file_put_contents($saitsRepositoryPath . 'satis.json', $satisJson);
-
-        $satisBinPath = base_path() . '/satis-builder/vendor/composer/satis/bin/satis';
-        $satisRepositoryOutputPath = $saitsRepositoryPath . 'output-build';
-
-        // Accept host key
-        $parseRepositoryUrl = $packageModel->repository_url;
-        $parseRepositoryUrl = parse_url($parseRepositoryUrl);
-        if (isset($parseRepositoryUrl['host'])) {
-            $hostname = $parseRepositoryUrl['host'];
-            $acceptHost = shell_exec('
-            if ! grep "$(ssh-keyscan '.$hostname.' 2>/dev/null)" ~/.ssh/known_hosts > /dev/null; then
-                ssh-keyscan '.$hostname.' >> ~/.ssh/known_hosts
-            fi');
-        }
-
-        if (!is_dir($saitsRepositoryPath)) {
-            mkdir($saitsRepositoryPath);
-        }
-
-        $satisCommand = [];
-        $satisCommand[] = 'php';
-        $satisCommand[] = '-d memory_limit=-1 max_execution_time=6000';
-        $satisCommand[] = '-c '.base_path().'/php.ini';
-        $satisCommand[] = $satisBinPath;
-        $satisCommand[] = 'build';
-        $satisCommand[] = $saitsRepositoryPath . 'satis.json';
-        $satisCommand[] = $satisRepositoryOutputPath;
-
-
-        $composerCacheDir = base_path().'/composer-cache';
-        if (!is_dir($composerCacheDir)) {
-            mkdir($composerCacheDir);
-        }
-
-        $process = new Process($satisCommand,null,[
-            'HOME'=>dirname(base_path()),
-            'COMPOSER_CACHE_DIR '=>$composerCacheDir,
-            'COMPOSER_MEMORY_LIMIT '=>'-1',
-            'COMPOSER_PROCESS_TIMEOUT '=>100000,
-            'COMPOSER_HOME'=>$saitsRepositoryPath
+        $responseCode = Artisan::call('package:build-with-satis', [
+            'file' => $satisFile,
         ]);
-        $process->setTimeout(null);
-        $process->setIdleTimeout(null);
-        $process->mustRun();
-        $output = $process->getOutput();
 
-        $packagesJsonFilePath = $satisRepositoryOutputPath . '/packages.json';
-        if (!is_file($packagesJsonFilePath)) {
-            throw new \Exception('Build failed. packages.json missing.');
-        }
 
-        $packagesJson = json_decode(file_get_contents($packagesJsonFilePath),true);
-        if (empty($packagesJson)) {
-            if (!is_file($packagesJsonFilePath)) {
-                throw new \Exception('Build failed. packages.json is empty.');
-            }
-        }
+        dd($responseCode);
+        return;
 
-        $includedPackageFiles = [];
-        foreach($packagesJson['includes'] as $includeKey=>$includes) {
-            $includedPackageFiles[] = $satisRepositoryOutputPath .'/'. $includeKey;
-        }
 
-        $lastVersionMetaData = [];
 
-        $foundedPackages = [];
-        foreach($includedPackageFiles as $file) {
-
-            $includedPackageContent = json_decode(file_get_contents($file), true);
-
-            $preparedPackages = [];
-            if ( !empty($includedPackageContent['packages'])) {
-                foreach ($includedPackageContent['packages'] as $packageKey=>$packageVersions) {
-                    $preparedPackageVerions = [];
-                    foreach ($packageVersions as $packageVersionKey=>$packageVersion) {
-
-                        if (strpos($packageVersionKey, 'dev') !== false) {
-                            continue;
-                        }
-
-                        $packageVersion = RepositoryMediaProcessHelper::preparePackageMedia($packageVersion, $satisRepositoryOutputPath);
-
-                        if (isset($packageVersion['name'])) {
-                            $lastVersionMetaData['name'] = $packageVersion['name'];
-                        }
-
-                        if (isset($packageVersion['type'])) {
-                            $lastVersionMetaData['type'] = $packageVersion['type'];
-                        }
-
-                        if (isset($packageVersion['description'])) {
-                            $lastVersionMetaData['description'] = $packageVersion['description'];
-                        }
-
-                        if (isset($packageVersion['keywords'])) {
-                            $lastVersionMetaData['keywords'] = $packageVersion['keywords'];
-                        }
-
-                        if (isset($packageVersion['homepage'])) {
-                            $lastVersionMetaData['homepage'] = $packageVersion['homepage'];
-                        }
-
-                        if (isset($packageVersion['version'])) {
-                            $lastVersionMetaData['version'] = $packageVersion['version'];
-                        }
-
-                        if (isset($packageVersion['target-dir'])) {
-                            $lastVersionMetaData['target_dir'] = $packageVersion['target-dir'];
-                        }
-
-                        if (isset($packageVersion['extra']['preview_url'])) {
-                            $lastVersionMetaData['preview_url'] = $packageVersion['extra']['preview_url'];
-                        }
-
-                        if (isset($packageVersion['extra']['_meta']['screenshot'])) {
-                            $lastVersionMetaData['screenshot'] = $packageVersion['extra']['_meta']['screenshot'];
-                        }
-
-                        if (isset($packageVersion['extra']['_meta']['readme'])) {
-                            $lastVersionMetaData['readme'] = $packageVersion['extra']['_meta']['readme'];
-                        }
-
-                        $preparedPackageVerions[$packageVersionKey] = $packageVersion;
-                    }
-                    $preparedPackages[$packageKey] = $preparedPackageVerions;
-                }
-            }
-
-            $foundedPackages = array_merge($foundedPackages, $preparedPackages);
-        }
 
         $packageModel->debug_count = $packageModel->debug_count + 1;
 
