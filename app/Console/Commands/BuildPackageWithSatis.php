@@ -68,27 +68,31 @@ class BuildPackageWithSatis extends Command
 
         // Accept host key on all repositories
         if (Base::familyOs() == 'UNIX') {
-            if(!is_dir('~/.ssh/')) {
-                 mkdir('~/.ssh/');
+            $performsSShKeyscan = false;
+            if(is_dir('~/.ssh/')) {
+                $performsSShKeyscan = true;
             }
-            foreach ($satisContent['repositories'] as $repository) {
-                // Accept host key
-                $parseRepositoryUrl = $repository['url'];
-                $parseRepositoryUrl = parse_url($parseRepositoryUrl);
-                if (isset($parseRepositoryUrl['host'])) {
-                    $hostname = $parseRepositoryUrl['host'];
-                    if ($hostname != false) {
 
-                        if(!is_file('~/.ssh/known_hosts')){
-                            $acceptHost = shell_exec('ssh-keyscan '.$hostname.' >> ~/.ssh/known_hosts');
-                        } else {
-                            $acceptHost = shell_exec('
+            if ($performsSShKeyscan) {
+                foreach ($satisContent['repositories'] as $repository) {
+                    // Accept host key
+                    $parseRepositoryUrl = $repository['url'];
+                    $parseRepositoryUrl = parse_url($parseRepositoryUrl);
+                    if (isset($parseRepositoryUrl['host'])) {
+                        $hostname = $parseRepositoryUrl['host'];
+                        if ($hostname != false) {
+
+                            if (!is_file('~/.ssh/known_hosts')) {
+                                $acceptHost = shell_exec('ssh-keyscan ' . $hostname . ' >> ~/.ssh/known_hosts');
+                            } else {
+                                $acceptHost = shell_exec('
             if ! grep "$(ssh-keyscan ' . $hostname . ' 2>/dev/null)" ~/.ssh/known_hosts > /dev/null; then
                 ssh-keyscan ' . $hostname . ' >> ~/.ssh/known_hosts
             fi');
+                            }
+
+
                         }
-
-
                     }
                 }
             }
