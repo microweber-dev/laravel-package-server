@@ -38,8 +38,6 @@ jobs:
           push: true
           registry: registry.gitlab.com
           tags: registry.gitlab.com/mw-internal/package-manager/package-manager-worker:${{ env.BRANCH }}
-          username: ${{ secrets.DOCKER_USER_GITLAB }}
-          password: ${{ secrets.DOCKER_PASS_GITLAB }}
           build-args: |
             BRANCH=${{ env.BRANCH }}
 
@@ -53,8 +51,7 @@ jobs:
           push: true
           registry: registry.gitlab.com
           tags: registry.gitlab.com/mw-internal/package-manager/package-manager-worker:latest
-          username: ${{ secrets.DOCKER_USER_GITLAB }}
-          password: ${{ secrets.DOCKER_PASS_GITLAB }}
+
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
