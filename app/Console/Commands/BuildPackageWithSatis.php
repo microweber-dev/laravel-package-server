@@ -200,7 +200,7 @@ class BuildPackageWithSatis extends Command
             $foundedPackages = array_merge($foundedPackages, $preparedPackages);
         }
 
-        rmdir_recursive($satisRepositoryOutputPath . DIRECTORY_SEPARATOR . 'include');
+        rmdir_recursive($satisRepositoryOutputPath . DIRECTORY_SEPARATOR . 'include', false);
 
         file_put_contents($satisRepositoryOutputPath . DIRECTORY_SEPARATOR . 'packages.json', json_encode([
                 'packages' => $foundedPackages
