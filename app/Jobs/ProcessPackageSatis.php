@@ -144,7 +144,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         file_put_contents($satisFile, $satisJson);
 
         $responseCode = Artisan::call('package:build-with-satis', [
-            'file' => $satisFile,
+            'file' => $satisFile
         ]);
 
 

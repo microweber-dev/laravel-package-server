@@ -151,7 +151,7 @@ class BuildPackageWithSatis extends Command
 
                         $packageVersion = RepositoryMediaProcessHelper::preparePackageMedia($packageVersion, $satisRepositoryOutputPath);
 
-                        if (isset($packageVersion['name'])) {
+                      /*  if (isset($packageVersion['name'])) {
                             $lastVersionMetaData['name'] = $packageVersion['name'];
                         }
 
@@ -189,7 +189,7 @@ class BuildPackageWithSatis extends Command
 
                         if (isset($packageVersion['extra']['_meta']['readme'])) {
                             $lastVersionMetaData['readme'] = $packageVersion['extra']['_meta']['readme'];
-                        }
+                        }*/
 
                         $preparedPackageVerions[$packageVersionKey] = $packageVersion;
                     }
@@ -200,7 +200,26 @@ class BuildPackageWithSatis extends Command
             $foundedPackages = array_merge($foundedPackages, $preparedPackages);
         }
 
+        $this->removeDirRecursive($satisRepositoryOutputPath . 'include');
+
+        file_put_contents($satisRepositoryOutputPath . 'packages.json', json_encode([
+                'packages'=>$foundedPackages
+            ],JSON_PRETTY_PRINT)
+        );
 
         return 0;
+    }
+
+    public function removeDirRecursive($dir)
+    {
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($files as $fileinfo) {
+            $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+            $todo($fileinfo->getRealPath());
+        }
     }
 }
