@@ -12,6 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -144,7 +145,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         file_put_contents($satisFile, $satisJson);
 
         $responseCode = Artisan::call('package:build-with-satis', [
-            'file' => $satisFile
+            '--file' => $satisFile
         ]);
 
         $satisRepositoryOutputPath = $saitsRepositoryPath . 'output-build';
@@ -166,11 +167,12 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         dispatch_sync(new ProcessPackageSatisRsync([
             'packageId'=>$packageModel->id,
             'satisRepositoryOutputPath'=>$satisRepositoryOutputPath
-        ]));
+        ])); 
     }
 
     public function failed($error)
     {
+        dd($error);
         $packageModel = Package::where('id', $this->packageId)->first();
         $packageModel->clone_log = $error->getMessage();
         $packageModel->clone_status = Package::CLONE_STATUS_FAILED;
