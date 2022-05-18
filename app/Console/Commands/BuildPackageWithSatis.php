@@ -75,10 +75,17 @@ class BuildPackageWithSatis extends Command
                 if (isset($parseRepositoryUrl['host'])) {
                     $hostname = $parseRepositoryUrl['host'];
                     if ($hostname != false) {
-                        $acceptHost = shell_exec('
+
+                        if(!is_file('~/.ssh/known_hosts')){
+                            $acceptHost = shell_exec('ssh-keyscan github.com >> ~/.ssh/known_hosts');
+                        } else {
+                            $acceptHost = shell_exec('
             if ! grep "$(ssh-keyscan ' . $hostname . ' 2>/dev/null)" ~/.ssh/known_hosts > /dev/null; then
                 ssh-keyscan ' . $hostname . ' >> ~/.ssh/known_hosts
             fi');
+                        }
+
+
                     }
                 }
             }
