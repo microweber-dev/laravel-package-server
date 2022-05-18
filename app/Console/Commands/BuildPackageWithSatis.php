@@ -7,6 +7,7 @@ use App\Helpers\RepositoryMediaProcessHelper;
 use App\Helpers\RepositoryPathHelper;
 use App\Models\Credential;
 use Illuminate\Console\Command;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use function PHPUnit\Framework\throwException;
 
@@ -69,28 +70,44 @@ class BuildPackageWithSatis extends Command
         // Accept host key on all repositories
         if (Base::familyOs() == 'UNIX') {
             $performsSShKeyscan = false;
-            if(is_dir('~/.ssh/')) {
-                $performsSShKeyscan = true;
+            $ssh_keys_dir = '~/.ssh/';
+            if(isset($_SERVER['HOME'])) {
+                $ssh_keys_dir = $_SERVER['HOME'] . '/.ssh/';
             }
 
-            if ($performsSShKeyscan) {
-                foreach ($satisContent['repositories'] as $repository) {
-                    // Accept host key
-                    $parseRepositoryUrl = $repository['url'];
-                    $parseRepositoryUrl = parse_url($parseRepositoryUrl);
-                    if (isset($parseRepositoryUrl['host'])) {
-                        $hostname = $parseRepositoryUrl['host'];
-                        if ($hostname != false) {
 
-                            if (!is_file('~/.ssh/known_hosts')) {
-                                $acceptHost = shell_exec('ssh-keyscan ' . $hostname . ' >> ~/.ssh/known_hosts');
+
+
+            if(is_dir($ssh_keys_dir)) {
+                $performsSShKeyscan = true;
+            } else {
+                mkdir($ssh_keys_dir, 700, true);
+                shell_exec('echo -e "StrictHostKeyChecking no\n" >> ~/.ssh/config');
+            }
+
+
+
+
+            foreach ($satisContent['repositories'] as $repository) {
+                // Accept host key
+                $parseRepositoryUrl = $repository['url'];
+                $parseRepositoryUrl = parse_url($parseRepositoryUrl);
+
+                if (isset($parseRepositoryUrl['host'])) {
+                    $hostname = $parseRepositoryUrl['host'];
+                    if ($hostname != false) {
+                        if ($performsSShKeyscan) {
+                            if (!is_file($ssh_keys_dir.'known_hosts')) {
+                                $acceptHost = shell_exec('ssh-keyscan ' . $hostname . ' >> '.$ssh_keys_dir.'known_hosts');
                             } else {
                                 $acceptHost = shell_exec('
-            if ! grep "$(ssh-keyscan ' . $hostname . ' 2>/dev/null)" ~/.ssh/known_hosts > /dev/null; then
-                ssh-keyscan ' . $hostname . ' >> ~/.ssh/known_hosts
+            if ! grep "$(ssh-keyscan ' . $hostname . ' 2>/dev/null)" '.$ssh_keys_dir.'known_hosts > /dev/null; then
+                ssh-keyscan ' . $hostname . ' >> '.$ssh_keys_dir.'known_hosts
             fi');
                             }
 
+
+                        } else {
 
                         }
                     }
@@ -126,8 +143,25 @@ class BuildPackageWithSatis extends Command
         ]);
         $process->setTimeout(null);
         $process->setIdleTimeout(null);
-        $process->mustRun();
+//        $process->mustRun();
+//        $output = $process->getOutput();
+
+
+
+        $process->run(function ($type, $buffer)   {
+            if (Process::ERR === $type) {
+                 $this->line($buffer);
+            } else {
+                $this->line($buffer);
+            }
+        });
+
+        // executes after the command finishes
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
         $output = $process->getOutput();
+
 
         $packagesJsonFilePath = $satisRepositoryOutputPath . '/packages.json';
         if (!is_file($packagesJsonFilePath)) {
