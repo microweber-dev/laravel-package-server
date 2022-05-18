@@ -51,7 +51,7 @@ class BuildPackageWithSatis extends Command
             return;
         }
 
-        $satisContent = json_decode(file_get_contents($file),true);
+        $satisContent = json_decode(file_get_contents($file), true);
         if (empty($satisContent)) {
             $this->error('This is not valid satis file!');
             return;
@@ -91,24 +91,24 @@ class BuildPackageWithSatis extends Command
         $satisCommand = [];
         $satisCommand[] = 'php';
         $satisCommand[] = '-d memory_limit=-1 max_execution_time=6000';
-        $satisCommand[] = '-c '.base_path().'/php.ini';
+        $satisCommand[] = '-c ' . base_path() . '/php.ini';
         $satisCommand[] = $satisBinPath;
         $satisCommand[] = 'build';
         $satisCommand[] = $saitsRepositoryPath . 'satis.json';
         $satisCommand[] = $satisRepositoryOutputPath;
 
 
-        $composerCacheDir = base_path().'/composer-cache';
+        $composerCacheDir = base_path() . '/composer-cache';
         if (!is_dir($composerCacheDir)) {
             mkdir($composerCacheDir);
         }
 
-        $process = new Process($satisCommand,null,[
-            'HOME'=>dirname(base_path()),
-            'COMPOSER_CACHE_DIR '=>$composerCacheDir,
-            'COMPOSER_MEMORY_LIMIT '=>'-1',
-            'COMPOSER_PROCESS_TIMEOUT '=>100000,
-            'COMPOSER_HOME'=>$saitsRepositoryPath
+        $process = new Process($satisCommand, null, [
+            'HOME' => dirname(base_path()),
+            'COMPOSER_CACHE_DIR ' => $composerCacheDir,
+            'COMPOSER_MEMORY_LIMIT ' => '-1',
+            'COMPOSER_PROCESS_TIMEOUT ' => 100000,
+            'COMPOSER_HOME' => $saitsRepositoryPath
         ]);
         $process->setTimeout(null);
         $process->setIdleTimeout(null);
@@ -120,7 +120,7 @@ class BuildPackageWithSatis extends Command
             throw new \Exception('Build failed. packages.json missing.');
         }
 
-        $packagesJson = json_decode(file_get_contents($packagesJsonFilePath),true);
+        $packagesJson = json_decode(file_get_contents($packagesJsonFilePath), true);
         if (empty($packagesJson)) {
             if (!is_file($packagesJsonFilePath)) {
                 throw new \Exception('Build failed. packages.json is empty.');
@@ -128,22 +128,22 @@ class BuildPackageWithSatis extends Command
         }
 
         $includedPackageFiles = [];
-        foreach($packagesJson['includes'] as $includeKey=>$includes) {
-            $includedPackageFiles[] = $satisRepositoryOutputPath .'/'. $includeKey;
+        foreach ($packagesJson['includes'] as $includeKey => $includes) {
+            $includedPackageFiles[] = $satisRepositoryOutputPath . '/' . $includeKey;
         }
 
         $lastVersionMetaData = [];
 
         $foundedPackages = [];
-        foreach($includedPackageFiles as $file) {
+        foreach ($includedPackageFiles as $file) {
 
             $includedPackageContent = json_decode(file_get_contents($file), true);
 
             $preparedPackages = [];
-            if ( !empty($includedPackageContent['packages'])) {
-                foreach ($includedPackageContent['packages'] as $packageKey=>$packageVersions) {
+            if (!empty($includedPackageContent['packages'])) {
+                foreach ($includedPackageContent['packages'] as $packageKey => $packageVersions) {
                     $preparedPackageVerions = [];
-                    foreach ($packageVersions as $packageVersionKey=>$packageVersion) {
+                    foreach ($packageVersions as $packageVersionKey => $packageVersion) {
 
                         if (strpos($packageVersionKey, 'dev') !== false) {
                             continue;
@@ -151,45 +151,45 @@ class BuildPackageWithSatis extends Command
 
                         $packageVersion = RepositoryMediaProcessHelper::preparePackageMedia($packageVersion, $satisRepositoryOutputPath);
 
-                      /*  if (isset($packageVersion['name'])) {
-                            $lastVersionMetaData['name'] = $packageVersion['name'];
-                        }
+                        /*  if (isset($packageVersion['name'])) {
+                              $lastVersionMetaData['name'] = $packageVersion['name'];
+                          }
 
-                        if (isset($packageVersion['type'])) {
-                            $lastVersionMetaData['type'] = $packageVersion['type'];
-                        }
+                          if (isset($packageVersion['type'])) {
+                              $lastVersionMetaData['type'] = $packageVersion['type'];
+                          }
 
-                        if (isset($packageVersion['description'])) {
-                            $lastVersionMetaData['description'] = $packageVersion['description'];
-                        }
+                          if (isset($packageVersion['description'])) {
+                              $lastVersionMetaData['description'] = $packageVersion['description'];
+                          }
 
-                        if (isset($packageVersion['keywords'])) {
-                            $lastVersionMetaData['keywords'] = $packageVersion['keywords'];
-                        }
+                          if (isset($packageVersion['keywords'])) {
+                              $lastVersionMetaData['keywords'] = $packageVersion['keywords'];
+                          }
 
-                        if (isset($packageVersion['homepage'])) {
-                            $lastVersionMetaData['homepage'] = $packageVersion['homepage'];
-                        }
+                          if (isset($packageVersion['homepage'])) {
+                              $lastVersionMetaData['homepage'] = $packageVersion['homepage'];
+                          }
 
-                        if (isset($packageVersion['version'])) {
-                            $lastVersionMetaData['version'] = $packageVersion['version'];
-                        }
+                          if (isset($packageVersion['version'])) {
+                              $lastVersionMetaData['version'] = $packageVersion['version'];
+                          }
 
-                        if (isset($packageVersion['target-dir'])) {
-                            $lastVersionMetaData['target_dir'] = $packageVersion['target-dir'];
-                        }
+                          if (isset($packageVersion['target-dir'])) {
+                              $lastVersionMetaData['target_dir'] = $packageVersion['target-dir'];
+                          }
 
-                        if (isset($packageVersion['extra']['preview_url'])) {
-                            $lastVersionMetaData['preview_url'] = $packageVersion['extra']['preview_url'];
-                        }
+                          if (isset($packageVersion['extra']['preview_url'])) {
+                              $lastVersionMetaData['preview_url'] = $packageVersion['extra']['preview_url'];
+                          }
 
-                        if (isset($packageVersion['extra']['_meta']['screenshot'])) {
-                            $lastVersionMetaData['screenshot'] = $packageVersion['extra']['_meta']['screenshot'];
-                        }
+                          if (isset($packageVersion['extra']['_meta']['screenshot'])) {
+                              $lastVersionMetaData['screenshot'] = $packageVersion['extra']['_meta']['screenshot'];
+                          }
 
-                        if (isset($packageVersion['extra']['_meta']['readme'])) {
-                            $lastVersionMetaData['readme'] = $packageVersion['extra']['_meta']['readme'];
-                        }*/
+                          if (isset($packageVersion['extra']['_meta']['readme'])) {
+                              $lastVersionMetaData['readme'] = $packageVersion['extra']['_meta']['readme'];
+                          }*/
 
                         $preparedPackageVerions[$packageVersionKey] = $packageVersion;
                     }
@@ -200,11 +200,11 @@ class BuildPackageWithSatis extends Command
             $foundedPackages = array_merge($foundedPackages, $preparedPackages);
         }
 
-        $this->removeDirRecursive($satisRepositoryOutputPath . 'include');
+        $this->removeDirRecursive($satisRepositoryOutputPath . DIRECTORY_SEPARATOR . 'include');
 
-        file_put_contents($satisRepositoryOutputPath . 'packages.json', json_encode([
-                'packages'=>$foundedPackages
-            ],JSON_PRETTY_PRINT)
+        file_put_contents($satisRepositoryOutputPath . DIRECTORY_SEPARATOR . 'packages.json', json_encode([
+                'packages' => $foundedPackages
+            ], JSON_PRETTY_PRINT)
         );
 
         return 0;
