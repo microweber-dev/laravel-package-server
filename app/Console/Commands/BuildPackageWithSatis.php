@@ -17,7 +17,7 @@ class BuildPackageWithSatis extends Command
      *
      * @var string
      */
-    protected $signature = 'package:build-with-satis {--file=*}';
+    protected $signature = 'package-builder:build-with-satis {--file=*}';
 
     /**
      * The console command description.
