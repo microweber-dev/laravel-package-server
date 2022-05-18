@@ -48,7 +48,7 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: true
-          tags: microweber/package-server:${{ env.BRANCH }}
+          tags: microweber/package-builder-worker:${{ env.BRANCH }}
           build-args: |
             BRANCH=${{ env.BRANCH }}
 
@@ -60,7 +60,7 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: true
-          tags: microweber/package-server:latest
+          tags: microweber/package-builder-worker:latest
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
