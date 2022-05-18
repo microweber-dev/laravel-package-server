@@ -200,7 +200,7 @@ class BuildPackageWithSatis extends Command
             $foundedPackages = array_merge($foundedPackages, $preparedPackages);
         }
 
-        $this->removeDirRecursive($satisRepositoryOutputPath . DIRECTORY_SEPARATOR . 'include');
+        rmdir_recursive($satisRepositoryOutputPath . DIRECTORY_SEPARATOR . 'include');
 
         file_put_contents($satisRepositoryOutputPath . DIRECTORY_SEPARATOR . 'packages.json', json_encode([
                 'packages' => $foundedPackages
@@ -208,18 +208,5 @@ class BuildPackageWithSatis extends Command
         );
 
         return 0;
-    }
-
-    public function removeDirRecursive($dir)
-    {
-        $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::CHILD_FIRST
-        );
-
-        foreach ($files as $fileinfo) {
-            $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
-            $todo($fileinfo->getRealPath());
-        }
     }
 }
