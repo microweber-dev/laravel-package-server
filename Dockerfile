@@ -12,9 +12,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-webp --with-jpeg && \
 RUN docker-php-ext-install pdo_mysql zip dom curl mbstring intl
 WORKDIR /app
 COPY . /app
-RUN cd /app/satis-builder
-RUN composer install --no-interaction --no-dev --prefer-dist --ignore-platform-reqs
-RUN cd /app/
-RUN composer install --no-interaction --no-dev --prefer-dist
+RUN cd /app/satis-builder && composer install --no-interaction --no-dev --prefer-dist --ignore-platform-reqs
+RUN cd /app/ && composer install --no-interaction --no-dev --prefer-dist
 
 

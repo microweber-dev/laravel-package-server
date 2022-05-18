@@ -68,6 +68,9 @@ class BuildPackageWithSatis extends Command
 
         // Accept host key on all repositories
         if (Base::familyOs() == 'UNIX') {
+            if(!is_dir('~/.ssh/')) {
+                 mkdir('~/.ssh/');
+            }
             foreach ($satisContent['repositories'] as $repository) {
                 // Accept host key
                 $parseRepositoryUrl = $repository['url'];
@@ -77,7 +80,7 @@ class BuildPackageWithSatis extends Command
                     if ($hostname != false) {
 
                         if(!is_file('~/.ssh/known_hosts')){
-                            $acceptHost = shell_exec('ssh-keyscan github.com >> ~/.ssh/known_hosts');
+                            $acceptHost = shell_exec('ssh-keyscan '.$hostname.' >> ~/.ssh/known_hosts');
                         } else {
                             $acceptHost = shell_exec('
             if ! grep "$(ssh-keyscan ' . $hostname . ' 2>/dev/null)" ~/.ssh/known_hosts > /dev/null; then
