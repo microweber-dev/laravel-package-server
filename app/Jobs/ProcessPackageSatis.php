@@ -136,11 +136,11 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         $satisFile = $saitsRepositoryPath . 'satis.json';
         file_put_contents($satisFile, $satisJson);
 
-        $responseCode = \Artisan::call('package-builder:build-with-satis', [
-            '--file' => $satisFile
+        \Artisan::call('package-builder:build-with-satis', [
+            '--file' => $satisFile,
         ]);
 
-        $satisRepositoryOutputPath = $saitsRepositoryPath . 'output-build';
+      /*  $satisRepositoryOutputPath = $saitsRepositoryPath . 'output-build';
 
         $packageJsonContent = file_get_contents($satisRepositoryOutputPath.DIRECTORY_SEPARATOR.'package.json');
         $packageJsonContent = json_decode($packageJsonContent,true);
@@ -149,7 +149,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
 
             $packageModel->clone_log = 'Failed to open package json content';
             $packageModel->clone_status = Package::CLONE_STATUS_FAILED;
-            $packageModel->save(); 
+            $packageModel->save();
 
             throw new \Exception('Can\'t open package json content');
         }
@@ -162,6 +162,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
             }
         }*/
 
+        /*
         $packageModel->package_json = json_encode($packageJsonContent['packages'],JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
         $packageModel->clone_log = 'done!';
         $packageModel->save();
@@ -170,7 +171,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         dispatch_sync(new ProcessPackageSatisRsync([
             'packageId'=>$packageModel->id,
             'satisRepositoryOutputPath'=>$satisRepositoryOutputPath
-        ]));
+        ]));*/
     }
 
     public function failed($error)
