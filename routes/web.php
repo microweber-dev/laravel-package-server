@@ -23,6 +23,11 @@ Route::get('/', function () {
 
 Route::namespace('\App\Http\Controllers')->group(function() {
 
+    Route::any('git-worker-webhook', 'GitWorkerWebhookController@index')
+        ->middleware(\Illuminate\Routing\Middleware\ThrottleRequests::class)
+        ->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class)
+        ->name('git-worker-webhook');
+
     Route::any('webhook', 'WebhookController@index')
         ->middleware(\Illuminate\Routing\Middleware\ThrottleRequests::class)
         ->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class)

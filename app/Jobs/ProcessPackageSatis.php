@@ -97,6 +97,10 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
             return;
         }
 
+        $signature = md5($packageModel->id . time().rand(111,999));
+        $callbackUrl = route('git-worker-webhook');
+
+        $packageModel->remote_build_signature = $signature;
         $packageModel->clone_log = "Job is started.";
         $packageModel->clone_status = Package::CLONE_STATUS_RUNNING;
         $packageModel->save();
@@ -118,6 +122,10 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
                 //"checksum"=> false
             ],
             "config"=>[
+                "runner-config"=> [
+                    "signature"=>$signature,
+                    "callback-url"=>$callbackUrl
+                ],
                 "disable-tls"=> true,
                 "preferred-install"=> [
                     "*"=> "source"

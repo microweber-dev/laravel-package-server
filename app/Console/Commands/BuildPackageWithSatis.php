@@ -44,7 +44,6 @@ class BuildPackageWithSatis extends Command
      */
     public function handle()
     {
-
         $file = $this->option('file')[0];
 
         if (!is_file($file)) {
@@ -76,17 +75,12 @@ class BuildPackageWithSatis extends Command
             }
 
 
-
-
             if(is_dir($ssh_keys_dir)) {
                 $performsSShKeyscan = true;
             } else {
                 mkdir($ssh_keys_dir, 700, true);
                 shell_exec('echo -e "StrictHostKeyChecking no\n" >> ~/.ssh/config');
             }
-
-
-
 
             foreach ($satisContent['repositories'] as $repository) {
                 // Accept host key
