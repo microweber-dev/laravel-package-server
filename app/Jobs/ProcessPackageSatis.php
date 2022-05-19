@@ -141,10 +141,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         $satisFile = $saitsRepositoryPath . 'satis.json';
         file_put_contents($satisFile, $satisJson);
 
-
         PackageManagerGitWorker::pushSatis($satisFile);
-
-
 
 
      /*   \Artisan::call('package-builder:build-with-satis', [
