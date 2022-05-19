@@ -14,8 +14,8 @@ class PackageManagerGitWorker
         $gitWorkerRepositoryUrl = $gitWorkerRepositoryUrlParse['host'] . $gitWorkerRepositoryUrlParse['path'];
 
         $gitProvider = 'github';
-        if (strpos($gitProvider, 'github') !== false) {
-            $gitProvider = 'github';
+        if (strpos($gitWorkerRepositoryUrlParse['host'], 'gitlab') !== false) {
+            $gitProvider = 'gitlab';
         }
 
         $gitRunnerRepositoryUrl = 'https://build:glpat-s947uAnt_G-E7Sezwozb@' . $gitWorkerRepositoryUrl;
