@@ -68,7 +68,7 @@ class BuildPackageWithSatis extends Command
 
         $signature = false;
         $callbackUrl = false;
-        $buildSettings = [];
+        $buildSettings = []; 
         $buildSettingsFile = $saitsRepositoryPath . 'build-settings.json';
         if (is_file($buildSettingsFile)) {
             $buildSettings = json_decode(file_get_contents($buildSettingsFile),true);
