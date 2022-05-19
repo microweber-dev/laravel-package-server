@@ -122,6 +122,11 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
                 //"checksum"=> false
             ],
             "config"=>[
+                "properties"=> [
+                    "preferred-install"=> [
+                        "*"=> "source"
+                    ],
+                ],
                 "disable-tls"=> true,
             ]
         ];
