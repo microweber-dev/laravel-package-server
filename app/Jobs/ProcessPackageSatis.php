@@ -158,7 +158,8 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         // Build settings json
         $buildSettingsJson = [
             "runner_config"=> [
-                "signature"=>$signature
+                "signature"=>$signature,
+                "callback_url"=>$callbackUrl
             ]
         ];
         $buildSettingsJson = json_encode($buildSettingsJson, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
