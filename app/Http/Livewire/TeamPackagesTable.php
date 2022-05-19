@@ -315,14 +315,39 @@ class TeamPackagesTable extends DataTableComponent
 
     public function bulkActions(): array
     {
-        return [
+        $bulkActions = [
             'multiplePackageUpdate' => 'Update',
             'multiplePackageVisible' => 'Make Visible',
             'multiplePackageHidden' => 'Make Hidden',
             'multiplePackagePaid' => 'Make Paid',
             'multiplePackageFree' => 'Make Free',
-            'multiplePackageDelete' => 'Delete',
         ];
+
+        $user = auth()->user();
+        $team = $user->currentTeam;
+        $packageAccessPresets = $team->packageAccessPresets()->get();
+        if ($packageAccessPresets !== null) {
+            foreach ($packageAccessPresets as $preset) {
+                $bulkActions['multiplePackageAccessPreset(' . $preset['id'].')'] = 'Make as ' . $preset['name'];
+            }
+        }
+
+        $bulkActions['multiplePackageDelete'] = 'Delete';
+
+        return $bulkActions;
+    }
+
+    public function multiplePackageAccessPreset($presetId = false) {
+        if ($presetId) {
+            $teamPackages = TeamPackage::whereIn('id', $this->getSelected())->get();
+            if ($teamPackages !== null) {
+                foreach ($teamPackages as $teamPackage) {
+                    $teamPackage->is_paid = 1;
+                    $teamPackage->package_access_preset_id = $presetId;
+                    $teamPackage->save();
+                }
+            }
+        }
     }
 
     public function multiplePackageUpdate()
