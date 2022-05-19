@@ -4,6 +4,7 @@ RUN apt-get install -y libc-client-dev
 RUN apt-get install -y htop
 RUN apt-get install -y wget
 RUN apt-get install -y qj libjq1
+RUN apt-get install -y ftp-upload
 
 
 
