@@ -316,16 +316,16 @@ class TeamPackagesTable extends DataTableComponent
     public function bulkActions(): array
     {
         return [
-            'packageUpdate' => 'Update',
-            'packageVisible' => 'Make Visible',
-            'packageHidden' => 'Make Hidden',
-            'packagePaid' => 'Make Paid',
-            'packageFree' => 'Make Free',
-            'packageDelete' => 'Delete',
+            'multiplePackageUpdate' => 'Update',
+            'multiplePackageVisible' => 'Make Visible',
+            'multiplePackageHidden' => 'Make Hidden',
+            'multiplePackagePaid' => 'Make Paid',
+            'multiplePackageFree' => 'Make Free',
+            'multiplePackageDelete' => 'Delete',
         ];
     }
 
-    public function packageUpdate()
+    public function multiplePackageUpdate()
     {
         $teamPackages = TeamPackage::whereIn('id', $this->getSelected())->get();
         if ($teamPackages !== null) {
@@ -348,25 +348,25 @@ class TeamPackagesTable extends DataTableComponent
         $this->clearSelected();
     }
 
-    public function packageVisible()
+    public function multiplePackageVisible()
     {
         TeamPackage::whereIn('id', $this->getSelected())->update(['is_visible' => 1]);
         $this->clearSelected();
     }
 
-    public function packageHidden()
+    public function multiplePackageHidden()
     {
         TeamPackage::whereIn('id', $this->getSelected())->update(['is_visible' => 0]);
         $this->clearSelected();
     }
 
-    public function packagePaid()
+    public function multiplePackagePaid()
     {
         TeamPackage::whereIn('id', $this->getSelected())->update(['is_paid' => 1]);
         $this->clearSelected();
     }
 
-    public function packageFree()
+    public function multiplePackageFree()
     {
         TeamPackage::whereIn('id', $this->getSelected())->update(['is_paid' => 0]);
         $this->clearSelected();
