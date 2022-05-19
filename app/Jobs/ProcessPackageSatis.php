@@ -149,7 +149,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
 
             $packageModel->clone_log = 'Failed to open package json content';
             $packageModel->clone_status = Package::CLONE_STATUS_FAILED;
-            $packageModel->save();
+            $packageModel->save(); 
 
             throw new \Exception('Can\'t open package json content');
         }
