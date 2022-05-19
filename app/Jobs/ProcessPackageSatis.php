@@ -2,6 +2,10 @@
 
 namespace App\Jobs;
 
+
+use CzProject\GitPhp\Git;
+use CzProject\GitPhp\Helpers;
+
 use App\Models\Credential;
 use App\Models\Package;
 use App\Helpers\RepositoryPathHelper;
@@ -136,9 +140,16 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         $satisFile = $saitsRepositoryPath . 'satis.json';
         file_put_contents($satisFile, $satisJson);
 
-        \Artisan::call('package-builder:build-with-satis', [
+
+        $githubRunnerRepositoryUrl = 'https://github.com/microweber-api/package-manager-worker';
+
+        $git = new Git();
+
+
+
+     /*   \Artisan::call('package-builder:build-with-satis', [
             '--file' => $satisFile,
-        ]);
+        ]);*/
 
       /*  $satisRepositoryOutputPath = $saitsRepositoryPath . 'output-build';
 

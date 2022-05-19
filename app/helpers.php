@@ -117,3 +117,13 @@ if (!function_exists('reduce_double_slashes')) {
         return preg_replace('#([^:])//+#', '\\1/', $str);
     }
 }
+
+function mkdir_recursive($pathname)
+{
+    if ($pathname == '') {
+        return false;
+    }
+    is_dir(dirname($pathname)) || mkdir_recursive(dirname($pathname));
+
+    return is_dir($pathname) || @mkdir($pathname);
+}
