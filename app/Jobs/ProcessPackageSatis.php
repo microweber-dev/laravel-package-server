@@ -122,14 +122,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
                 //"checksum"=> false
             ],
             "config"=>[
-                "runner-config"=> [
-                    "signature"=>$signature,
-                    "callback-url"=>$callbackUrl
-                ],
                 "disable-tls"=> true,
-                "preferred-install"=> [
-                    "*"=> "source"
-                ]
             ]
         ];
 
@@ -150,12 +143,25 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
             }
         }
 
+        // Satis json
         $satisJson = json_encode($satisContent, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
         $saitsRepositoryPath = RepositoryPathHelper::getRepositoriesSatisPath($packageModel->id);
         $satisFile = $saitsRepositoryPath . 'satis.json';
         file_put_contents($satisFile, $satisJson);
 
-        $response = PackageManagerGitWorker::pushSatis($satisFile);
+
+        // Build settings json
+        $buildSettingsJson = [
+            "runner-config"=> [
+                "signature"=>$signature,
+                "callback-url"=>$callbackUrl
+            ]
+        ];
+        $buildSettingsJson = json_encode($buildSettingsJson, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
+        $buildSettingsFile = $saitsRepositoryPath . 'build-settings.json';
+        file_put_contents($buildSettingsFile, $buildSettingsJson);
+
+        $response = PackageManagerGitWorker::pushSatis($satisFile, $buildSettingsFile);
 
         $packageModel->remote_build_commit_id = $response['commit_id'];
         $packageModel->save();

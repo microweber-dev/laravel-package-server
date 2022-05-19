@@ -7,7 +7,7 @@ use CzProject\GitPhp\Git;
 class PackageManagerGitWorker
 {
 
-    public static function pushSatis($satisFile = false)
+    public static function pushSatis($satisFile = false, $buildSettingsFile = false)
     {
         $gitWorkerRepositoryUrl = 'https://gitlab.com/mw-internal/package-manager/package-manager-worker.git';
         $gitWorkerRepositoryUrlParse = parse_url($gitWorkerRepositoryUrl);
@@ -38,6 +38,10 @@ class PackageManagerGitWorker
             file_put_contents($workerGitPath . '/satis.json', file_get_contents($satisFile));
         } else {
             file_put_contents($workerGitPath . '/time.txt', time());
+        }
+
+        if ($buildSettingsFile) {
+            file_put_contents($workerGitPath . '/build-settings.json', file_get_contents($buildSettingsFile));
         }
 
         $lastCommitId = false;
