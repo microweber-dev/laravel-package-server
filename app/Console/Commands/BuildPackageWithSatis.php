@@ -128,7 +128,6 @@ class BuildPackageWithSatis extends Command
         $satisCommand[] = $saitsRepositoryPath . 'satis.json';
         $satisCommand[] = $satisRepositoryOutputPath;
 
-
         $composerCacheDir = base_path() . '/composer-cache';
         if (!is_dir($composerCacheDir)) {
             mkdir($composerCacheDir);
@@ -146,8 +145,6 @@ class BuildPackageWithSatis extends Command
 //        $process->mustRun();
 //        $output = $process->getOutput();
 
-
-
         $process->run(function ($type, $buffer)   {
             if (Process::ERR === $type) {
                  $this->line($buffer);
@@ -161,7 +158,6 @@ class BuildPackageWithSatis extends Command
             throw new ProcessFailedException($process);
         }
         $output = $process->getOutput();
-
 
         $packagesJsonFilePath = $satisRepositoryOutputPath . '/packages.json';
         if (!is_file($packagesJsonFilePath)) {

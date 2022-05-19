@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Helpers\RepositoryMediaProcessHelper;
 use App\Models\Credential;
 use App\Models\Package;
 use App\Helpers\RepositoryPathHelper;
@@ -12,13 +11,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
-use Symplify\GitWrapper\GitWrapper;
 
 class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
 {
@@ -144,12 +136,13 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         $satisFile = $saitsRepositoryPath . 'satis.json';
         file_put_contents($satisFile, $satisJson);
 
-        $responseCode = Artisan::call('package-builder:build-with-satis', [
+        $responseCode = \Artisan::call('package-builder:build-with-satis', [
             '--file' => $satisFile
         ]);
 
         $satisRepositoryOutputPath = $saitsRepositoryPath . 'output-build';
-        $packageJsonContent = json_decode(file_get_contents($satisRepositoryOutputPath.DIRECTORY_SEPARATOR.'package.json'),true);
+        $packageJsonContent = file_get_contents($satisRepositoryOutputPath.DIRECTORY_SEPARATOR.'package.json');
+        $packageJsonContent = json_decode($packageJsonContent,true);
 
         if (empty($packageJsonContent)) {
             throw new \Exception('Can\'t open package json content');
