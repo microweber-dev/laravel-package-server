@@ -104,6 +104,7 @@ class TeamPackagesTable extends DataTableComponent
                     ''    => 'Any',
                     'success' => 'Success',
                     'running'  => 'Running',
+                    'failed'  => 'Failed',
                 ])
                 ->filter(function(Builder $builder, string $value) {
                     if ($value === 'success') {
@@ -113,6 +114,10 @@ class TeamPackagesTable extends DataTableComponent
                     } elseif ($value === 'running') {
                         $builder->whereHas('package', function (Builder $query) {
                             $query->where('clone_status',Package::CLONE_STATUS_RUNNING);
+                        });
+                    } elseif ($value === 'failed') {
+                        $builder->whereHas('package', function (Builder $query) {
+                            $query->where('clone_status',Package::CLONE_STATUS_FAILED);
                         });
                     }
                 }),
@@ -192,6 +197,9 @@ class TeamPackagesTable extends DataTableComponent
                     }
                     if ($row->package->clone_status=='running') {
                         return '<span class="badge badge bg-black text-uppercase">Running</span>';
+                    }
+                    if ($row->package->clone_status=='failed') {
+                        return '<span class="badge badge bg-black text-uppercase">Failed</span>';
                     }
                     if ($row->package->clone_status=='waiting') {
                         return '<span class="badge badge bg-info text-uppercase">Waiting</span>';
