@@ -5,6 +5,7 @@ RUN apt-get install -y htop
 RUN apt-get install -y wget
 RUN apt-get install -y jq libjq1
 RUN apt-get install -y ftp-upload
+RUN apt-get install -y lftp 
 
 
 
