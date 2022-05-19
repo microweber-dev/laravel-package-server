@@ -15,6 +15,7 @@ class AddRemoteBuildSignatureToPackagesTable extends Migration
     {
         Schema::table('packages', function (Blueprint $table) {
             $table->string('remote_build_signature')->nullable();
+            $table->string('remote_build_commit_id')->nullable();
         });
     }
 

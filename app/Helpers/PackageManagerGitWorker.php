@@ -40,11 +40,15 @@ class PackageManagerGitWorker
             file_put_contents($workerGitPath . '/time.txt', time());
         }
 
+        $lastCommitId = false;
         if ($repository->hasChanges()) {
             $repository->addAllChanges();
             $repository->commit('update');
             $repository->push();
+            $lastCommitId = $repository->getLastCommitId();
         }
+
+        return ['commit_id'=>$lastCommitId];
     }
 
 }
