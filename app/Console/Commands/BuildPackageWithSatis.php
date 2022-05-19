@@ -82,17 +82,17 @@ class BuildPackageWithSatis extends Command
 
         // Accept host key on all repositories
         if (Base::familyOs() == 'UNIX') {
-            $performsSShKeyscan = false;
-            $ssh_keys_dir = '~/.ssh/';
+            
+            $performsSshKeyscan = false;
+            $sshKeysDir = '~/.ssh/';
             if(isset($_SERVER['HOME'])) {
-                $ssh_keys_dir = $_SERVER['HOME'] . '/.ssh/';
+                $sshKeysDir = $_SERVER['HOME'] . '/.ssh/';
             }
 
-
-            if(is_dir($ssh_keys_dir)) {
-                $performsSShKeyscan = true;
+            if(is_dir($sshKeysDir)) {
+                $performsSshKeyscan = true;
             } else {
-                mkdir($ssh_keys_dir, 700, true);
+                mkdir($sshKeysDir, 700, true);
                 shell_exec('echo -e "StrictHostKeyChecking no\n" >> ~/.ssh/config');
             }
 
@@ -104,17 +104,15 @@ class BuildPackageWithSatis extends Command
                 if (isset($parseRepositoryUrl['host'])) {
                     $hostname = $parseRepositoryUrl['host'];
                     if ($hostname != false) {
-                        if ($performsSShKeyscan) {
-                            if (!is_file($ssh_keys_dir.'known_hosts')) {
-                                $acceptHost = shell_exec('ssh-keyscan ' . $hostname . ' >> '.$ssh_keys_dir.'known_hosts');
+                        if ($performsSshKeyscan) {
+                            if (!is_file($sshKeysDir.'known_hosts')) {
+                                $acceptHost = shell_exec('ssh-keyscan ' . $hostname . ' >> '.$sshKeysDir.'known_hosts');
                             } else {
                                 $acceptHost = shell_exec('
-            if ! grep "$(ssh-keyscan ' . $hostname . ' 2>/dev/null)" '.$ssh_keys_dir.'known_hosts > /dev/null; then
-                ssh-keyscan ' . $hostname . ' >> '.$ssh_keys_dir.'known_hosts
+            if ! grep "$(ssh-keyscan ' . $hostname . ' 2>/dev/null)" '.$sshKeysDir.'known_hosts > /dev/null; then
+                ssh-keyscan ' . $hostname . ' >> '.$sshKeysDir.'known_hosts
             fi');
                             }
-
-
                         } else {
 
                         }
