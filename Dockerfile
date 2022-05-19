@@ -2,6 +2,7 @@ FROM php:8.0.5
 RUN apt-get update -y && apt-get install -y openssl zip unzip git curl libonig-dev libfreetype6-dev libjpeg-dev libcurl4-openssl-dev libpng-dev libmcrypt-dev libpng-dev libwebp-dev libxml2-dev libmagickwand-dev libkrb5-dev libbz2-dev libzip-dev libtidy-dev libc-client-dev
 RUN apt-get install -y libc-client-dev
 RUN apt-get install -y htop
+RUN apt-get install -y qj
 
 
 
