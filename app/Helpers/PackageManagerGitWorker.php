@@ -28,7 +28,7 @@ class PackageManagerGitWorker
         $workerGitPath = $allWorkersPath . '/'.$gitProvider.'-worker';
         rmdir_recursive($workerGitPath,false);
 
-        shell_exec('cd '.$allWorkersPath.' && git clone ' . $gitRunnerRepositoryUrl . ' ' . $workerGitPath);
+        shell_exec('cd '.$allWorkersPath.' && git clone --depth 100 ' . $gitRunnerRepositoryUrl . ' ' . $workerGitPath);
         shell_exec('cd '.$workerGitPath.' && git config user.email "bot@microweber.com" &&  git config user.name "mw-bot"');
 
         $git = new Git();
