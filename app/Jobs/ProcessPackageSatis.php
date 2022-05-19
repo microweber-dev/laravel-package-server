@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 
+use App\Helpers\PackageManagerGitWorker;
 use CzProject\GitPhp\Git;
 use CzProject\GitPhp\Helpers;
 
@@ -141,9 +142,8 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         file_put_contents($satisFile, $satisJson);
 
 
-        $githubRunnerRepositoryUrl = 'https://github.com/microweber-api/package-manager-worker';
+        PackageManagerGitWorker::pushSatis($packageModel->repository_url,$satisFile);
 
-        $git = new Git();
 
 
 
