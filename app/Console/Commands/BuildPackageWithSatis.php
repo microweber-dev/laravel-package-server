@@ -66,7 +66,7 @@ class BuildPackageWithSatis extends Command
         $satisBinPath = base_path() . '/satis-builder/vendor/composer/satis/bin/satis';
         $satisRepositoryOutputPath = $saitsRepositoryPath . 'output-build';
 
-        $signature = false;
+      /*  $signature = false;
         $callbackUrl = false;
         $buildSettings = [];
         $buildSettingsFile = $saitsRepositoryPath . 'build-settings.json';
@@ -78,7 +78,7 @@ class BuildPackageWithSatis extends Command
             if (isset($buildSettings['runner-config']['callback-url'])) {
                 $callbackUrl = $buildSettings['runner-config']['callback-url'];
             }
-        }
+        }*/
 
         // Accept host key on all repositories
         if (Base::familyOs() == 'UNIX') {
