@@ -316,12 +316,36 @@ class TeamPackagesTable extends DataTableComponent
     public function bulkActions(): array
     {
         return [
+            'packageUpdate' => 'Update',
             'packageVisible' => 'Make Visible',
             'packageHidden' => 'Make Hidden',
             'packagePaid' => 'Make Paid',
             'packageFree' => 'Make Free',
             'packageDelete' => 'Delete',
         ];
+    }
+
+    public function packageUpdate()
+    {
+        $teamPackages = TeamPackage::whereIn('id', $this->getSelected())->get();
+        if ($teamPackages !== null) {
+            foreach ($teamPackages as $teamPackage) {
+
+                $package = Package::where('id', $teamPackage->package_id)
+                    ->userHasAccess()
+                    ->first();
+                if ($package == null) {
+                    return [];
+                }
+
+                $package->clone_status = Package::CLONE_STATUS_WAITING;
+                $package->save();
+
+                dispatch(new ProcessPackageSatis($package->id));
+            }
+        }
+
+        $this->clearSelected();
     }
 
     public function packageVisible()
