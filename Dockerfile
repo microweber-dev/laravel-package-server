@@ -3,7 +3,7 @@ RUN apt-get update -y && apt-get install -y openssl zip unzip git curl libonig-d
 RUN apt-get install -y libc-client-dev
 RUN apt-get install -y htop
 RUN apt-get install -y wget
-RUN apt-get install -y qj libgcc1
+RUN apt-get install -y jq libjq1
 RUN apt-get install -y ftp-upload
 
 
