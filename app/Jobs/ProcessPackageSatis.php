@@ -117,6 +117,12 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
                 "skip-dev"=> true,
                 //"checksum"=> false
             ],
+            "config"=>[
+                "disable-tls"=> true,
+                "preferred-install"=> [
+                    "*"=> "source"
+                ]
+            ]
         ];
 
         if ($packageModel->credential !== null) {
