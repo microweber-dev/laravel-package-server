@@ -37,7 +37,7 @@ class GitWorkerWebhookController extends Controller
 
                     $buildedZipPackage = $workerBuilds . $signature . '.zip';
                     if (is_file($buildedZipPackage)) {
-                        
+
                         $zip = new \ZipArchive();
                         if ($zip->open($buildedZipPackage) === TRUE) {
 
@@ -48,7 +48,7 @@ class GitWorkerWebhookController extends Controller
                             dispatch((new ProcessPackageSatisRsync([
                                 'packageId'=>$findPackage->id,
                                 'satisRepositoryOutputPath'=>$workerBuildsTemp
-                            ]))->onQueue('high'));
+                            ])));
 
                             return ['done'=>true];
 
