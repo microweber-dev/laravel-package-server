@@ -103,23 +103,20 @@ class TeamPackagesTable extends DataTableComponent
                 ->options([
                     ''    => 'Any',
                     'success' => 'Success',
+                    'waiting' => 'Waiting',
                     'running'  => 'Running',
+                    'cloning'  => 'Cloning',
                     'failed'  => 'Failed',
+                    'remote_success' => 'Remote Success',
+                    'remote_waiting' => 'Remote Waiting',
+                    'remote_running'  => 'Remote Running',
+                    'remote_cloning'  => 'Remote Cloning',
+                    'remote_failed'  => 'Remote Failed',
                 ])
                 ->filter(function(Builder $builder, string $value) {
-                    if ($value === 'success') {
-                        $builder->whereHas('package', function (Builder $query) {
-                            $query->where('clone_status',Package::CLONE_STATUS_SUCCESS);
-                        });
-                    } elseif ($value === 'running') {
-                        $builder->whereHas('package', function (Builder $query) {
-                            $query->where('clone_status',Package::CLONE_STATUS_RUNNING);
-                        });
-                    } elseif ($value === 'failed') {
-                        $builder->whereHas('package', function (Builder $query) {
-                            $query->where('clone_status',Package::CLONE_STATUS_FAILED);
-                        });
-                    }
+                    $builder->whereHas('package', function (Builder $query) use ($value) {
+                         $query->where('clone_status',$value);
+                    });
                 }),
 
             SelectFilter::make('Visible')
