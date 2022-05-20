@@ -372,6 +372,7 @@ class TeamPackagesTable extends DataTableComponent
 
     public function multiplePackageUpdate()
     {
+        $dispatchedPackages = [];
         $teamPackages = TeamPackage::whereIn('id', $this->getSelected())->get();
         if ($teamPackages !== null) {
             foreach ($teamPackages as $teamPackage) {
@@ -380,14 +381,17 @@ class TeamPackagesTable extends DataTableComponent
                     ->userHasAccess()
                     ->first();
                 if ($package == null) {
-                    return [];
+                    continue;
                 }
 
-                $package->updatePackageWithSatis();
+                $dispatchedPackages[] = $package->updatePackageWithSatis();
             }
         }
 
         $this->clearSelected();
+
+        return $dispatchedPackages;
+
     }
 
     public function multiplePackageVisible()

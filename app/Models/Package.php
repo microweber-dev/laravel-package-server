@@ -95,11 +95,13 @@ class Package extends Model
             || ($this->clone_status == self::CLONE_STATUS_WAITING)
             ) {
             // Already dispatched
-            return;
+            return ['dispatched'=>false,'id'=>$this->id];
         }
 
-        dispatch_sync(new ProcessPackageSatis($this->id));
+        dispatch(new ProcessPackageSatis($this->id));
         $this->clone_status = self::CLONE_STATUS_WAITING;
         $this->save();
+
+        return ['dispatched'=>true,'id'=>$this->id];
     }
 }
