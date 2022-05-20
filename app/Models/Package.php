@@ -15,6 +15,11 @@ class Package extends Model
     public const CLONE_STATUS_SUCCESS = 'success';
     public const CLONE_STATUS_FAILED = 'failed';
 
+    public const REMOTE_CLONE_STATUS_WAITING = 'remote_waiting';
+    public const REMOTE_CLONE_STATUS_RUNNING = 'remote_running';
+    public const REMOTE_CLONE_STATUS_SUCCESS = 'remote_success';
+    public const REMOTE_CLONE_STATUS_FAILED = 'remote_failed';
+
     public function scopeUserHasAccess($query)
     {
         $user = auth()->user();
