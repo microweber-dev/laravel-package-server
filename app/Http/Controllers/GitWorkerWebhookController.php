@@ -91,8 +91,8 @@ class GitWorkerWebhookController extends Controller
             }
         }*/
 
-        $file = storage_path() . '/notif-' .  rand(111,999).'.txt';
-        file_put_contents($file, json_encode($request->all(), JSON_PRETTY_PRINT));
+      //  $file = storage_path() . '/notif-' .  rand(111,999).'.txt';
+    //    file_put_contents($file, json_encode($request->all(), JSON_PRETTY_PRINT));
 
     }
 }
