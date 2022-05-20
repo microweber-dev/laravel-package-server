@@ -336,7 +336,8 @@ class TeamPackagesTable extends DataTableComponent
     public function bulkActions(): array
     {
         $bulkActions = [
-            'multiplePackageUpdate' => 'Update',
+            'multiplePackageUpdate(0)' => 'Update',
+            'multiplePackageUpdate(1)' => 'Force Update',
             'multiplePackageVisible' => 'Make Visible',
             'multiplePackageHidden' => 'Make Hidden',
             'multiplePackagePaid' => 'Make Paid',
@@ -370,7 +371,7 @@ class TeamPackagesTable extends DataTableComponent
         }
     }
 
-    public function multiplePackageUpdate()
+    public function multiplePackageUpdate($forceUpdate = 0)
     {
         $dispatchedPackages = [];
         $teamPackages = TeamPackage::whereIn('id', $this->getSelected())->get();
@@ -384,7 +385,7 @@ class TeamPackagesTable extends DataTableComponent
                     continue;
                 }
 
-                $dispatchedPackages[] = $package->updatePackageWithSatis();
+                $dispatchedPackages[] = $package->updatePackageWithSatis($forceUpdate);
             }
         }
 
