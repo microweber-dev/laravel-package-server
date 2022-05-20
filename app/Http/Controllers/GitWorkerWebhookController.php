@@ -66,6 +66,9 @@ class GitWorkerWebhookController extends Controller
                         if ($status=='failed') {
                             $findPackage->clone_status = Package::REMOTE_CLONE_STATUS_FAILED;
                         }
+                        if ($status=='pending') {
+                            $findPackage->clone_status = Package::REMOTE_CLONE_STATUS_WAITING;
+                        }
                         if ($status=='created') {
                             $findPackage->clone_status = Package::REMOTE_CLONE_STATUS_CLONING;
                         }
