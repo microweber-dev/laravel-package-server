@@ -285,7 +285,7 @@ class TeamPackagesTable extends DataTableComponent
                         })
                         ->attributes(function($row) {
                             return [
-                                'wire:click'=>'packageDelete('.$row->id.')',
+                                'wire:click'=>'multiplePackageDelete('.$row->id.')',
                                 'wire:loading.attr'=>'disabled',
                                 'class' => 'btn btn-outline-dark btn-sm',
                             ];
@@ -442,7 +442,7 @@ class TeamPackagesTable extends DataTableComponent
         $this->refresh = true;
     }
 
-    public function packageDelete($id = false)
+    public function multiplePackageDelete($id = false)
     {
         $ids = [];
         if ($id) {
@@ -452,7 +452,7 @@ class TeamPackagesTable extends DataTableComponent
             $this->clearSelected();
         }
 
-        if (empty($ids)) {
+        if (!empty($ids)) {
             foreach ($ids as $id) {
                 $user = auth()->user();
                 $team = $user->currentTeam;
