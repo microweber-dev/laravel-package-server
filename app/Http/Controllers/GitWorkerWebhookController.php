@@ -61,4 +61,38 @@ class GitWorkerWebhookController extends Controller
             }
         }
     }
+
+    public function notification(Request $request)
+    {
+        $notification = $request->all();
+
+        if (isset($notification['object_kind']) && isset($notification['object_attributes'])) {
+            if ($notification['object_kind'] == 'pipeline') {
+                if (isset($notification['object_attributes']['sha'])) {
+                    $commitId = $notification['object_attributes']['sha'];
+                    $findPackage = Package::where('remote_build_commit_id', $commitId)->first();
+                    if ($findPackage != null) {
+                        $status = $notification['object_attributes']['status'];
+                        if ($status=='failed') {
+                            $findPackage->clone_status = Package::REMOTE_CLONE_STATUS_FAILED;
+                        }
+                        $findPackage->clone_log = json_encode($notification, JSON_PRETTY_PRINT);
+                        $findPackage->save();
+                    }
+                }
+            }
+        }
+
+      /*  if (isset($notification['commit']['sha'])) {
+            $commitId = $notification['commit']['sha'];
+            $findPackage = Package::where('remote_build_commit_id', $commitId)->first();
+            if ($findPackage != null) {
+              //  dd($findPackage);
+            }
+        }*/
+
+        $file = storage_path() . '/notif-' .  rand(111,999).'.txt';
+        file_put_contents($file, json_encode($request->all(), JSON_PRETTY_PRINT));
+
+    }
 }

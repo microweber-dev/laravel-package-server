@@ -23,15 +23,15 @@ Route::get('/', function () {
 
 Route::namespace('\App\Http\Controllers')->group(function() {
 
-    Route::any('git-worker-webhook', 'GitWorkerWebhookController@index')
-        ->middleware(\Illuminate\Routing\Middleware\ThrottleRequests::class)
+    Route::middleware(\Illuminate\Routing\Middleware\ThrottleRequests::class)
         ->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class)
-        ->name('git-worker-webhook');
+        ->group(function() {
 
-    Route::any('webhook', 'WebhookController@index')
-        ->middleware(\Illuminate\Routing\Middleware\ThrottleRequests::class)
-        ->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class)
-        ->name('webhook');
+        Route::any('git-worker-webhook', 'GitWorkerWebhookController@index')->name('git-worker-webhook');
+        Route::any('git-notification-webhook', 'GitWorkerWebhookController@notification')->name('git-webhook-notification');
+        Route::any('webhook', 'WebhookController@index')->name('webhook');
+
+    });
 
     Route::any('packages.json', 'PackagesJsonController@index')->name('packages.json');
     Route::any('packages/{slug}/packages.json', 'PackagesJsonController@team')->name('packages.team.packages.json');
