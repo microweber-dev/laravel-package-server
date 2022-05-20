@@ -104,8 +104,7 @@ class PackagesJsonController extends Controller
                 if (isset($filter['package_id'])) {
                     $query->where('id', $filter['package_id']);
                 }
-
-                $query->where('clone_status', Package::CLONE_STATUS_SUCCESS);
+                $query->whereNotIn('clone_status', [Package::CLONE_STATUS_FAILED,Package::REMOTE_CLONE_STATUS_FAILED]);
             })
             ->where('is_visible', 1)
             ->orderBy('position','asc')
