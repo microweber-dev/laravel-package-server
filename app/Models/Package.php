@@ -13,11 +13,13 @@ class Package extends Model
 
     public const CLONE_STATUS_WAITING = 'waiting';
     public const CLONE_STATUS_RUNNING = 'running';
+    public const CLONE_STATUS_CLONING = 'cloning';
     public const CLONE_STATUS_SUCCESS = 'success';
     public const CLONE_STATUS_FAILED = 'failed';
 
     public const REMOTE_CLONE_STATUS_WAITING = 'remote_waiting';
     public const REMOTE_CLONE_STATUS_RUNNING = 'remote_running';
+    public const REMOTE_CLONE_STATUS_CLONING = 'remote_cloning';
     public const REMOTE_CLONE_STATUS_SUCCESS = 'remote_success';
     public const REMOTE_CLONE_STATUS_FAILED = 'remote_failed';
 
@@ -92,8 +94,10 @@ class Package extends Model
             if ((
                     $this->clone_status == self::REMOTE_CLONE_STATUS_RUNNING)
                 || ($this->clone_status == self::REMOTE_CLONE_STATUS_WAITING)
+                || ($this->clone_status == self::REMOTE_CLONE_STATUS_CLONING)
                 || ($this->clone_status == self::CLONE_STATUS_RUNNING)
                 || ($this->clone_status == self::CLONE_STATUS_WAITING)
+                || ($this->clone_status == self::CLONE_STATUS_CLONING)
             ) {
                 // Already dispatched
                 return ['dispatched' => false, 'id' => $this->id];

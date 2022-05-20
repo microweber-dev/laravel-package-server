@@ -198,6 +198,9 @@ class TeamPackagesTable extends DataTableComponent
                     if ($row->package->clone_status=='running') {
                         return '<span class="badge badge bg-black text-uppercase">Running</span>';
                     }
+                    if ($row->package->clone_status=='cloning') {
+                        return '<span class="badge badge bg-black text-uppercase">Cloning</span>';
+                    }
                     if ($row->package->clone_status=='failed') {
                         return '<span class="badge badge bg-black text-uppercase">Failed</span>';
                     }
@@ -209,6 +212,9 @@ class TeamPackagesTable extends DataTableComponent
                     }
                     if ($row->package->clone_status=='remote_running') {
                         return '<span class="badge badge bg-black text-uppercase">Remote Running</span>';
+                    }
+                    if ($row->package->clone_status=='remote_cloning') {
+                        return '<span class="badge badge bg-black text-uppercase">Remote Cloning</span>';
                     }
                     if ($row->package->clone_status=='remote_failed') {
                         return '<span class="badge badge bg-black text-uppercase">Remote Failed</span>';
