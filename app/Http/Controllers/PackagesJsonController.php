@@ -100,7 +100,6 @@ class PackagesJsonController extends Controller
 
         $teamPackages = TeamPackage::where('team_id', $findTeam->id)
             ->whereHas('package', function (Builder $query) use ($filter) {
-
                 if (isset($filter['package_id'])) {
                     $query->where('id', $filter['package_id']);
                 }

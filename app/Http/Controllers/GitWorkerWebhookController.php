@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ProcessPackageSatisRsync;
 use App\Models\Package;
 use Illuminate\Http\Request;
 
@@ -36,39 +37,25 @@ class GitWorkerWebhookController extends Controller
 
                     $buildedZipPackage = $workerBuilds . $signature . '.zip';
                     if (is_file($buildedZipPackage)) {
-
-                        $done = true;
-
                         $zip = new \ZipArchive();
                         if ($zip->open($buildedZipPackage) === TRUE) {
 
                             $zip->extractTo($workerBuildsTemp);
                             $zip->close();
 
-                            $outputPublicDist = public_path() . '/dist/';
-                            if (!is_dir($outputPublicDist)) {
-                                mkdir($outputPublicDist, 0755, true);
-                            }
+                            // Maker rsync on another job
+                            dispatch_sync(new ProcessPackageSatisRsync([
+                                'packageId'=>$findPackage->id,
+                                'satisRepositoryOutputPath'=>$workerBuildsTemp
+                            ]));
 
-                            $outputPublicMeta = public_path() . '/meta/';
-                            if (!is_dir($outputPublicMeta)) {
-                                mkdir($outputPublicMeta, 0755, true);
-                            }
-
-                            shell_exec("rsync -a $workerBuildsTemp/dist/ $outputPublicDist");
-                            shell_exec("rsync -a $workerBuildsTemp/meta/ $outputPublicMeta");
+                            return ['done'=>true];
 
                         } else {
                             $findPackage->clone_log = "Can't open the builded zip file.";
-                        }
-
-                        if ($done) {
-                            $findPackage->clone_status = Package::REMOTE_CLONE_STATUS_SUCCESS;
-                        } else {
                             $findPackage->clone_status = Package::REMOTE_CLONE_STATUS_FAILED;
+                            return $findPackage->save();
                         }
-
-                        return $findPackage->save();
                     }
                 }
             }
