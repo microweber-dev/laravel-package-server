@@ -204,6 +204,18 @@ class TeamPackagesTable extends DataTableComponent
                     if ($row->package->clone_status=='waiting') {
                         return '<span class="badge badge bg-info text-uppercase">Waiting</span>';
                     }
+                    if ($row->package->clone_status=='remote_success') {
+                        return '<span class="badge badge bg-success text-uppercase">Remote Success</span>';
+                    }
+                    if ($row->package->clone_status=='remote_running') {
+                        return '<span class="badge badge bg-black text-uppercase">Remote Running</span>';
+                    }
+                    if ($row->package->clone_status=='remote_failed') {
+                        return '<span class="badge badge bg-black text-uppercase">Remote Failed</span>';
+                    }
+                    if ($row->package->clone_status=='remote_waiting') {
+                        return '<span class="badge badge bg-info text-uppercase">Remote Waiting</span>';
+                    }
                     return '';
                 }),
 

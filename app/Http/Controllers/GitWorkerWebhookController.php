@@ -17,12 +17,12 @@ class GitWorkerWebhookController extends Controller
             if ($findPackage !== null) {
 
                 if ($status == Package::REMOTE_CLONE_STATUS_FAILED) {
-                    $findPackage->status = Package::REMOTE_CLONE_STATUS_FAILED;
+                    $findPackage->clone_status = Package::REMOTE_CLONE_STATUS_FAILED;
                     return $findPackage->save();
                 }
 
                 if ($status == Package::REMOTE_CLONE_STATUS_RUNNING) {
-                    $findPackage->status = Package::REMOTE_CLONE_STATUS_RUNNING;
+                    $findPackage->clone_status = Package::REMOTE_CLONE_STATUS_RUNNING;
                     return $findPackage->save();
                 }
 
@@ -31,10 +31,10 @@ class GitWorkerWebhookController extends Controller
                     if (is_file($buildedZipPackage)) {
 
 
-                        //dd($buildedZipPackage); 
+                        //dd($buildedZipPackage);
 
 
-                        $findPackage->status = Package::REMOTE_CLONE_STATUS_SUCCESS;
+                        $findPackage->clone_status = Package::REMOTE_CLONE_STATUS_SUCCESS;
                         return $findPackage->save();
                     }
                 }
