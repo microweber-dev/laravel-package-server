@@ -166,6 +166,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         $buildSettingsFile = $saitsRepositoryPath . 'build-settings.json';
         file_put_contents($buildSettingsFile, $buildSettingsJson);
 
+        sleep(rand(5,15));
         $response = PackageManagerGitWorker::pushSatis($satisFile, $buildSettingsFile);
 
         $packageModel->remote_build_commit_id = $response['commit_id'];
