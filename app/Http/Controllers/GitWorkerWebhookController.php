@@ -44,10 +44,10 @@ class GitWorkerWebhookController extends Controller
                             $zip->close();
 
                             // Maker rsync on another job
-                            dispatch(new ProcessPackageSatisRsync([
+                            dispatch((new ProcessPackageSatisRsync([
                                 'packageId'=>$findPackage->id,
                                 'satisRepositoryOutputPath'=>$workerBuildsTemp
-                            ]));
+                            ]))->onQueue('high'));
 
                             return ['done'=>true];
 
