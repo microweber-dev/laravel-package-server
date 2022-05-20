@@ -154,7 +154,6 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         $satisFile = $saitsRepositoryPath . 'satis.json';
         file_put_contents($satisFile, $satisJson);
 
-
         // Build settings json
         $buildSettingsJson = [
             "runner_config"=> [

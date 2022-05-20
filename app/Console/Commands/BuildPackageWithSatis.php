@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Helpers\Base;
 use App\Helpers\RepositoryMediaProcessHelper;
 use App\Helpers\RepositoryPathHelper;
+use App\Helpers\SatisHelper;
 use App\Models\Credential;
 use Illuminate\Console\Command;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -82,7 +83,7 @@ class BuildPackageWithSatis extends Command
 
         // Accept host key on all repositories
         if (Base::familyOs() == 'UNIX') {
-            
+
             $performsSshKeyscan = false;
             $sshKeysDir = '~/.ssh/';
             if(isset($_SERVER['HOME'])) {
@@ -192,7 +193,7 @@ class BuildPackageWithSatis extends Command
             $preparedPackages = [];
             if (!empty($includedPackageContent['packages'])) {
                 foreach ($includedPackageContent['packages'] as $packageKey => $packageVersions) {
-                    $preparedPackageVerions = [];
+                    $preparedPackageVersions = [];
                     foreach ($packageVersions as $packageVersionKey => $packageVersion) {
 
                         if (strpos($packageVersionKey, 'dev') !== false) {
@@ -201,49 +202,11 @@ class BuildPackageWithSatis extends Command
 
                         $packageVersion = RepositoryMediaProcessHelper::preparePackageMedia($packageVersion, $satisRepositoryOutputPath);
 
-                        /*  if (isset($packageVersion['name'])) {
-                              $lastVersionMetaData['name'] = $packageVersion['name'];
-                          }
+                        $lastVersionMetaData = SatisHelper::getMetaDataFromPackageVersion($packageVersion);
 
-                          if (isset($packageVersion['type'])) {
-                              $lastVersionMetaData['type'] = $packageVersion['type'];
-                          }
-
-                          if (isset($packageVersion['description'])) {
-                              $lastVersionMetaData['description'] = $packageVersion['description'];
-                          }
-
-                          if (isset($packageVersion['keywords'])) {
-                              $lastVersionMetaData['keywords'] = $packageVersion['keywords'];
-                          }
-
-                          if (isset($packageVersion['homepage'])) {
-                              $lastVersionMetaData['homepage'] = $packageVersion['homepage'];
-                          }
-
-                          if (isset($packageVersion['version'])) {
-                              $lastVersionMetaData['version'] = $packageVersion['version'];
-                          }
-
-                          if (isset($packageVersion['target-dir'])) {
-                              $lastVersionMetaData['target_dir'] = $packageVersion['target-dir'];
-                          }
-
-                          if (isset($packageVersion['extra']['preview_url'])) {
-                              $lastVersionMetaData['preview_url'] = $packageVersion['extra']['preview_url'];
-                          }
-
-                          if (isset($packageVersion['extra']['_meta']['screenshot'])) {
-                              $lastVersionMetaData['screenshot'] = $packageVersion['extra']['_meta']['screenshot'];
-                          }
-
-                          if (isset($packageVersion['extra']['_meta']['readme'])) {
-                              $lastVersionMetaData['readme'] = $packageVersion['extra']['_meta']['readme'];
-                          }*/
-
-                        $preparedPackageVerions[$packageVersionKey] = $packageVersion;
+                        $preparedPackageVersions[$packageVersionKey] = $packageVersion;
                     }
-                    $preparedPackages[$packageKey] = $preparedPackageVerions;
+                    $preparedPackages[$packageKey] = $preparedPackageVersions;
                 }
             }
 

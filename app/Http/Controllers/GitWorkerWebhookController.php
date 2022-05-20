@@ -40,8 +40,8 @@ class GitWorkerWebhookController extends Controller
                         $zip = new \ZipArchive();
                         if ($zip->open($buildedZipPackage) === TRUE) {
 
-                            $zip->extractTo($workerBuildsTemp);
-                            $zip->close();
+                          //  $zip->extractTo($workerBuildsTemp);
+                       //     $zip->close();
 
                             // Maker rsync on another job
                             dispatch_sync(new ProcessPackageSatisRsync([

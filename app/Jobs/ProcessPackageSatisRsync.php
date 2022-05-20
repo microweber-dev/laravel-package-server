@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Helpers\RepositoryMediaProcessHelper;
+use App\Helpers\SatisHelper;
 use App\Models\Credential;
 use App\Models\Package;
 use App\Helpers\RepositoryPathHelper;
@@ -55,6 +56,21 @@ class ProcessPackageSatisRsync implements ShouldQueue, ShouldBeUnique
         if (!is_dir($outputPublicMeta)) {
             mkdir($outputPublicMeta, 0755, true);
         }
+
+        $packageJson = file_get_contents($this->satisRepositoryOutputPath.'/packages.json');
+        $packageJson = json_decode($packageJson, true);
+
+
+        $latestVersion = SatisHelper::getLatestVersionFromPackage($packageJson['packages']);
+        $latestVersionMetaData = SatisHelper::getMetaDataFromPackageVersion($latestVersion);
+
+        if (!empty($latestVersionMetaData)) {
+            foreach ($latestVersionMetaData as $metaData=>$metaDataValue) {
+                $packageModel->$metaData = $metaDataValue;
+            }
+        }
+
+        $packageModel->package_json = json_encode($packageJson['packages'],JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
 
         shell_exec("rsync -a $this->satisRepositoryOutputPath/dist/ $outputPublicDist");
         shell_exec("rsync -a $this->satisRepositoryOutputPath/meta/ $outputPublicMeta");
