@@ -98,7 +98,7 @@ class MyPackagesEdit extends Component
         }
 
         if ($newPackageAdd) {
-            dispatch(new ProcessPackageSatis($package->id));
+            $package->updatePackageWithSatis();
         }
 
         $this->redirect(route('my-packages').'?check_for_background_job=1');

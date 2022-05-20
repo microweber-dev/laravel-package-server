@@ -383,10 +383,7 @@ class TeamPackagesTable extends DataTableComponent
                     return [];
                 }
 
-                $package->clone_status = Package::CLONE_STATUS_WAITING;
-                $package->save();
-
-                dispatch(new ProcessPackageSatis($package->id));
+                $package->updatePackageWithSatis();
             }
         }
 
@@ -433,10 +430,7 @@ class TeamPackagesTable extends DataTableComponent
             return [];
         }
 
-        $package->clone_status = Package::CLONE_STATUS_WAITING;
-        $package->save();
-
-        dispatch(new ProcessPackageSatis($package->id));
+        $package->updatePackageWithSatis();
 
         $this->check_background_job = true;
         $this->refresh = true;

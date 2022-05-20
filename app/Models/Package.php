@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Jobs\ProcessPackageSatis;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Jetstream\Jetstream;
@@ -83,5 +84,22 @@ class Package extends Model
         }
 
         return $ids;
+    }
+
+    public function updatePackageWithSatis()
+    {
+        if ((
+            $this->clone_status == self::REMOTE_CLONE_STATUS_RUNNING)
+            || ($this->clone_status == self::REMOTE_CLONE_STATUS_WAITING)
+            || ($this->clone_status == self::CLONE_STATUS_RUNNING)
+            || ($this->clone_status == self::CLONE_STATUS_WAITING)
+            ) {
+            // Already dispatched
+            return;
+        }
+
+        dispatch_sync(new ProcessPackageSatis($this->id));
+        $this->clone_status = self::CLONE_STATUS_WAITING;
+        $this->save();
     }
 }

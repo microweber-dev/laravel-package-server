@@ -43,10 +43,8 @@ class MyPackages extends Component
     public function update($id)
     {
         $package = Package::where('id', $id)->userHasAccess()->first();
-        $package->clone_status = Package::CLONE_STATUS_WAITING;
-        $package->save();
 
-        dispatch(new ProcessPackageSatis($package->id));
+        $package->updatePackageWithSatis();
 
         $this->checkBackgroundJob = true;
 
@@ -57,9 +55,7 @@ class MyPackages extends Component
         $packages = Package::select(['id','user_id'])->userHasAccess()->get();
         if ($packages->count() > 0) {
             foreach ($packages as $package) {
-                $package->clone_status = Package::CLONE_STATUS_WAITING;
-                $package->save();
-                dispatch(new ProcessPackageSatis($package->id));
+                $package->updatePackageWithSatis();
             }
             $this->checkBackgroundJob = true;
         }
@@ -71,9 +67,7 @@ class MyPackages extends Component
         $packages = Package::select(['id','user_id'])->where('clone_status', Package::CLONE_STATUS_FAILED)->userHasAccess()->get();
         if ($packages->count() > 0) {
             foreach ($packages as $package) {
-                $package->clone_status = Package::CLONE_STATUS_WAITING;
-                $package->save();
-                dispatch(new ProcessPackageSatis($package->id));
+                $package->updatePackageWithSatis();
             }
             $this->checkBackgroundJob = true;
         }
