@@ -26,6 +26,7 @@ class ProcessPackageSatisRsync implements ShouldQueue, ShouldBeUnique
 
     public $packageId;
     public $satisRepositoryOutputPath;
+    public $packageBuildZip;
 
     /**
      * Create a new job instance.
@@ -36,6 +37,10 @@ class ProcessPackageSatisRsync implements ShouldQueue, ShouldBeUnique
     {
         $this->packageId = $params['packageId'];
         $this->satisRepositoryOutputPath = $params['satisRepositoryOutputPath'];
+
+        if (isset($params['packageBuildZip'])) {
+            $this->packageBuildZip = $params['packageBuildZip'];
+        }
     }
 
     /**
@@ -46,6 +51,19 @@ class ProcessPackageSatisRsync implements ShouldQueue, ShouldBeUnique
     public function handle()
     {
         $packageModel = Package::where('id', $this->packageId)->first();
+
+        if ($this->packageBuildZip) {
+
+            $zip = new \ZipArchive();
+            if ($zip->open($this->packageBuildZip) === TRUE) {
+                $zip->extractTo($this->satisRepositoryOutputPath);
+                $zip->close();
+            } else {
+                $packageModel->clone_log = "Can't open the builded zip file.";
+                $packageModel->clone_status = Package::REMOTE_CLONE_STATUS_FAILED;
+                return $packageModel->save();
+            }
+        }
 
         $outputPublicDist = public_path() . '/dist/';
         if (!is_dir($outputPublicDist)) {

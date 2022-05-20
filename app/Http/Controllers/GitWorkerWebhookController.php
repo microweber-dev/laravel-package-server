@@ -35,28 +35,17 @@ class GitWorkerWebhookController extends Controller
 
                 if ($status == Package::REMOTE_CLONE_STATUS_SUCCESS) {
 
-                    $buildedZipPackage = $workerBuilds . $signature . '.zip';
-                    if (is_file($buildedZipPackage)) {
+                    $packageBuildZip = $workerBuilds . $signature . '.zip';
+                    if (is_file($packageBuildZip)) {
 
-                        $zip = new \ZipArchive();
-                        if ($zip->open($buildedZipPackage) === TRUE) {
+                        // Maker rsync on another job
+                        dispatch((new ProcessPackageSatisRsync([
+                            'packageId'=>$findPackage->id,
+                            'packageBuildZip'=>$packageBuildZip,
+                            'satisRepositoryOutputPath'=>$workerBuildsTemp
+                        ])));
 
-                            $zip->extractTo($workerBuildsTemp);
-                            $zip->close();
-
-                            // Maker rsync on another job
-                            dispatch((new ProcessPackageSatisRsync([
-                                'packageId'=>$findPackage->id,
-                                'satisRepositoryOutputPath'=>$workerBuildsTemp
-                            ])));
-
-                            return ['done'=>true];
-
-                        } else {
-                            $findPackage->clone_log = "Can't open the builded zip file.";
-                            $findPackage->clone_status = Package::REMOTE_CLONE_STATUS_FAILED;
-                            return $findPackage->save();
-                        }
+                        return ['done'=>true];
                     }
                 }
             }
