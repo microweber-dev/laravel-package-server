@@ -86,16 +86,18 @@ class Package extends Model
         return $ids;
     }
 
-    public function updatePackageWithSatis()
+    public function updatePackageWithSatis($forceUpdate = false)
     {
-        if ((
-            $this->clone_status == self::REMOTE_CLONE_STATUS_RUNNING)
-            || ($this->clone_status == self::REMOTE_CLONE_STATUS_WAITING)
-            || ($this->clone_status == self::CLONE_STATUS_RUNNING)
-            || ($this->clone_status == self::CLONE_STATUS_WAITING)
+        if (!$forceUpdate) {
+            if ((
+                    $this->clone_status == self::REMOTE_CLONE_STATUS_RUNNING)
+                || ($this->clone_status == self::REMOTE_CLONE_STATUS_WAITING)
+                || ($this->clone_status == self::CLONE_STATUS_RUNNING)
+                || ($this->clone_status == self::CLONE_STATUS_WAITING)
             ) {
-            // Already dispatched
-            return ['dispatched'=>false,'id'=>$this->id];
+                // Already dispatched
+                return ['dispatched' => false, 'id' => $this->id];
+            }
         }
 
         dispatch(new ProcessPackageSatis($this->id));
