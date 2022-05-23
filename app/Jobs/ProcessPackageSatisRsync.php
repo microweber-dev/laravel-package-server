@@ -99,7 +99,7 @@ class ProcessPackageSatisRsync implements ShouldQueue, ShouldBeUnique
             @unlink($this->packageBuildZip);
         }
 
-        $packageModel->debug_count = $packageModel->debug_count + 1;
+    //    $packageModel->debug_count = $packageModel->debug_count + 1;
         $packageModel->clone_status = Package::CLONE_STATUS_SUCCESS;
         $packageModel->is_cloned = 1;
         $packageModel->save();
