@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 
 use App\Helpers\PackageManagerGitWorker;
+use App\Helpers\SatisHelper;
 use CzProject\GitPhp\Git;
 use CzProject\GitPhp\Helpers;
 
@@ -105,6 +106,8 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         $packageModel->clone_status = Package::CLONE_STATUS_RUNNING;
         $packageModel->save();
 
+        $isPrivateRepository = SatisHelper::checkRepositoryIsPrivate($packageModel->repository_url);
+
         $satisContent = [
             'name'=>'microweber/packages',
             'homepage'=>'https://example.com',
@@ -131,19 +134,21 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
             ]
         ];
 
-        if ($packageModel->credential !== null) {
-            if ($packageModel->credential->authentication_type == Credential::TYPE_GITLAB_TOKEN) {
-                if (isset($packageModel->credential->authentication_data['accessToken'])) {
-                    $satisContent['config']['gitlab-oauth'] = [
-                        $packageModel->credential->domain => $packageModel->credential->authentication_data['accessToken']
-                    ];
+        if ($isPrivateRepository) {
+            if ($packageModel->credential !== null) {
+                if ($packageModel->credential->authentication_type == Credential::TYPE_GITLAB_TOKEN) {
+                    if (isset($packageModel->credential->authentication_data['accessToken'])) {
+                        $satisContent['config']['gitlab-oauth'] = [
+                            $packageModel->credential->domain => $packageModel->credential->authentication_data['accessToken']
+                        ];
+                    }
                 }
-            }
-            if ($packageModel->credential->authentication_type == Credential::TYPE_GITHUB_OAUTH) {
-                if (isset($packageModel->credential->authentication_data['accessToken'])) {
-                    $satisContent['config']['github-oauth'] = [
-                        $packageModel->credential->domain => $packageModel->credential->authentication_data['accessToken']
-                    ];
+                if ($packageModel->credential->authentication_type == Credential::TYPE_GITHUB_OAUTH) {
+                    if (isset($packageModel->credential->authentication_data['accessToken'])) {
+                        $satisContent['config']['github-oauth'] = [
+                            $packageModel->credential->domain => $packageModel->credential->authentication_data['accessToken']
+                        ];
+                    }
                 }
             }
         }

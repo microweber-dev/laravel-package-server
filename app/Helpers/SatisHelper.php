@@ -4,6 +4,15 @@ namespace App\Helpers;
 
 class SatisHelper
 {
+    public static function checkRepositoryIsPrivate($url)
+    {
+        $exec = shell_exec('git ls-remote '. $url);
+
+        
+
+        return false;
+    }
+
     public static function getLatestVersionFromPackage($packages)
     {
         $latestVersion = [];
