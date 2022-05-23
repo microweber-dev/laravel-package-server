@@ -8,8 +8,10 @@ class SatisHelper
 {
     public static function checkRepositoryIsPrivate($url)
     {
-        $process = new Process(['GIT_TERMINAL_PROMPT=0', 'git', 'ls-remote',$url]);
+        shell_exec('GIT_TERMINAL_PROMPT=0');
+        $process = new Process(['git', 'ls-remote',$url]);
         $process->run();
+
         if (!$process->isSuccessful()) {
             return true;
         }

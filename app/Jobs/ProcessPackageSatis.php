@@ -108,12 +108,6 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
 
         $isPrivateRepository = SatisHelper::checkRepositoryIsPrivate($packageModel->repository_url);
 
-
-        var_dump([
-           'private'=>$packageModel->repository_url,
-           'url'=>$isPrivateRepository,
-        ]);
-
         $satisContent = [
             'name'=>'microweber/packages',
             'homepage'=>'https://example.com',
