@@ -45,10 +45,13 @@ class PackageManagerGitWorker
             file_put_contents($workerGitPath . '/build-settings.json', file_get_contents($buildSettingsFile));
         }
 
+        $satisContent = file_get_contents($satisFile);
+        $satisContent = json_decode($satisContent, true);
+
         $lastCommitId = false;
         if ($repository->hasChanges()) {
             $repository->addAllChanges();
-            $repository->commit('Build template: ' . $satisFile['name']);
+            $repository->commit('Build template: ' . $satisContent['name']);
           //  $repository->push();
             shell_exec('cd '.$workerGitPath.' && git push --all');
 
