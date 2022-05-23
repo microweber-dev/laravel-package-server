@@ -105,7 +105,7 @@ class ProcessPackageSatisRsync implements ShouldQueue, ShouldBeUnique
         $packageModel->save();
     }
 
-    public function failed($error)
+   /* public function failed($error)
     {
         $packageModel = Package::where('id', $this->packageId)->first();
 
@@ -113,5 +113,5 @@ class ProcessPackageSatisRsync implements ShouldQueue, ShouldBeUnique
         $packageModel->clone_status = Package::CLONE_STATUS_FAILED;
         $packageModel->is_cloned = 0;
         $packageModel->save();
-    }
+    }*/
 }

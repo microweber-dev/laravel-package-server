@@ -170,7 +170,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         $buildSettingsFile = $saitsRepositoryPath . 'build-settings.json';
         file_put_contents($buildSettingsFile, $buildSettingsJson);
 
-        $gitWorker = false;
+        $gitWorker = true;
 
         if ($gitWorker) {
             sleep(rand(5, 15));
@@ -200,12 +200,11 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
 
         $packageModel->debug_count = $packageModel->debug_count + 1;
 
-        if (!empty($lastVersionMetaData)) {
+       /* if (!empty($lastVersionMetaData)) {
             foreach ($lastVersionMetaData as $metaData=>$metaDataValue) {
                 $packageModel->$metaData = $metaDataValue;
             }
-        }
-
+        }*/
 
         $packageModel->package_json = json_encode($packageJsonContent['packages'],JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
         $packageModel->clone_log = 'done!';
@@ -218,11 +217,11 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         ]));
     }
 
-    public function failed($error)
+   /* public function failed($error)
     {
         $packageModel = Package::where('id', $this->packageId)->first();
         $packageModel->clone_log = $error->getMessage();
         $packageModel->clone_status = Package::CLONE_STATUS_FAILED;
         $packageModel->save();
-    }
+    }*/
 }
