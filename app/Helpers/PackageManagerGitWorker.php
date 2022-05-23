@@ -48,10 +48,23 @@ class PackageManagerGitWorker
         $satisContent = file_get_contents($satisFile);
         $satisContent = json_decode($satisContent, true);
 
+        $cloneRepositoryName = 'none';
+        if (isset($satisContent['repositories'][0]['url'])) {
+            $cloneRepositoryUrl = $satisContent['repositories'][0]['url'];
+            $cloneRepositoryUrl = parse_url($cloneRepositoryUrl);
+            $cloneRepositoryUrl = parse_url($cloneRepositoryUrl);
+            if (isset($cloneRepositoryUrl['path'])) {
+                $cloneRepositoryName = $cloneRepositoryUrl['path'];
+                $cloneRepositoryName = mb_substr($cloneRepositoryName, 1);
+            } else {
+                $cloneRepositoryName = $cloneRepositoryUrl;
+            }
+        }
+
         $lastCommitId = false;
         if ($repository->hasChanges()) {
             $repository->addAllChanges();
-            $repository->commit('Build template: ' . $satisContent['name']);
+            $repository->commit('Build template: ' . $cloneRepositoryName);
           //  $repository->push();
             shell_exec('cd '.$workerGitPath.' && git push --all');
 

@@ -14,6 +14,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+
+    $cloneRepositoryUrl = 'https://github.com/microweber-templates/new-world';
+
+    $cloneRepositoryUrl = parse_url($cloneRepositoryUrl);
+    if (isset($cloneRepositoryUrl['path'])) {
+        $cloneRepositoryName = $cloneRepositoryUrl['path'];
+        $cloneRepositoryName = mb_substr($cloneRepositoryName, 1);
+
+    }
+
     if (\Illuminate\Support\Facades\Auth::check()) {
         return redirect('team-packages');
     }
