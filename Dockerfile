@@ -5,7 +5,7 @@ RUN apt-get install -y htop
 RUN apt-get install -y wget
 RUN apt-get install -y jq libjq1
 RUN apt-get install -y ftp-upload
-RUN apt-get install -y lftp 
+RUN apt-get install -y lftp
 
 
 
@@ -15,7 +15,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN docker-php-ext-configure gd --with-freetype --with-webp --with-jpeg && \
     docker-php-ext-install gd
 
-RUN docker-php-ext-install pdo_mysql zip dom curl mbstring intl
+RUN docker-php-ext-install pdo_mysql zip dom curl mbstring intl pcntl
 WORKDIR /app
 COPY . /app
 RUN cd /app/satis-builder && composer install --no-interaction --no-dev --prefer-dist --ignore-platform-reqs
