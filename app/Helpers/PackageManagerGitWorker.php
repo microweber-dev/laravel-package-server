@@ -52,7 +52,6 @@ class PackageManagerGitWorker
         if (isset($satisContent['repositories'][0]['url'])) {
             $cloneRepositoryUrl = $satisContent['repositories'][0]['url'];
             $cloneRepositoryUrl = parse_url($cloneRepositoryUrl);
-            $cloneRepositoryUrl = parse_url($cloneRepositoryUrl);
             if (isset($cloneRepositoryUrl['path'])) {
                 $cloneRepositoryName = $cloneRepositoryUrl['path'];
                 $cloneRepositoryName = mb_substr($cloneRepositoryName, 1);
