@@ -51,6 +51,7 @@ class GitWorkerWebhookController extends Controller
                 }
             }
         }
+        return ['none'=>true];
     }
 
     public function notification(Request $request)

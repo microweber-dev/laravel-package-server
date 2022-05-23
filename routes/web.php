@@ -15,10 +15,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
 
-    /*$status = \App\Helpers\SatisHelper::checkRepositoryIsPrivate('https://gitlab.com/mw-internal/templates/car-service');
-
-    dd($status);*/ 
-
     if (\Illuminate\Support\Facades\Auth::check()) {
         return redirect('team-packages');
     }
