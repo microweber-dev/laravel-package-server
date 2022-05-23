@@ -170,18 +170,21 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         $buildSettingsFile = $saitsRepositoryPath . 'build-settings.json';
         file_put_contents($buildSettingsFile, $buildSettingsJson);
 
-        sleep(rand(5,15));
-        $response = PackageManagerGitWorker::pushSatis($satisFile, $buildSettingsFile);
+        $gitWorker = false;
 
-        $packageModel->remote_build_commit_id = $response['commit_id'];
-        $packageModel->save();
+        if ($gitWorker) {
+            sleep(rand(5, 15));
+            $response = PackageManagerGitWorker::pushSatis($satisFile, $buildSettingsFile);
 
+            $packageModel->remote_build_commit_id = $response['commit_id'];
+            return $packageModel->save();
+        }
 
-     /*   \Artisan::call('package-builder:build-with-satis', [
+       $output = \Artisan::call('package-builder:build-with-satis', [
             '--file' => $satisFile,
-        ]);*/
+        ]);
 
-      /*  $satisRepositoryOutputPath = $saitsRepositoryPath . 'output-build';
+       $satisRepositoryOutputPath = $saitsRepositoryPath . 'output-build';
 
         $packageJsonContent = file_get_contents($satisRepositoryOutputPath.DIRECTORY_SEPARATOR.'package.json');
         $packageJsonContent = json_decode($packageJsonContent,true);
@@ -197,13 +200,13 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
 
         $packageModel->debug_count = $packageModel->debug_count + 1;
 
-       /* if (!empty($lastVersionMetaData)) {
+        if (!empty($lastVersionMetaData)) {
             foreach ($lastVersionMetaData as $metaData=>$metaDataValue) {
                 $packageModel->$metaData = $metaDataValue;
             }
-        }*/
+        }
 
-        /*
+
         $packageModel->package_json = json_encode($packageJsonContent['packages'],JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
         $packageModel->clone_log = 'done!';
         $packageModel->save();
@@ -212,7 +215,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         dispatch_sync(new ProcessPackageSatisRsync([
             'packageId'=>$packageModel->id,
             'satisRepositoryOutputPath'=>$satisRepositoryOutputPath
-        ]));*/
+        ]));
     }
 
     public function failed($error)
