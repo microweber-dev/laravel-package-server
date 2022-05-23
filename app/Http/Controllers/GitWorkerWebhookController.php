@@ -75,6 +75,9 @@ class GitWorkerWebhookController extends Controller
                         if ($status=='created') {
                             $findPackage->clone_status = Package::REMOTE_CLONE_STATUS_CLONING;
                         }
+                        if ($status=='success') {
+                            $findPackage->clone_log = 'Unzipping the builded package...';
+                        }
                         $findPackage->clone_log = json_encode($notification, JSON_PRETTY_PRINT);
                         $findPackage->save();
                     }
