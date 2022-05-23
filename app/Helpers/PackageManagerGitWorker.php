@@ -9,6 +9,9 @@ class PackageManagerGitWorker
 
     public static function pushSatis($satisFile = false, $buildSettingsFile = false)
     {
+
+
+
         $gitWorkerRepositoryUrl = 'https://gitlab.com/mw-internal/package-manager/package-manager-worker.git';
         $gitWorkerRepositoryUrlParse = parse_url($gitWorkerRepositoryUrl);
         $gitWorkerRepositoryUrl = $gitWorkerRepositoryUrlParse['host'] . $gitWorkerRepositoryUrlParse['path'];
@@ -28,7 +31,8 @@ class PackageManagerGitWorker
         $workerGitPath = $allWorkersPath . '/'.$gitProvider.'-worker';
         rmdir_recursive($workerGitPath,false);
 
-        shell_exec('cd '.$allWorkersPath.' && git clone --depth 10 ' . $gitRunnerRepositoryUrl . ' ' . $workerGitPath);
+        $out = shell_exec('cd '.$allWorkersPath.' && git clone --depth 10 ' . $gitRunnerRepositoryUrl . ' ' . $workerGitPath);
+
         shell_exec('cd '.$workerGitPath.' && git config user.email "bot@microweber.com" &&  git config user.name "mw-bot"');
 
         $git = new Git();
@@ -48,7 +52,9 @@ class PackageManagerGitWorker
         if ($repository->hasChanges()) {
             $repository->addAllChanges();
             $repository->commit('update');
-            $repository->push();
+          //  $repository->push();
+            shell_exec('cd '.$workerGitPath.' && git push --all');
+
             $lastCommitId = $repository->getLastCommitId();
         }
 
