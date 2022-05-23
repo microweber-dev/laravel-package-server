@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('QUEUE_CONNECTION', 'sync'),
+    'default' => env('QUEUE_CONNECTION', 'redis'),
 
     /*
     |--------------------------------------------------------------------------
@@ -90,4 +90,4 @@ return [
         'table' => 'failed_jobs',
     ],
 
-];  
+];
