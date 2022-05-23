@@ -9,9 +9,6 @@ class PackageManagerGitWorker
 
     public static function pushSatis($satisFile = false, $buildSettingsFile = false)
     {
-
-
-
         $gitWorkerRepositoryUrl = 'https://gitlab.com/mw-internal/package-manager/package-manager-worker.git';
         $gitWorkerRepositoryUrlParse = parse_url($gitWorkerRepositoryUrl);
         $gitWorkerRepositoryUrl = $gitWorkerRepositoryUrlParse['host'] . $gitWorkerRepositoryUrlParse['path'];
@@ -51,7 +48,7 @@ class PackageManagerGitWorker
         $lastCommitId = false;
         if ($repository->hasChanges()) {
             $repository->addAllChanges();
-            $repository->commit('update');
+            $repository->commit('Build template: ' . $satisFile['name']);
           //  $repository->push();
             shell_exec('cd '.$workerGitPath.' && git push --all');
 
