@@ -113,7 +113,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
             'homepage'=>'https://example.com',
             'repositories'=>[
                 [
-                    'type'=>'vcs',
+                    'type'=>'git',
                     'url'=> $packageModel->repository_url,
                 ]
             ],
