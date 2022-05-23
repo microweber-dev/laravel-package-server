@@ -2,15 +2,24 @@
 
 namespace App\Helpers;
 
+use Symfony\Component\Process\Process;
+
 class SatisHelper
 {
     public static function checkRepositoryIsPrivate($url)
     {
-        $exec = shell_exec('git ls-remote '. $url);
+        $process = new Process(['git', 'ls-remote',$url]);
+        $process->run();
+        if (!$process->isSuccessful()) {
+            return true;
+        }
 
-        
+        $output = $process->getOutput();
+        if (strpos($output, 'HEAD') !== false) {
+            return false;
+        }
 
-        return false;
+        return true;
     }
 
     public static function getLatestVersionFromPackage($packages)
