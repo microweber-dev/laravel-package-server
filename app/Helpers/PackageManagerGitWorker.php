@@ -63,7 +63,7 @@ class PackageManagerGitWorker
         $lastCommitId = false;
         if ($repository->hasChanges()) {
             $repository->addAllChanges();
-            $repository->commit('Build template: ' . $cloneRepositoryName);
+            $repository->commit('Build package: ' . $cloneRepositoryName);
           //  $repository->push();
             shell_exec('cd '.$workerGitPath.' && git push --all');
 
