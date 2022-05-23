@@ -10,7 +10,7 @@ class SatisHelper
     {
         shell_exec('GIT_TERMINAL_PROMPT=0');
         $process = new Process(['git', 'ls-remote',$url]);
-        $process->run();
+        $process->start();
 
         if (!$process->isSuccessful()) {
             return true;
@@ -18,7 +18,10 @@ class SatisHelper
 
         $output = $process->getOutput();
         if (strpos($output, 'HEAD') !== false) {
+            $process->stop();
             return false;
+        } else {
+            $process->stop();
         }
 
         return true;
