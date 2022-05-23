@@ -129,13 +129,16 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
             ]
         ];
 
-        if (!$isPrivateRepository) {
-            $satisContent['config']['properties'] = [
-                "preferred-install"=> [
-                    "*"=> "source"
-                ],
-            ];
+        $preferredInstall = 'dist';
+        if ($isPrivateRepository) {
+            $preferredInstall = 'source';
         }
+        $satisContent['config']['properties'] = [
+            "preferred-install"=> [
+                "*"=> $preferredInstall
+            ],
+        ];
+
 
         if ($isPrivateRepository) {
             if ($packageModel->credential !== null) {
