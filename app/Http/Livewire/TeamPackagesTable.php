@@ -25,6 +25,7 @@ use Rappasoft\LaravelLivewireTables\Views\Filters\TextFilter;
 class TeamPackagesTable extends DataTableComponent
 {
     protected $model = TeamPackage::class;
+    public array $perPageAccepted = [10, 25, 50,100, 200];
 
     public function configure(): void
     {
