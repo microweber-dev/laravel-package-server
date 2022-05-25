@@ -40,7 +40,8 @@ Route::namespace('\App\Http\Controllers')->group(function() {
 });
 
 Route::namespace('\App\Http\Controllers')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])->group(function() {
-    Route::post('packages/download-notify', 'PackagesJsonController@downloadNotify')->name('packages.download-notify');
+    Route::post('packages/download-notify', 'PackageInstallNotifyController@downloadNotify')->name('packages.download-notify');
+    Route::post('packages/download-notify-private', 'PackageInstallNotifyController@downloadNotifyPrivate')->name('packages.download-notify-private');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function() {

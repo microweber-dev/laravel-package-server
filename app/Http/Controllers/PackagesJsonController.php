@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\WhmcsLicenseValidatorHelper;
 use App\Models\Package;
 use App\Models\PackageDownloadStats;
 use App\Models\Team;
@@ -282,7 +283,7 @@ class PackagesJsonController extends Controller
                          if (!empty($userLicenseKeysMap)) {
                             foreach ($userLicenseKeysMap as $k=>$userLicenseKey) {
 
-                                if ($this->_validateLicenseKey($whmcsUrl, $userLicenseKey)) {
+                                if (WhmcsLicenseValidatorHelper::validateLicenseKey($whmcsUrl, $userLicenseKey)) {
                                     $licensed = true;
                                     $userLicenseKeysValid[$k] = $userLicenseKey;
                                 }
@@ -308,8 +309,17 @@ class PackagesJsonController extends Controller
 
 
                 if ($licensed) {
-                    if ($userLicenseKeysValid) {
-                         $package['notification-url'] = route('packages.download-notify-private') . '?used_keys_data=' . urlencode(base64_encode(json_encode($userLicenseKeysValid))).'&package_name='.urlencode($package['name']);
+                    if (isset($teamPackage['team_package_id'])) {
+                        if ($userLicenseKeysValid) {
+                            $dataForNotification = [];
+                            $dataForNotification['valid_license_keys'] = $userLicenseKeysValid;
+                            $dataForNotification['package_name'] = $package['name'];
+                            $dataForNotification['team_package_id'] = $teamPackage['team_package_id'];
+
+                            $package['notification-url'] = route('packages.download-notify-private')
+                                . '?used_keys_data='
+                                . urlencode(base64_encode(json_encode($dataForNotification)));
+                        }
                     }
                 }
 
@@ -340,78 +350,5 @@ class PackagesJsonController extends Controller
         return $package;
     }
 
-    public static $key_status_check_cache = [];
-    private function _validateLicenseKey($whmcsUrl, $key)
-    {
 
-
-        if(isset(self::$key_status_check_cache[$key])){
-            return self::$key_status_check_cache[$key];
-        }
-
-        $checkWhmcs = $this->_validateLicenseMakeRequest($whmcsUrl,$key);
-        if (isset($checkWhmcs['status']) && $checkWhmcs['status'] == 'success') {
-            self::$key_status_check_cache[$key] = true;
-            return true;
-        }
-        self::$key_status_check_cache[$key] = false;
-        return false;
-    }
-    public static $key_status_check_cache_get = [];
-
-    private function _getLicenseKeyStatus($whmcsUrl, $key)
-    {
-
-
-        if(isset(self::$key_status_check_cache_get[$key])){
-            return self::$key_status_check_cache_get[$key];
-        }
-
-        $checkWhmcs = $this->_validateLicenseMakeRequest($whmcsUrl,$key);
-        if (isset($checkWhmcs['status'])) {
-            self::$key_status_check_cache_get[$key] = $checkWhmcs;
-            return $checkWhmcs;
-        }
-        self::$key_status_check_cache_get[$key] = false;
-        return false;
-    }
-
-
-    private function _validateLicenseMakeRequest($whmcsUrl,$key)
-    {
-        $curl = curl_init();
-
-
-        $checkWhmcsUrl = ($whmcsUrl . '/index.php?m=microweber_addon&function=validate_license&license_key=' . $key);
-
-        $opts = [
-            CURLOPT_URL => $checkWhmcsUrl,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "GET",
-
-        ];
-
-        curl_setopt_array($curl, $opts);
-
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-
-        curl_close($curl);
-
-        if ($err) {
-           // return ["error" => "cURL Error #:" . $err];
-            return [];
-        } else {
-            $getResponse = json_decode($response, true);
-
-            if (isset($getResponse['status'])) {
-                return $getResponse;
-            }
-            return [];
-        }
-    }
 }

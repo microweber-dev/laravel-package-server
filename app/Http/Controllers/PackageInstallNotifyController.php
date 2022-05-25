@@ -16,13 +16,42 @@ class PackageInstallNotifyController extends Controller
     public function downloadNotifyPrivate(Request $request)
     {
         $used_keys_data = [];
+        $valid_keys = [];
         $package_name = false;
+        $team_package_id = false;
         $data = $request->all();
-        if(isset($data['used_keys_data'])){
-            $used_keys_data = @json_decode(base64_decode(urldecode($data['used_keys_data'])),true);
+        if (isset($data['used_keys_data'])) {
+            $used_keys_data = @json_decode(base64_decode(urldecode($data['used_keys_data'])), true);
         }
-        if(isset($data['package_name'])){
-            $package_name = urldecode($data['package_name']);
+        if (isset($used_keys_data['package_name'])) {
+            $package_name = $used_keys_data['package_name'];
+        }
+        if (isset($used_keys_data['team_package_id'])) {
+            $team_package_id = $used_keys_data['team_package_id'];
+        }
+        if (isset($used_keys_data['valid_license_keys'])) {
+            $valid_keys = $used_keys_data['valid_license_keys'];
+        }
+
+
+        if ($valid_keys and $team_package_id and $package_name) {
+            $checkTeamPackage = TeamPackage::where('id', $team_package_id)->first();
+            $checkTeam = Team::where('id', $checkTeamPackage->team_id)->first();
+
+            if ($checkTeam) {
+                $teamSettings = $checkTeam->settings()->get();
+
+                if ($teamSettings) {
+
+
+                    foreach ($valid_keys as $valid_key_prefix => $valid_key) {
+                     
+                    }
+
+
+                }
+            }
+
         }
 
 
