@@ -17,13 +17,13 @@ class GitWorkerWebhookController extends Controller
             $findPackage = Package::where('remote_build_signature', $signature)->first();
             if ($findPackage !== null) {
 
-                if ($status == Package::REMOTE_CLONE_STATUS_FAILED) {
-                    $findPackage->clone_status = Package::REMOTE_CLONE_STATUS_FAILED;
+                if ($status == Package::CLONE_STATUS_FAILED) {
+                    $findPackage->clone_status = Package::CLONE_STATUS_FAILED;
                     return $findPackage->save();
                 }
 
-                if ($status == Package::REMOTE_CLONE_STATUS_RUNNING) {
-                    $findPackage->clone_status = Package::REMOTE_CLONE_STATUS_RUNNING;
+                if ($status == Package::CLONE_STATUS_RUNNING) {
+                    $findPackage->clone_status = Package::CLONE_STATUS_RUNNING;
                     return $findPackage->save();
                 }
 
@@ -33,7 +33,7 @@ class GitWorkerWebhookController extends Controller
                     mkdir_recursive($workerBuildsTemp);
                 }
 
-                if ($status == Package::REMOTE_CLONE_STATUS_SUCCESS) {
+                if ($status == Package::CLONE_STATUS_SUCCESS) {
 
                     $packageBuildZip = $workerBuilds . $signature . '.zip';
                     if (is_file($packageBuildZip)) {
@@ -66,16 +66,16 @@ class GitWorkerWebhookController extends Controller
                     if ($findPackage != null) {
                         $status = $notification['object_attributes']['status'];
                         if ($status=='failed') {
-                            $findPackage->clone_status = Package::REMOTE_CLONE_STATUS_FAILED;
+                            $findPackage->clone_status = Package::CLONE_STATUS_FAILED;
                         }
                         if ($status=='canceled') {
-                            $findPackage->clone_status = Package::REMOTE_CLONE_STATUS_FAILED;
+                            $findPackage->clone_status = Package::CLONE_STATUS_FAILED;
                         }
                         if ($status=='pending') {
-                            $findPackage->clone_status = Package::REMOTE_CLONE_STATUS_WAITING;
+                            $findPackage->clone_status = Package::CLONE_STATUS_WAITING;
                         }
                         if ($status=='created') {
-                            $findPackage->clone_status = Package::REMOTE_CLONE_STATUS_CLONING;
+                            $findPackage->clone_status = Package::CLONE_STATUS_CLONING;
                         }
                         if ($status=='success') {
                             $findPackage->clone_log = 'Unzipping the builded package...';

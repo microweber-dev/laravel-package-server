@@ -60,7 +60,7 @@ class ProcessPackageSatisRsync implements ShouldQueue, ShouldBeUnique
                 $zip->close();
             } else {
                 $packageModel->clone_log = "Can't open the builded zip file.";
-                $packageModel->clone_status = Package::REMOTE_CLONE_STATUS_FAILED;
+                $packageModel->clone_status = Package::CLONE_STATUS_FAILED;
                 return $packageModel->save();
             }
         }
