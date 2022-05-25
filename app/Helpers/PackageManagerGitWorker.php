@@ -9,7 +9,7 @@ class PackageManagerGitWorker
 
     public static function pushSatis($satisFile = false, $buildSettingsFile = false)
     {
-        $gitWorkerRepositoryUrl = 'https://gitlab.com/mw-internal/package-manager/package-manager-worker.git';
+        $gitWorkerRepositoryUrl = env('PACKAGE_MANAGER_WORKER_REPOSITORY');
         $gitWorkerRepositoryUrlParse = parse_url($gitWorkerRepositoryUrl);
         $gitWorkerRepositoryUrl = $gitWorkerRepositoryUrlParse['host'] . $gitWorkerRepositoryUrlParse['path'];
 
@@ -18,7 +18,7 @@ class PackageManagerGitWorker
             $gitProvider = 'gitlab';
         }
 
-        $gitRunnerRepositoryUrl = 'https://build:glpat-s947uAnt_G-E7Sezwozb@' . $gitWorkerRepositoryUrl;
+        $gitRunnerRepositoryUrl = 'https://'.env('GITLAB_BOT_USERNAME').':'.env('GITLAB_BOT_PASSWORD').'@' . $gitWorkerRepositoryUrl;
 
         $allWorkersPath = storage_path() . '/package-manager-worker/'.md5($satisFile);
         if (!is_dir($allWorkersPath)) {
@@ -30,7 +30,7 @@ class PackageManagerGitWorker
 
         $out = shell_exec('cd '.$allWorkersPath.' && git clone --depth 10 ' . $gitRunnerRepositoryUrl . ' ' . $workerGitPath);
 
-        shell_exec('cd '.$workerGitPath.' && git config user.email "bot@microweber.com" &&  git config user.name "mw-bot"');
+        shell_exec('cd '.$workerGitPath.' && git config user.email "'.env('GITLAB_BOT_USERNAME').'" &&  git config user.name "'.env('GITLAB_BOT_USERNAME').'"');
 
         $git = new Git();
         $repository = $git->open($workerGitPath);
