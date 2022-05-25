@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use App\Jobs\ProcessPackageSatis;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -97,7 +98,7 @@ class Package extends Model
 
         dispatch(new ProcessPackageSatis($this->id));
         $this->clone_status = self::CLONE_STATUS_WAITING;
-        $this->clone_queue_at = \Carbon::now();
+        $this->clone_queue_at = Carbon::now();
         $this->save();
 
         return ['dispatched'=>true,'id'=>$this->id];
