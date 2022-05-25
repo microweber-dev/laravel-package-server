@@ -23,37 +23,6 @@ class PackagesJsonController extends Controller
         return $this->getTeamPackages($findTeam->id);
     }
 
-    public function downloadNotify(Request $request)
-    {
-        $data = [];
-        $data['request'] = $request->all();
-        $data['headers'] = collect($request->header())->transform(function ($item) {
-            return $item[0];
-        });
-        $data['ip_address'] = $request->ip();
-
-        if (isset($data['request']['downloads'])) {
-            foreach ($data['request']['downloads'] as $download) {
-
-                $findPackageByName = Package::where('name', $download['name'])->first();
-                if ($findPackageByName != null) {
-
-                    $downloadStats = new PackageDownloadStats();
-                    $downloadStats->package_id = $findPackageByName->id;
-                    $downloadStats->name = $download['name'];
-                    $downloadStats->version = $download['version'];
-                    $downloadStats->ip_address = $data['ip_address'];
-                    $downloadStats->authorization = $data['headers']['authorization'];
-                    $downloadStats->host = $data['headers']['host'];
-                    $downloadStats->user_agent = $data['headers']['user-agent'];
-
-                    $downloadStats->save();
-
-                }
-            }
-        }
-
-    }
 
     public function team(Request $request, $slug = false)
     {
@@ -103,7 +72,7 @@ class PackagesJsonController extends Controller
                 if (isset($filter['package_id'])) {
                     $query->where('id', $filter['package_id']);
                 }
-                $query->whereNotIn('clone_status', [Package::CLONE_STATUS_FAILED,Package::REMOTE_CLONE_STATUS_FAILED]);
+                $query->whereNotIn('clone_status', [Package::CLONE_STATUS_FAILED]);
             })
             ->where('is_visible', 1)
             ->orderBy('position','asc')
@@ -191,6 +160,9 @@ class PackagesJsonController extends Controller
                     foreach ($packageContent as $packageName => $packageVersions) {
                         $json['packages'][$packageName] = $this->_prepareVersions($packageVersions, [
                             'token_authenticated' => $logged,
+                            'team_id' => $teamPackage->team_id,
+                            'package_id' => $teamPackage->package_id,
+                            'team_package_id' => $teamPackage->id,
                             'whmcs_primary_product_id' => $teamPackage->whmcs_primary_product_id,
                             'whmcs_product_ids' => $teamPackage->getWhmcsProductIds(),
                             'is_visible' => $teamPackage->is_visible,
@@ -277,6 +249,11 @@ class PackagesJsonController extends Controller
                         $userLicenseKeys = base64_decode($userLicenseKeys);
                     }
 
+                    if (is_string($userLicenseKeys) and (strpos(strtolower($userLicenseKeys), 'license:') !== false)) {
+                        $userLicenseKeys = substr($userLicenseKeys, 8);
+                        $userLicenseKeys = base64_decode($userLicenseKeys);
+                    }
+
                     $userLicenseKeysJson = json_decode($userLicenseKeys, true);
 
                     $userLicenseKeysForValidation = [];
@@ -292,24 +269,29 @@ class PackagesJsonController extends Controller
                     }
 
                     $userLicenseKeysMap = [];
+                    $userLicenseKeysValid = [];
+
                     if ($userLicenseKeysForValidation && !empty($userLicenseKeysForValidation) && is_array($userLicenseKeysForValidation)) {
                         foreach ($userLicenseKeysForValidation as $userLicenseKey) {
                             if (isset($userLicenseKey['local_key']) and trim($userLicenseKey['local_key']) != '') {
-                                $userLicenseKeysMap[] = $userLicenseKey['local_key'];
+                                if(isset($userLicenseKey['rel_type'])){
+                                    $userLicenseKeysMap[$userLicenseKey['rel_type']] = $userLicenseKey['local_key'];
+                                }
                             }
                         }
-
-                        if (!empty($userLicenseKeysMap)) {
-                            foreach ($userLicenseKeysMap as $userLicenseKey) {
+                         if (!empty($userLicenseKeysMap)) {
+                            foreach ($userLicenseKeysMap as $k=>$userLicenseKey) {
 
                                 if ($this->_validateLicenseKey($whmcsUrl, $userLicenseKey)) {
                                     $licensed = true;
+                                    $userLicenseKeysValid[$k] = $userLicenseKey;
                                 }
                             }
                         }
                     }
 
                 }
+
 
                 if (isset($teamPackage['token_authenticated']) && $teamPackage['token_authenticated'] === true) {
                     $licensed = true;
@@ -323,6 +305,15 @@ class PackagesJsonController extends Controller
                         "shasum" => "license_key"
                     ];
                 }
+
+
+                if ($licensed) {
+                    if ($userLicenseKeysValid) {
+                         $package['notification-url'] = route('packages.download-notify-private') . '?used_keys_data=' . urlencode(base64_encode(json_encode($userLicenseKeysValid))).'&package_name='.urlencode($package['name']);
+                    }
+                }
+
+
 
                 $package['license_ids'] = $teamPackage['whmcs_product_ids'];
                 $package['extra']['whmcs']['whmcs_product_ids'] = $teamPackage['whmcs_product_ids'];
@@ -353,8 +344,6 @@ class PackagesJsonController extends Controller
     private function _validateLicenseKey($whmcsUrl, $key)
     {
 
-//        $checkWhmcs = file_get_contents($whmcsUrl . '/index.php?m=microweber_addon&function=validate_license&license_key=' . $key);
-//        $checkWhmcs = json_decode($checkWhmcs, TRUE);
 
         if(isset(self::$key_status_check_cache[$key])){
             return self::$key_status_check_cache[$key];
@@ -366,6 +355,24 @@ class PackagesJsonController extends Controller
             return true;
         }
         self::$key_status_check_cache[$key] = false;
+        return false;
+    }
+    public static $key_status_check_cache_get = [];
+
+    private function _getLicenseKeyStatus($whmcsUrl, $key)
+    {
+
+
+        if(isset(self::$key_status_check_cache_get[$key])){
+            return self::$key_status_check_cache_get[$key];
+        }
+
+        $checkWhmcs = $this->_validateLicenseMakeRequest($whmcsUrl,$key);
+        if (isset($checkWhmcs['status'])) {
+            self::$key_status_check_cache_get[$key] = $checkWhmcs;
+            return $checkWhmcs;
+        }
+        self::$key_status_check_cache_get[$key] = false;
         return false;
     }
 
