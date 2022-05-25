@@ -187,8 +187,6 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
 
         $status = SatisPackageBuilder::build($satisFile);
 
-        dd($status);
-
         $satisRepositoryOutputPath = $saitsRepositoryPath . 'output-build';
 
         $packageJsonContent = file_get_contents($satisRepositoryOutputPath . DIRECTORY_SEPARATOR . 'package.json');
