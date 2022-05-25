@@ -114,22 +114,23 @@ class SatisPackageBuilder
         ]);
         $process->setTimeout(null);
         $process->setIdleTimeout(null);
-//        $process->mustRun();
-//        $output = $process->getOutput();
+        $process->mustRun();
+        $output = $process->getOutput();
 
-        $process->run(function ($type, $buffer)   {
+
+      /*  $process->run(function ($type, $buffer)   {
             if (Process::ERR === $type) {
                 $this->line($buffer);
             } else {
                 $this->line($buffer);
             }
-        });
+        });*/
 
-        // executes after the command finishes
+   /*     // executes after the command finishes
         if (!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
         }
-        $output = $process->getOutput();
+        $output = $process->getOutput();*/
 
         $packagesJsonFilePath = $satisRepositoryOutputPath . '/packages.json';
         if (!is_file($packagesJsonFilePath)) {
