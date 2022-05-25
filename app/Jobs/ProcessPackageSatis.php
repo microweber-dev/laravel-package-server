@@ -187,9 +187,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
 
         $status = SatisPackageBuilder::build($satisFile);
 
-        $satisRepositoryOutputPath = $saitsRepositoryPath . 'output-build';
-
-        $packageJsonContent = file_get_contents($satisRepositoryOutputPath . DIRECTORY_SEPARATOR . 'package.json');
+        $packageJsonContent = file_get_contents($status['output_path'] . DIRECTORY_SEPARATOR . 'package.json');
         $packageJsonContent = json_decode($packageJsonContent, true);
 
         if (empty($packageJsonContent)) {
@@ -216,7 +214,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         // Maker rsync on another job
         dispatch_sync(new ProcessPackageSatisRsync([
             'packageId' => $packageModel->id,
-            'satisRepositoryOutputPath' => $satisRepositoryOutputPath
+            'satisRepositoryOutputPath' => $status['output_path']
         ]));
     }
 
