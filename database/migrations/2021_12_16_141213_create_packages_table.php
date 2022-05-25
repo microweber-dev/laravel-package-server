@@ -38,6 +38,7 @@ class CreatePackagesTable extends Migration
             $table->foreignId('team_owner_id')->nullable()->index();
 
             $table->text('clone_status')->nullable();
+            $table->timestamp('clone_queue_at')->nullable();
             $table->longText('clone_log')->nullable();
             $table->integer('is_cloned')->default(0)->nullable();
 

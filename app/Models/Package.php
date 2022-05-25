@@ -89,9 +89,6 @@ class Package extends Model
                     $this->clone_status == self::CLONE_STATUS_RUNNING)
                 || ($this->clone_status == self::CLONE_STATUS_WAITING)
                 || ($this->clone_status == self::CLONE_STATUS_CLONING)
-                || ($this->clone_status == self::CLONE_STATUS_RUNNING)
-                || ($this->clone_status == self::CLONE_STATUS_WAITING)
-                || ($this->clone_status == self::CLONE_STATUS_CLONING)
             ) {
                 // Already dispatched
                 return ['dispatched' => false, 'id' => $this->id];
@@ -100,6 +97,7 @@ class Package extends Model
 
         dispatch(new ProcessPackageSatis($this->id));
         $this->clone_status = self::CLONE_STATUS_WAITING;
+        $this->clone_queue_at = \Carbon::now();
         $this->save();
 
         return ['dispatched'=>true,'id'=>$this->id];
