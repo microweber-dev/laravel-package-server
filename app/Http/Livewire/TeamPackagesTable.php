@@ -73,6 +73,18 @@ class TeamPackagesTable extends DataTableComponent
 
     public function filters(): array
     {
+
+        $packagesTypes = [''=>'Any'];
+        $getPackagesTypes = Package::groupBy('type')->get()->pluck('type');
+        if ($getPackagesTypes != null) {
+            foreach ($getPackagesTypes as $packagesType) {
+                $packagesTypeName = $packagesType;
+                $packagesTypeName = str_replace('-', ' ', $packagesTypeName);
+                $packagesTypeName = ucwords($packagesTypeName);
+                $packagesTypes[$packagesType] = $packagesTypeName;
+            }
+        }
+
         return [
            /* TextFilter::make('Package Name')
                 ->config([
@@ -98,20 +110,26 @@ class TeamPackagesTable extends DataTableComponent
                     }
                 }),
 
+            SelectFilter::make('Type')
+                ->setFilterPillTitle('Type')
+                ->options($packagesTypes)
+                ->filter(function(Builder $builder, string $value) {
+                    if (!empty($value)) {
+                        $builder->whereHas('package', function (Builder $query) use($value) {
+                            $query->where('type', 'like', '%'.$value.'%');
+                        });
+                    }
+                }),
+
             SelectFilter::make('Cloned')
                 ->setFilterPillTitle('Cloned')
                 ->options([
-                    ''    => 'Any',
+                    ''  => 'Any',
                     'success' => 'Success',
                     'waiting' => 'Waiting',
                     'running'  => 'Running',
                     'cloning'  => 'Cloning',
-                    'failed'  => 'Failed',
-                    'remote_success' => 'Remote Success',
-                    'remote_waiting' => 'Remote Waiting',
-                    'remote_running'  => 'Remote Running',
-                    'remote_cloning'  => 'Remote Cloning',
-                    'remote_failed'  => 'Remote Failed',
+                    'failed'  => 'Failed'
                 ])
                 ->filter(function(Builder $builder, string $value) {
                     $builder->whereHas('package', function (Builder $query) use ($value) {
