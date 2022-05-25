@@ -86,9 +86,9 @@ class Package extends Model
     {
         if (!$forceUpdate) {
             if ((
-                    $this->clone_status == self::REMOTE_CLONE_STATUS_RUNNING)
-                || ($this->clone_status == self::REMOTE_CLONE_STATUS_WAITING)
-                || ($this->clone_status == self::REMOTE_CLONE_STATUS_CLONING)
+                    $this->clone_status == self::CLONE_STATUS_RUNNING)
+                || ($this->clone_status == self::CLONE_STATUS_WAITING)
+                || ($this->clone_status == self::CLONE_STATUS_CLONING)
                 || ($this->clone_status == self::CLONE_STATUS_RUNNING)
                 || ($this->clone_status == self::CLONE_STATUS_WAITING)
                 || ($this->clone_status == self::CLONE_STATUS_CLONING)
