@@ -5,6 +5,7 @@ namespace App\Jobs;
 
 use App\Helpers\PackageManagerGitWorker;
 use App\Helpers\SatisHelper;
+use App\SatisPackageBuilder;
 use CzProject\GitPhp\Git;
 use CzProject\GitPhp\Helpers;
 
@@ -98,7 +99,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
             return;
         }
 
-        $signature = md5($packageModel->id . time().rand(111,999));
+        $signature = md5($packageModel->id . time() . rand(111, 999));
         $callbackUrl = route('git-worker-webhook');
 
         $packageModel->remote_build_signature = $signature;
@@ -109,23 +110,23 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         $isPrivateRepository = SatisHelper::checkRepositoryIsPrivate($packageModel->repository_url);
 
         $satisContent = [
-            'name'=>'microweber/packages',
-            'homepage'=>'https://example.com',
-            'repositories'=>[
+            'name' => 'microweber/packages',
+            'homepage' => 'https://example.com',
+            'repositories' => [
                 [
-                    'type'=>'git',
-                    'url'=> $packageModel->repository_url,
+                    'type' => 'git',
+                    'url' => $packageModel->repository_url,
                 ]
             ],
-            'require-all'=> true,
+            'require-all' => true,
             "archive" => [
-                "directory"=> "dist",
-                "format"=> "zip",
-                "skip-dev"=> true,
+                "directory" => "dist",
+                "format" => "zip",
+                "skip-dev" => true,
                 //"checksum"=> false
             ],
-            "config"=>[
-                "disable-tls"=> true,
+            "config" => [
+                "disable-tls" => true,
             ]
         ];
 
@@ -134,8 +135,8 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
             $preferredInstall = 'source';
         }
         $satisContent['config']['properties'] = [
-            "preferred-install"=> [
-                "*"=> $preferredInstall
+            "preferred-install" => [
+                "*" => $preferredInstall
             ],
         ];
 
@@ -160,19 +161,19 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         }
 
         // Satis json
-        $satisJson = json_encode($satisContent, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
+        $satisJson = json_encode($satisContent, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         $saitsRepositoryPath = RepositoryPathHelper::getRepositoriesSatisPath($packageModel->id);
         $satisFile = $saitsRepositoryPath . 'satis.json';
         file_put_contents($satisFile, $satisJson);
 
         // Build settings json
         $buildSettingsJson = [
-            "runner_config"=> [
-                "signature"=>$signature,
-                "callback_url"=>$callbackUrl
+            "runner_config" => [
+                "signature" => $signature,
+                "callback_url" => $callbackUrl
             ]
         ];
-        $buildSettingsJson = json_encode($buildSettingsJson, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
+        $buildSettingsJson = json_encode($buildSettingsJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         $buildSettingsFile = $saitsRepositoryPath . 'build-settings.json';
         file_put_contents($buildSettingsFile, $buildSettingsJson);
 
@@ -184,14 +185,14 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
             return $packageModel->save();
         }
 
-       $output = \Artisan::call('package-builder:build-with-satis', [
-            '--file' => $satisFile,
-        ]);
+        $status = SatisPackageBuilder::build($satisFile);
 
-       $satisRepositoryOutputPath = $saitsRepositoryPath . 'output-build';
+        dd($status);
 
-        $packageJsonContent = file_get_contents($satisRepositoryOutputPath.DIRECTORY_SEPARATOR.'package.json');
-        $packageJsonContent = json_decode($packageJsonContent,true);
+        $satisRepositoryOutputPath = $saitsRepositoryPath . 'output-build';
+
+        $packageJsonContent = file_get_contents($satisRepositoryOutputPath . DIRECTORY_SEPARATOR . 'package.json');
+        $packageJsonContent = json_decode($packageJsonContent, true);
 
         if (empty($packageJsonContent)) {
 
@@ -204,28 +205,28 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
 
         $packageModel->debug_count = $packageModel->debug_count + 1;
 
-       /* if (!empty($lastVersionMetaData)) {
-            foreach ($lastVersionMetaData as $metaData=>$metaDataValue) {
-                $packageModel->$metaData = $metaDataValue;
-            }
-        }*/
+        /* if (!empty($lastVersionMetaData)) {
+             foreach ($lastVersionMetaData as $metaData=>$metaDataValue) {
+                 $packageModel->$metaData = $metaDataValue;
+             }
+         }*/
 
-        $packageModel->package_json = json_encode($packageJsonContent['packages'],JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
+        $packageModel->package_json = json_encode($packageJsonContent['packages'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         $packageModel->clone_log = 'done!';
         $packageModel->save();
 
         // Maker rsync on another job
         dispatch_sync(new ProcessPackageSatisRsync([
-            'packageId'=>$packageModel->id,
-            'satisRepositoryOutputPath'=>$satisRepositoryOutputPath
+            'packageId' => $packageModel->id,
+            'satisRepositoryOutputPath' => $satisRepositoryOutputPath
         ]));
     }
 
-   /* public function failed($error)
-    {
-        $packageModel = Package::where('id', $this->packageId)->first();
-        $packageModel->clone_log = $error->getMessage();
-        $packageModel->clone_status = Package::CLONE_STATUS_FAILED;
-        $packageModel->save();
-    }*/
+    /* public function failed($error)
+     {
+         $packageModel = Package::where('id', $this->packageId)->first();
+         $packageModel->clone_log = $error->getMessage();
+         $packageModel->clone_status = Package::CLONE_STATUS_FAILED;
+         $packageModel->save();
+     }*/
 }

@@ -1,65 +1,30 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App;
 
 use App\Helpers\Base;
 use App\Helpers\RepositoryMediaProcessHelper;
-use App\Helpers\RepositoryPathHelper;
 use App\Helpers\SatisHelper;
-use App\Models\Credential;
-use Illuminate\Console\Command;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
-use function PHPUnit\Framework\throwException;
 
-class BuildPackageWithSatis extends Command
+class SatisPackageBuilder
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'package-builder:build-with-satis {--file=*}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Build repository package with saits';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public static function build($file)
     {
-        parent::__construct();
-    }
-
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
-    public function handle()
-    {
-        $file = $this->option('file')[0];
-
         if (!is_file($file)) {
-            $this->error('This is not valid file!');
+            throw new \Exception('This is not valid file!');
             return;
         }
 
         $satisContent = json_decode(file_get_contents($file), true);
         if (empty($satisContent)) {
-            $this->error('This is not valid satis file!');
+            throw new \Exception('This is not valid satis file!');
             return;
         }
 
         if (!isset($satisContent['repositories'][0]['url'])) {
-            $this->error('This repositories missing from satis file!');
+            throw new \Exception('This repositories missing from satis file!');
             return;
         }
 
@@ -67,19 +32,19 @@ class BuildPackageWithSatis extends Command
         $satisBinPath = base_path() . '/satis-builder/vendor/composer/satis/bin/satis';
         $satisRepositoryOutputPath = $saitsRepositoryPath . 'output-build';
 
-      /*  $signature = false;
-        $callbackUrl = false;
-        $buildSettings = [];
-        $buildSettingsFile = $saitsRepositoryPath . 'build-settings.json';
-        if (is_file($buildSettingsFile)) {
-            $buildSettings = json_decode(file_get_contents($buildSettingsFile),true);
-            if (isset($buildSettings['runner-config']['signature'])) {
-                $signature = $buildSettings['runner-config']['signature'];
-            }
-            if (isset($buildSettings['runner-config']['callback-url'])) {
-                $callbackUrl = $buildSettings['runner-config']['callback-url'];
-            }
-        }*/
+        /*  $signature = false;
+          $callbackUrl = false;
+          $buildSettings = [];
+          $buildSettingsFile = $saitsRepositoryPath . 'build-settings.json';
+          if (is_file($buildSettingsFile)) {
+              $buildSettings = json_decode(file_get_contents($buildSettingsFile),true);
+              if (isset($buildSettings['runner-config']['signature'])) {
+                  $signature = $buildSettings['runner-config']['signature'];
+              }
+              if (isset($buildSettings['runner-config']['callback-url'])) {
+                  $callbackUrl = $buildSettings['runner-config']['callback-url'];
+              }
+          }*/
 
         // Accept host key on all repositories
         if (Base::familyOs() == 'UNIX') {
@@ -154,7 +119,7 @@ class BuildPackageWithSatis extends Command
 
         $process->run(function ($type, $buffer)   {
             if (Process::ERR === $type) {
-                 $this->line($buffer);
+                $this->line($buffer);
             } else {
                 $this->line($buffer);
             }
@@ -220,6 +185,6 @@ class BuildPackageWithSatis extends Command
             ], JSON_PRETTY_PRINT)
         );
 
-        return 0;
+        return ['output_path'=>$satisRepositoryOutputPath];
     }
 }
