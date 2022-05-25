@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Package;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class CheckBuildedPackagesStatuses extends Command
@@ -40,7 +41,7 @@ class CheckBuildedPackagesStatuses extends Command
     {
         $getPackages = Package::select(['id','name','description','clone_status'])
             ->whereNotIn('clone_status', [Package::CLONE_STATUS_SUCCESS])
-            ->whereDate('created_at', '=', Carbon::today()->toDateString())
+            ->whereDate('created_at', '<=', Carbon::now()->subMinutes(30))
             ->get();
 
         foreach ($getPackages as $package) {
