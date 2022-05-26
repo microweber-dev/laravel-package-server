@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\WhmcsLicenseValidatorHelper;
 use App\Models\Package;
 use App\Models\PackageDownloadStats;
 use App\Models\Team;
@@ -18,6 +19,7 @@ class PackageInstallNotifyController extends Controller
         $used_keys_data = [];
         $valid_keys = [];
         $package_name = false;
+        $whmcs_url = false;
         $team_package_id = false;
         $data = $request->all();
         if (isset($data['used_keys_data'])) {
@@ -42,12 +44,17 @@ class PackageInstallNotifyController extends Controller
                 $teamSettings = $checkTeam->settings()->get();
 
                 if ($teamSettings) {
-
-
-                    foreach ($valid_keys as $valid_key_prefix => $valid_key) {
-
+                    if (isset($teamSettings['whmcs_url']) and $teamSettings['whmcs_url'] and !filter_var($teamSettings['whmcs_url'], FILTER_VALIDATE_URL) === false) {
+                        $whmcs_url = $teamSettings['whmcs_url'];
                     }
 
+                    if ($whmcs_url) {
+                        foreach ($valid_keys as $valid_key_prefix => $valid_key) {
+                            // @todo finish this
+                           // $status = WhmcsLicenseValidatorHelper::getLicenseKeyStatus($whmcs_url,$valid_key);
+                            //dump($status);
+                        }
+                    }
 
                 }
             }
@@ -87,7 +94,7 @@ class PackageInstallNotifyController extends Controller
                 }
             }
         }
-
+    return ['time'=>now()];
     }
 
 
