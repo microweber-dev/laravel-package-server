@@ -144,8 +144,7 @@ class PackagesJsonController extends Controller
             }
         }
 
-        $json = [];
-        $json['packages'] = [];
+        $allPackages = [];
 
         $yml = [];
         $format = $request->get('format', false);
@@ -160,7 +159,8 @@ class PackagesJsonController extends Controller
                 $packageContent = json_decode($packageJson, true);
                 if (!empty($packageContent)) {
                     foreach ($packageContent as $packageName => $packageVersions) {
-                        $json['packages'][$packageName] = $this->_prepareVersions($packageVersions, [
+
+                        $allPackages[$packageName] = $this->_prepareVersions($packageVersions, [
                             'token_authenticated' => $logged,
                             'team_id' => $teamPackage->team_id,
                             'package_id' => $teamPackage->package_id,
@@ -174,6 +174,7 @@ class PackagesJsonController extends Controller
                             'composer_request' => $composerRequest,
                             'team_settings' => $teamSettings
                         ]);
+
                         if (strpos($packageName, 'template') !== false) {
                             $yml[] = $packageName;
                         }
@@ -186,7 +187,7 @@ class PackagesJsonController extends Controller
             return json_encode($yml, JSON_PRETTY_PRINT);
         }
 
-        return $json;
+        return ['packages'=>$allPackages];
 
     }
 
@@ -195,6 +196,7 @@ class PackagesJsonController extends Controller
 
         $prepareVersions = [];
         foreach ($versions as $version => $package) {
+
             $preparedPackage = $this->_preparePackage($package, $teamPackage);
 
             if($preparedPackage['dist']['type'] == 'license_key') {
@@ -211,7 +213,6 @@ class PackagesJsonController extends Controller
 
     private function _preparePackage($package, $teamPackage)
     {
-
         if (isset($package['extra']['preview_url'])) {
             if (isset($teamPackage['team_settings']['package_manager_templates_demo_domain'])) {
 
