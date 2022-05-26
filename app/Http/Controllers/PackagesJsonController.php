@@ -187,7 +187,7 @@ class PackagesJsonController extends Controller
             return json_encode($yml, JSON_PRETTY_PRINT);
         }
 
-        return ['packages'=>$allPackages];
+        return ['packages'=>$allPackages,'time'=>time()]; 
 
     }
 
