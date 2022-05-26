@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\StringHelper;
 use App\Helpers\WhmcsLicenseValidatorHelper;
 use App\Models\Package;
 use App\Models\PackageDownloadStats;
@@ -247,16 +248,24 @@ class PackagesJsonController extends Controller
 
                     if (is_string($userLicenseKeys) and (strpos(strtolower($userLicenseKeys), 'license:') !== false)) {
                         $userLicenseKeys = substr($userLicenseKeys, 8);
-                        $userLicenseKeys = base64_decode($userLicenseKeys);
-                    }
+                        if(StringHelper::isBase64Encoded($userLicenseKeys)){
+                            $userLicenseKeys = base64_decode($userLicenseKeys);
+                        }
 
+                    }
                     if (is_string($userLicenseKeys) and (strpos(strtolower($userLicenseKeys), 'license:') !== false)) {
                         $userLicenseKeys = substr($userLicenseKeys, 8);
-                        $userLicenseKeys = base64_decode($userLicenseKeys);
+                        if(StringHelper::isBase64Encoded($userLicenseKeys)){
+                            $userLicenseKeys = base64_decode($userLicenseKeys);
+                        }
                     }
 
-                    $userLicenseKeysJson = json_decode($userLicenseKeys, true);
-
+                    if(StringHelper::isJSON($userLicenseKeys)) {
+                        $userLicenseKeysJson = json_decode($userLicenseKeys, true);
+                    } else {
+                        $userLicenseKeysJson = [];
+                        $userLicenseKeysJson['none'] = ['rel_type' =>'none','local_key'=>$userLicenseKeys];
+                    }
                     $userLicenseKeysForValidation = [];
                     // old method read
                     if (!empty($userLicenseKeysJson)) {
@@ -280,21 +289,21 @@ class PackagesJsonController extends Controller
                                 }
                             }
                         }
-                         if (!empty($userLicenseKeysMap)) {
+
+                        if (!empty($userLicenseKeysMap)) {
                             foreach ($userLicenseKeysMap as $k=>$userLicenseKey) {
 
                                 if (WhmcsLicenseValidatorHelper::validateLicenseKey($whmcsUrl, $userLicenseKey)) {
                                     $licensed = true;
                                     $userLicenseKeysValid[$k] = $userLicenseKey;
-                                }
+                                 }
                             }
                         }
                     }
 
                 }
 
-
-                if (isset($teamPackage['token_authenticated']) && $teamPackage['token_authenticated'] === true) {
+                if (!$licensed and isset($teamPackage['token_authenticated']) && $teamPackage['token_authenticated'] === true) {
                     $licensed = true;
                 }
 
@@ -306,7 +315,6 @@ class PackagesJsonController extends Controller
                         "shasum" => "license_key"
                     ];
                 }
-
 
                 if ($licensed) {
                     if (isset($teamPackage['team_package_id'])) {
