@@ -40,7 +40,6 @@ class SatisPackageBuilderCommand extends Command
     {
         $file = $this->option('file')[0];
 
-
         SatisPackageBuilder::build($file);
 
         return 0;

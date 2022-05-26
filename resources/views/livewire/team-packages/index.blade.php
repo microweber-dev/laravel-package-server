@@ -85,7 +85,7 @@
             @if(!empty($this->team->slug))
                 <a href="{{route('packages.team.packages.json', $this->team->slug)}}"
                    class="btn btn-outline-primary btn-sm"
-                   target="_blank">View package.json
+                   target="_blank">View packages.json
                 </a>
             @endif
 
