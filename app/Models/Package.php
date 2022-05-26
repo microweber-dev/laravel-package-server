@@ -42,16 +42,10 @@ class Package extends Model
     public function readme()
     {
         $readmeLink = str_replace('https://example.com/', config('app.url'), $this->readme);
-        $readmeLinkParse = explode('/'.basename($readmeLink), $readmeLink);
-
-        $readmeLinkBasePath = '';
-        if (isset($readmeLinkParse[0])) {
-            $readmeLinkBasePath = $readmeLinkParse[0] . '/';
-        }
 
         // Fix readme img host links
         $content = file_get_contents($readmeLink);
-        $content = str_ireplace('https://example.com/', $readmeLinkBasePath, $content);
+        $content = str_ireplace('https://example.com/', config('app.url'), $content);
 
         return $content;
     }

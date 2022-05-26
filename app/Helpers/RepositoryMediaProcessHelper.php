@@ -75,7 +75,7 @@ class RepositoryMediaProcessHelper
 
                 $parseDown = new \Parsedown();
                 $parseDownHtml = $parseDown->text($markDownReadmeContent);
-                $parseDownHtml = str_replace('./',$packageMainUrl, $parseDownHtml);
+                $parseDownHtml = str_replace('./', $metaFolderPublicUrl, $parseDownHtml);
 
                 if ($parseDownHtml) {
                     file_put_contents($markDownReadmeFile, $parseDownHtml);
