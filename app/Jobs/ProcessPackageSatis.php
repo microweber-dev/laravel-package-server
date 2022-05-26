@@ -177,7 +177,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         $buildSettingsFile = $saitsRepositoryPath . 'build-settings.json';
         file_put_contents($buildSettingsFile, $buildSettingsJson);
 
-        if (env('PACKAGE_MANAGER_WORKER_TYPE') == 'git') {
+        if (env('PACKAGE_MANAGER_WORKER_TYPE') == 'github' || env('PACKAGE_MANAGER_WORKER_TYPE') == 'gitlab') {
             sleep(rand(5, 15));
             $response = PackageManagerGitWorker::pushSatis($satisFile, $buildSettingsFile);
 

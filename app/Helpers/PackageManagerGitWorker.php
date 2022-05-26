@@ -13,12 +13,15 @@ class PackageManagerGitWorker
         $gitWorkerRepositoryUrlParse = parse_url($gitWorkerRepositoryUrl);
         $gitWorkerRepositoryUrl = $gitWorkerRepositoryUrlParse['host'] . $gitWorkerRepositoryUrlParse['path'];
 
-        $gitProvider = 'github';
-        if (strpos($gitWorkerRepositoryUrlParse['host'], 'gitlab') !== false) {
-            $gitProvider = 'gitlab';
-        }
+        $gitProvider = env('PACKAGE_MANAGER_WORKER_TYPE');
 
-        $gitRunnerRepositoryUrl = 'https://'.env('GITLAB_BOT_USERNAME').':'.env('GITLAB_BOT_PASSWORD').'@' . $gitWorkerRepositoryUrl;
+        if (env('PACKAGE_MANAGER_WORKER_TYPE') == 'github') {
+            $gitRunnerRepositoryUrl = 'https://'.env('GITHUB_BOT_USERNAME').':'.env('GITHUB_BOT_PASSWORD').'@' . $gitWorkerRepositoryUrl;
+        } else if (env('PACKAGE_MANAGER_WORKER_TYPE') == 'gitlab') {
+            $gitRunnerRepositoryUrl = 'https://'.env('GITLAB_BOT_USERNAME').':'.env('GITLAB_BOT_PASSWORD').'@' . $gitWorkerRepositoryUrl;
+        } else {
+            return false;
+        }
 
         $allWorkersPath = storage_path() . '/package-manager-worker/'.md5($satisFile);
         if (!is_dir($allWorkersPath)) {
@@ -30,7 +33,11 @@ class PackageManagerGitWorker
 
         $out = shell_exec('cd '.$allWorkersPath.' && git clone --depth 10 ' . $gitRunnerRepositoryUrl . ' ' . $workerGitPath);
 
-        shell_exec('cd '.$workerGitPath.' && git config user.email "'.env('GITLAB_BOT_USERNAME').'" &&  git config user.name "'.env('GITLAB_BOT_USERNAME').'"');
+        if (env('PACKAGE_MANAGER_WORKER_TYPE') == 'github') {
+            shell_exec('cd '.$workerGitPath.' && git config user.email "'.env('GITHUB_BOT_USERNAME').'" &&  git config user.name "'.env('GITHUB_BOT_USERNAME').'"');
+        } else if (env('PACKAGE_MANAGER_WORKER_TYPE') == 'gitlab') {
+            shell_exec('cd '.$workerGitPath.' && git config user.email "'.env('GITLAB_BOT_USERNAME').'" &&  git config user.name "'.env('GITLAB_BOT_USERNAME').'"');
+        }
 
         $git = new Git();
         $repository = $git->open($workerGitPath);
@@ -65,7 +72,7 @@ class PackageManagerGitWorker
             $repository->addAllChanges();
             $repository->commit('Build package: ' . $cloneRepositoryName);
           //  $repository->push();
-            shell_exec('cd '.$workerGitPath.' && git push --all');
+            shell_exec('cd '.$workerGitPath.' && git push --all --force');
 
             $lastCommitId = $repository->getLastCommitId();
         }
