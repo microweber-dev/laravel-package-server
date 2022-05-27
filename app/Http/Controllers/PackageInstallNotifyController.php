@@ -25,7 +25,7 @@ class PackageInstallNotifyController extends Controller
         $data['request'] = $_REQUEST;
         file_put_contents(storage_path().'/manqk'.time().'.txt', json_encode($data, JSON_PRETTY_PRINT));
         */
-        
+
         if (isset($data['used_keys_data'])) {
             $used_keys_data = @json_decode(base64_decode(urldecode($data['used_keys_data'])), true);
         }
