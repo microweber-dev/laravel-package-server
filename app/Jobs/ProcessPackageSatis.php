@@ -186,6 +186,13 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         if (env('PACKAGE_MANAGER_WORKER_TYPE') == 'github' || env('PACKAGE_MANAGER_WORKER_TYPE') == 'gitlab') {
 
             $response = PackageManagerGitWorker::pushSatis($satisFile, $buildSettingsFile);
+            if (!$response['commit_id']) {
+
+                $packageModel->clone_log = "Can't git push.";
+                $packageModel->clone_status = Package::CLONE_STATUS_FAILED;
+
+                return $packageModel->save();
+            }
 
             $packageModel->remote_build_commit_id = $response['commit_id'];
             return $packageModel->save();
