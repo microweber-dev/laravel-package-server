@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Jetstream\Jetstream;
 
-class Package extends Model 
+class Package extends Model
 {
     use HasFactory;
 

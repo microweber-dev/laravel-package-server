@@ -25,6 +25,7 @@ class ProcessPackageSatisRsync implements ShouldQueue, ShouldBeUnique
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $packageId;
+    public $packageName;
     public $satisRepositoryOutputPath;
     public $packageBuildZip;
 
@@ -36,6 +37,7 @@ class ProcessPackageSatisRsync implements ShouldQueue, ShouldBeUnique
     public function __construct($params)
     {
         $this->packageId = $params['packageId'];
+        $this->packageName = $params['packageName'];
         $this->satisRepositoryOutputPath = $params['satisRepositoryOutputPath'];
 
         if (isset($params['packageBuildZip'])) {

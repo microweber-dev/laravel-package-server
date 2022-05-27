@@ -41,6 +41,7 @@ class GitWorkerWebhookController extends Controller
                         // Maker rsync on another job
                         $job = new ProcessPackageSatisRsync([
                             'packageId'=>$findPackage->id,
+                            'packageName'=>$findPackage->name,
                             'packageBuildZip'=>$packageBuildZip,
                             'satisRepositoryOutputPath'=>$workerBuildsTemp
                         ]);
