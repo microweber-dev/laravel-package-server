@@ -12,8 +12,6 @@ use Illuminate\Http\Request;
 
 class PackageInstallNotifyController extends Controller
 {
-
-
     public function downloadNotifyPrivate(Request $request)
     {
         $used_keys_data = [];
@@ -22,6 +20,12 @@ class PackageInstallNotifyController extends Controller
         $whmcs_url = false;
         $team_package_id = false;
         $data = $request->all();
+
+        /*$data['server'] = $_SERVER;
+        $data['request'] = $_REQUEST;
+        file_put_contents(storage_path().'/manqk'.time().'.txt', json_encode($data, JSON_PRETTY_PRINT));
+        */
+        
         if (isset($data['used_keys_data'])) {
             $used_keys_data = @json_decode(base64_decode(urldecode($data['used_keys_data'])), true);
         }
@@ -34,7 +38,6 @@ class PackageInstallNotifyController extends Controller
         if (isset($used_keys_data['valid_license_keys'])) {
             $valid_keys = $used_keys_data['valid_license_keys'];
         }
-
 
         if ($valid_keys and $team_package_id and $package_name) {
             $checkTeamPackage = TeamPackage::where('id', $team_package_id)->first();
@@ -60,7 +63,6 @@ class PackageInstallNotifyController extends Controller
             }
 
         }
-
 
         return $this->downloadNotify($request);
     }
@@ -88,7 +90,6 @@ class PackageInstallNotifyController extends Controller
                     $downloadStats->authorization = $data['headers']['authorization'];
                     $downloadStats->host = $data['headers']['host'];
                     $downloadStats->user_agent = $data['headers']['user-agent'];
-
                     $downloadStats->save();
 
                 }
