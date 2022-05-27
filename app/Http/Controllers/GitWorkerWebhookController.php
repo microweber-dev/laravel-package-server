@@ -46,7 +46,7 @@ class GitWorkerWebhookController extends Controller
                         ]);
                         dispatch($job)->onConnection('redis');
 
-                        return ['done'=>true, 'time'=>time()];
+                        return ['done'=>true, 'rsync'=>'started', 'time'=>time()];
                     }
                 }
             }
