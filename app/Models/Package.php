@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Jetstream\Jetstream;
 
-class Package extends Model
+class Package extends Model 
 {
     use HasFactory;
 
@@ -102,7 +102,7 @@ class Package extends Model
             }
         }
 
-        dispatch(new ProcessPackageSatis($this->id));
+        dispatch(new ProcessPackageSatis($this->id, $this->name));
         $this->clone_status = self::CLONE_STATUS_WAITING;
         $this->clone_queue_at = Carbon::now();
         $this->save();

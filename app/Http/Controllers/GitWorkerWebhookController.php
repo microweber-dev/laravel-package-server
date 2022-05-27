@@ -39,7 +39,7 @@ class GitWorkerWebhookController extends Controller
                     if (is_file($packageBuildZip)) {
 
                         // Maker rsync on another job
-                        $job =  new ProcessPackageSatisRsync([
+                        $job = new ProcessPackageSatisRsync([
                             'packageId'=>$findPackage->id,
                             'packageBuildZip'=>$packageBuildZip,
                             'satisRepositoryOutputPath'=>$workerBuildsTemp

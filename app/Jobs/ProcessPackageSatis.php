@@ -64,13 +64,19 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
     public $packageId;
 
     /**
+     * @var string
+     */
+    public $packageName;
+
+    /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($packageId)
+    public function __construct($packageId, $packageName)
     {
         $this->packageId = $packageId;
+        $this->packageName = $packageName;
     }
 
     /**
