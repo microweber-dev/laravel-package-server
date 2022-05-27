@@ -72,12 +72,35 @@ class PackageManagerGitWorker
             $repository->addAllChanges();
             $repository->commit('Build package: ' . $cloneRepositoryName);
           //  $repository->push();
-            shell_exec('cd '.$workerGitPath.' && git push --all --force');
+
+            $gitPush = self::gitPush($workerGitPath);
+            if ($gitPush['push']) {
+                return ['commit_id'=>false];
+            }
 
             $lastCommitId = $repository->getLastCommitId();
         }
 
         return ['commit_id'=>$lastCommitId];
+    }
+
+    public static function gitPush($workerGitPath, $retry = 4) {
+
+        $status = shell_exec('cd '.$workerGitPath.' && git push --all --force 2>&1');
+
+        if (strpos($status, 'remote rejected') !== false) {
+            // Retry
+            sleep(rand(3,6));
+            return self::gitPush($workerGitPath, ($retry - 1));
+        }
+
+        if (strpos($status, 'forced update') !== false) {
+            return ['push'=>true];
+        }
+
+        if ($retry < 0) {
+            return ['push'=>false];
+        }
     }
 
 }
