@@ -24,34 +24,7 @@ class Package extends Model
         'package_json'=>'json'
     ];
 
-    public function getDistFilesize()
-    {
-        $url = $this->getDistUrl();
-        $url = str_replace('https://example.com/', false, $url);
-        $realpath = public_path($url);
-        if (is_file($realpath)) {
-            $filesize = filesize($realpath);
-
-            return Base::humanFilesize($filesize);
-        }
-        return 0;
-    }
-
-    public function getAllDistsFilesize()
-    {
-        $allSizes = 0;
-        $urls = $this->getAllDistsUrls();
-        foreach ($urls as $url) {
-            $url = str_replace('https://example.com/', false, $url);
-            $realpath = public_path($url);
-            if (is_file($realpath)) {
-                $allSizes = $allSizes + filesize($realpath);
-            }
-        }
-        return Base::humanFilesize($allSizes);
-    }
-
-    public function getDistUrl()
+    public function getLatestDistUrl()
     {
         $json = $this->package_json;
 
@@ -64,23 +37,6 @@ class Package extends Model
         }
 
         return false;
-    }
-
-    public function getAllDistsUrls()
-    {
-        $urls = [];
-        $json = $this->package_json;
-
-        if (is_array($json)) {
-            $json = end($json);
-            foreach ($json as $version) {
-                if (isset($version['dist']['url'])) {
-                    $urls[] = $version['dist']['url'];
-                }
-            }
-        }
-
-        return $urls;
     }
 
     public function scopeUserHasAccess($query)

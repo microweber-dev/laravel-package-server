@@ -188,16 +188,12 @@ class TeamPackagesTable extends DataTableComponent
 
             HtmlColumn::make('Details')
                 ->setOutputHtml(function($row) {
-
-                    $distFilesize = $row->package->getDistFilesize();
-                    $allDistsFilesize = $row->package->getAllDistsFilesize();
-
                     $html = '<div><b>'.Str::limit($row->package->description, 40).'</b></div>';
                     $html .= '<div>'.$row->package->name.'</div>';
                     if ($row->package->version > 0) {
                         $html .= '<div><span class="badge bg-success">v'.$row->package->version.'</span></div>';
                     }
-                    $html .= '<div>Current: <b>'.$distFilesize.'</b> / Full package: <b>'.$allDistsFilesize.'</b></div>';
+                    $html .= '<div>Current: <b>'.$row->package->last_version_filesize.'</b> / Full package: <b>'.$row->package->all_versions_filesize.'</b></div>';
                     $html .= '<div>Added by: <b>'.$row->package->owner->name.'</b></div>';
                     return $html;
                 }),
