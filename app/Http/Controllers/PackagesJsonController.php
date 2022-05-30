@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Helpers\StringHelper;
 use App\Helpers\WhmcsLicenseValidatorHelper;
+use App\Models\LicenseLog;
 use App\Models\Package;
 use App\Models\PackageDownloadStats;
 use App\Models\Team;
 use App\Models\TeamPackage;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
@@ -35,16 +37,31 @@ class PackagesJsonController extends Controller
             abort(401,'Invalid authorization.');
         }
 
+        $licenseIds = $request->get('license_ids', false);
+        $licenseIds = base64_decode($licenseIds);
+        $licenseIds = json_decode($licenseIds, TRUE);
+        if (!empty($licenseIds)) {
+            foreach ($licenseIds as $license) {
+                $licenseLog = new LicenseLog();
+                $licenseLog->whmcs_service_id = $license['service_id'];
+                $licenseLog->whmcs_license_id = $license['license_id'];
+                $licenseLog->last_access = Carbon::now();
+                $licenseLog->ip = request()->ip();
+                $licenseLog->package_id = $request->get('id');
+               // $licenseLog->mw_version = $request->get('id');
+                $licenseLog->save();
+            }
+        }
+
+        /*
         $headers = collect($request->header())->transform(function ($item) {
             return $item[0];
         });
         $data['server'] = $_SERVER;
         $data['request'] = $_REQUEST;
         $data['headers'] = $headers;
-        file_put_contents(storage_path().'/manqk-si-da-da'.time().'.txt', json_encode($data, JSON_PRETTY_PRINT));
+        file_put_contents(storage_path().'/manqk-si-da-da'.time().'.txt', json_encode($data, JSON_PRETTY_PRINT));*/
 
-
-        dd($data);
 
         $targetVersion = $request->get('version', false);
         $findPackage = Package::where('id', $request->get('id'))->first();
