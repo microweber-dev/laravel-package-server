@@ -20,13 +20,9 @@ class Package extends Model
     public const CLONE_STATUS_SUCCESS = 'success';
     public const CLONE_STATUS_FAILED = 'failed';
 
-    public $casts = [
-        'package_json'=>'json'
-    ];
-
     public function getLatestDistUrl()
     {
-        $json = $this->package_json;
+        $json = json_decode($this->package_json, true);
 
         if (is_array($json)) {
             $json = end($json);

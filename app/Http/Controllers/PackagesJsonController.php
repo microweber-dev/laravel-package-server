@@ -154,10 +154,10 @@ class PackagesJsonController extends Controller
 
                 $package = $teamPackage->package;
                 $packageJson = $package->package_json;
-
                 $packageJson = str_replace('https://example.com/', config('app.url'), $packageJson);
                 $packageContent = json_decode($packageJson, true);
-                if (!empty($packageContent)) {
+
+                if (!empty($packageContent) && is_array($packageContent)) {
                     foreach ($packageContent as $packageName => $packageVersions) {
 
                         $allPackages[$packageName] = $this->_prepareVersions($packageVersions, [
@@ -187,7 +187,7 @@ class PackagesJsonController extends Controller
             return json_encode($yml, JSON_PRETTY_PRINT);
         }
 
-        return ['packages'=>$allPackages,'time'=>time()]; 
+        return ['packages'=>$allPackages,'time'=>time()];
 
     }
 
