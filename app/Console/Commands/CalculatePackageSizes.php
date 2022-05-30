@@ -52,8 +52,8 @@ class CalculatePackageSizes extends Command
                 foreach ($versions as $version) {
                     $allSizes = $allSizes + $this->getVersionFilesize($version);
                 }
-                $package->all_versions_filesize = Base::humanFilesize($allSizes);
-                $package->last_version_filesize = Base::humanFilesize($this->getVersionFilesize(end($versions)));
+                $package->all_versions_filesize = $allSizes;
+                $package->last_version_filesize = $this->getVersionFilesize(end($versions));
                 $package->save();
             }
         }
