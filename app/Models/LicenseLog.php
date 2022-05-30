@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class LicenseLog extends Model
 {
     use HasFactory;
+
+    
 }
