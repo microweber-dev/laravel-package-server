@@ -10,6 +10,7 @@ use App\Models\Team;
 use App\Models\TeamPackage;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 
 class PackagesJsonController extends Controller
 {
@@ -25,15 +26,26 @@ class PackagesJsonController extends Controller
         return $this->getTeamPackages($findTeam->id);
     }
 
-    public function downloadPackage(Request $request)
+    public function downloadPrivatePackage(Request $request)
     {
+        if (! $request->hasValidSignature()) {
+            abort(401);
+        }
+        if (request()->ip() !== $request->get('ip')) {
+            abort(401,'Invalid authorization.');
+        }
 
-         $data['server'] = $_SERVER;
-         $data['request'] = $_REQUEST;
-         file_put_contents(storage_path().'/manqk-si-da'.time().'.txt', json_encode($data, JSON_PRETTY_PRINT));
+        $headers = collect($request->header())->transform(function ($item) {
+            return $item[0];
+        });
+        $data['server'] = $_SERVER;
+        $data['request'] = $_REQUEST;
+        $data['headers'] = $headers;
+        file_put_contents(storage_path().'/manqk-si-da-da'.time().'.txt', json_encode($data, JSON_PRETTY_PRINT));
 
         $targetVersion = $request->get('version', false);
         $findPackage = Package::where('id', $request->get('id'))->first();
+
         if ($findPackage !== null) {
             $json = json_decode($findPackage->package_json, true);
             $json = end($json);
@@ -235,8 +247,6 @@ class PackagesJsonController extends Controller
 
     private function _preparePackage($package, $teamPackage)
     {
-        $package['dist']['url'] = route('packages.download') . '?id='.$teamPackage['package_id'].'&version='.$package['version'];
-
         if (isset($package['extra']['preview_url'])) {
             if (isset($teamPackage['team_settings']['package_manager_templates_demo_domain'])) {
 
@@ -332,7 +342,15 @@ class PackagesJsonController extends Controller
                     $licensed = true;
                 }
 
-                if (!$licensed) {
+                if ($licensed) {
+                    $package['dist']['url'] = URL::temporarySignedRoute(
+                        'packages.download-private', now()->addMinutes(30), [
+                            'id' => $teamPackage['package_id'],
+                            'version' => $package['version'],
+                            'ip' => request()->ip()
+                        ]
+                    );
+                } else {
                     $package['dist'] = [
                         "type" => "license_key",
                         "url" => $whmcsUrl,
