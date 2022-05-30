@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Helpers\Base;
 use Carbon\Carbon;
 use App\Jobs\ProcessPackageSatis;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Laravel\Jetstream\Jetstream;
 
 class Package extends Model
@@ -17,6 +19,69 @@ class Package extends Model
     public const CLONE_STATUS_CLONING = 'cloning';
     public const CLONE_STATUS_SUCCESS = 'success';
     public const CLONE_STATUS_FAILED = 'failed';
+
+    public $casts = [
+        'package_json'=>'json'
+    ];
+
+    public function getDistFilesize()
+    {
+        $url = $this->getDistUrl();
+        $url = str_replace('https://example.com/', false, $url);
+        $realpath = public_path($url);
+        if (is_file($realpath)) {
+            $filesize = filesize($realpath);
+
+            return Base::humanFilesize($filesize);
+        }
+        return 0;
+    }
+
+    public function getAllDistsFilesize()
+    {
+        $allSizes = 0;
+        $urls = $this->getAllDistsUrls();
+        foreach ($urls as $url) {
+            $url = str_replace('https://example.com/', false, $url);
+            $realpath = public_path($url);
+            if (is_file($realpath)) {
+                $allSizes = $allSizes + filesize($realpath);
+            }
+        }
+        return Base::humanFilesize($allSizes);
+    }
+
+    public function getDistUrl()
+    {
+        $json = $this->package_json;
+
+        if (is_array($json)) {
+            $json = end($json);
+            $json = end($json);
+            if (isset($json['dist']['url'])) {
+                return $json['dist']['url'];
+            }
+        }
+
+        return false;
+    }
+
+    public function getAllDistsUrls()
+    {
+        $urls = [];
+        $json = $this->package_json;
+
+        if (is_array($json)) {
+            $json = end($json);
+            foreach ($json as $version) {
+                if (isset($version['dist']['url'])) {
+                    $urls[] = $version['dist']['url'];
+                }
+            }
+        }
+
+        return $urls;
+    }
 
     public function scopeUserHasAccess($query)
     {
