@@ -30,7 +30,9 @@ class TeamPackagesTable extends DataTableComponent
     public function configure(): void
     {
         $this->setPrimaryKey('id')
+            ->setDebugEnabled()
             ->setReorderEnabled()
+            ->setSortingEnabled()
             ->setSearchEnabled()
             ->setSearchDebounce(0)
             ->setDefaultReorderSort('position', 'asc')
@@ -344,7 +346,7 @@ class TeamPackagesTable extends DataTableComponent
         $query->whereHas('team');
         $query->with('package');
         $query->with('team');
-        $query->orderBy('position','asc');
+//        $query->orderBy('position','asc');
 
         return $query;
     }
