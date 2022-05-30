@@ -45,7 +45,7 @@ class CalculatePackageSizes extends Command
         }
 
         foreach ($packages as $package) {
-            $json = $package->package_json;
+            $json = json_decode($package->package_json,true);
             if (is_array($json)) {
                 $versions = end($json);
                 $allSizes = 0.0;
