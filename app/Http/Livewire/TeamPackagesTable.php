@@ -193,7 +193,6 @@ class TeamPackagesTable extends DataTableComponent
                     if ($row->package->version > 0) {
                         $html .= '<div><span class="badge bg-success">v'.$row->package->version.'</span></div>';
                     }
-                    $html .= '<div>Current: <b>'.$row->package->last_version_filesize.'</b> / Full package: <b>'.$row->package->all_versions_filesize.'</b></div>';
                     $html .= '<div>Added by: <b>'.$row->package->owner->name.'</b></div>';
                     return $html;
                 }),
@@ -255,6 +254,9 @@ class TeamPackagesTable extends DataTableComponent
                     '1' => '<span class="badge badge bg-primary text-uppercase">$ Paid</span>',
                 ])
                 ->sortable(),
+
+            Column::make('Full size','package.all_versions_filesize')->sortable(),
+            Column::make('Last version size','package.last_version_filesize')->sortable(),
 
             Column::make('Last Update', 'updated_at')
                 ->sortable(),
@@ -323,7 +325,7 @@ class TeamPackagesTable extends DataTableComponent
         $team = $user->currentTeam;
 
         $query = TeamPackage::query();
-        $query->select(['id','team_id','package_id']);
+        $query->select(['team_packages.id','team_packages.team_id','team_packages.package_id']);
         $query->where('team_id', $team->id);
 
         $query->whereHas('package');
@@ -354,7 +356,6 @@ class TeamPackagesTable extends DataTableComponent
         $this->{$this->getTableName()}['search'] = null;
         $this->refresh = true;
     }
-
 
     public function bulkActions(): array
     {
