@@ -15,7 +15,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('package-builder:check-statuses')->everyThirtyMinutes();
+        $schedule->command('package-builder:check-statuses')->everyFiveMinutes();
     }
 
     /**
