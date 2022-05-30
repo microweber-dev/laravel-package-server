@@ -211,6 +211,8 @@ class PackagesJsonController extends Controller
 
     private function _preparePackage($package, $teamPackage)
     {
+        $package['dist']['url'] = route('packages.zip', [$teamPackage['package_id'],$package['version'],$package['name']]);
+        
         if (isset($package['extra']['preview_url'])) {
             if (isset($teamPackage['team_settings']['package_manager_templates_demo_domain'])) {
 
