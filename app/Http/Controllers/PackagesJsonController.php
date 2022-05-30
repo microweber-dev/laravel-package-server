@@ -25,6 +25,25 @@ class PackagesJsonController extends Controller
         return $this->getTeamPackages($findTeam->id);
     }
 
+    public function downloadPackage(Request $request)
+    {
+        $targetVersion = $request->get('version', false);
+        $findPackage = Package::where('id', $request->get('id'))->first();
+        if ($findPackage !== null) {
+            $json = json_decode($findPackage->package_json, true);
+            $json = end($json);
+            if (isset($json[$targetVersion])) {
+
+                $version = $json[$targetVersion];
+                $url = $version['dist']['url'];
+                $url = str_replace('https://example.com/', config('app.url'), $url);
+
+                return redirect($url);
+            }
+        }
+
+        return false;
+    }
 
     public function team(Request $request, $slug = false)
     {
@@ -211,8 +230,8 @@ class PackagesJsonController extends Controller
 
     private function _preparePackage($package, $teamPackage)
     {
-        $package['dist']['url'] = route('packages.zip', [$teamPackage['package_id'],$package['version'],$package['name']]);
-        
+        $package['dist']['url'] = route('packages.download') . '?id='.$teamPackage['package_id'].'&version='.$package['version'];
+
         if (isset($package['extra']['preview_url'])) {
             if (isset($teamPackage['team_settings']['package_manager_templates_demo_domain'])) {
 

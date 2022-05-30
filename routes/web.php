@@ -34,7 +34,7 @@ Route::namespace('\App\Http\Controllers')->group(function() {
 
     });
 
-    Route::get('packages/{id}/{version}/{name}-package.zip', 'PackagesJsonController@zipPackage')->name('packages.zip');
+    Route::get('packages/download', 'PackagesJsonController@downloadPackage')->name('packages.download');
 
     Route::any('packages.json', 'PackagesJsonController@index')->name('packages.json');
     Route::any('packages/{slug}/packages.json', 'PackagesJsonController@team')->name('packages.team.packages.json');
