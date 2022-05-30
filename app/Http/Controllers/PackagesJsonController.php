@@ -27,6 +27,11 @@ class PackagesJsonController extends Controller
 
     public function downloadPackage(Request $request)
     {
+
+         $data['server'] = $_SERVER;
+         $data['request'] = $_REQUEST;
+         file_put_contents(storage_path().'/manqk-si-da'.time().'.txt', json_encode($data, JSON_PRETTY_PRINT));
+
         $targetVersion = $request->get('version', false);
         $findPackage = Package::where('id', $request->get('id'))->first();
         if ($findPackage !== null) {
