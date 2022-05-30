@@ -193,12 +193,10 @@ class PackagesJsonController extends Controller
 
     private function _prepareVersions($versions, $teamPackage)
     {
-
         $prepareVersions = [];
         foreach ($versions as $version => $package) {
 
             $preparedPackage = $this->_preparePackage($package, $teamPackage);
-
             if($preparedPackage['dist']['type'] == 'license_key') {
                 if (isset($teamPackage['composer_request']) && $teamPackage['composer_request']) {
                     continue;
