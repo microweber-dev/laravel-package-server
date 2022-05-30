@@ -336,9 +336,6 @@ class PackagesJsonController extends Controller
                                     $licensed = true;
                                     $userLicenseKeysValid[$k] = $userLicenseKey;
                                     $getLicenseStatus = WhmcsLicenseValidatorHelper::getLicenseKeyStatus($whmcsUrl, $userLicenseKey);
-
-                                    dd($getLicenseStatus);
-
                                     if (!empty($getLicenseStatus)) {
                                         $userLicenseIds[] = [
                                             'service_id'=>$getLicenseStatus['service_id'],
