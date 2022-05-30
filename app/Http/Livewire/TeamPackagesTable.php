@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Helpers\Base;
 use App\Helpers\RepositoryPathHelper;
 use App\Jobs\ProcessPackageSatis;
 use App\Models\Package;
@@ -30,7 +31,7 @@ class TeamPackagesTable extends DataTableComponent
     public function configure(): void
     {
         $this->setPrimaryKey('id')
-            ->setDebugEnabled()
+           //->setDebugEnabled()
             ->setReorderEnabled()
             ->setSortingEnabled()
             ->setSearchEnabled()
@@ -257,8 +258,15 @@ class TeamPackagesTable extends DataTableComponent
                 ])
                 ->sortable(),
 
-            Column::make('Full size','package.all_versions_filesize')->sortable(),
-            Column::make('Last version size','package.last_version_filesize')->sortable(),
+
+            HtmlColumn::make('Full size','package.clone_status')
+                ->setOutputHtml(function($row) {
+                    return Base::humanFilesize($row->package->all_versions_filesize);
+                }),
+            HtmlColumn::make('Last version size','package.clone_status')
+                ->setOutputHtml(function($row) {
+                    return Base::humanFilesize($row->package->last_version_filesize);
+                }),
 
             Column::make('Last Update', 'updated_at')
                 ->sortable(),
@@ -330,10 +338,7 @@ class TeamPackagesTable extends DataTableComponent
         $query->select(['team_packages.id','team_packages.team_id','team_packages.package_id']);
         $query->where('team_id', $team->id);
 
-        $query->whereHas('package', function (Builder $subQuery) {
-            $subQuery->orderBy('last_version_filesize','asc');
-        });
-
+        $query->whereHas('package');
         if ($this->hasSearch()) {
             $search = $this->getSearch();
             $search = trim(strtolower($search));
@@ -348,7 +353,7 @@ class TeamPackagesTable extends DataTableComponent
         $query->whereHas('team');
         $query->with('package');
         $query->with('team');
-//        $query->orderBy('position','asc');
+        $query->orderBy('position','asc');
 
         return $query;
     }
