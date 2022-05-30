@@ -330,7 +330,9 @@ class TeamPackagesTable extends DataTableComponent
         $query->select(['team_packages.id','team_packages.team_id','team_packages.package_id']);
         $query->where('team_id', $team->id);
 
-        $query->whereHas('package');
+        $query->whereHas('package', function (Builder $subQuery) {
+            $subQuery->orderBy('last_version_filesize','asc');
+        });
 
         if ($this->hasSearch()) {
             $search = $this->getSearch();
