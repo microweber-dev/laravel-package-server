@@ -16,6 +16,16 @@ class CreateLicensesTable extends Migration
         Schema::create('licenses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('license');
+            $table->string('whmcs_service_id');
+            $table->string('whmcs_license_id');
+            $table->string('whmcs_valid_domain');
+            $table->string('whmcs_valid_ip');
+            $table->string('whmcs_last_access');
+            $table->string('whmcs_allow_reissues');
+            $table->string('whmcs_allow_domain_conflicts');
+            $table->string('whmcs_allow_ip_conflicts');
+            $table->string('whmcs_status');
             $table->timestamps();
         });
     }

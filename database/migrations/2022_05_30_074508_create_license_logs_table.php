@@ -15,10 +15,12 @@ class CreateLicenseLogsTable extends Migration
     {
         Schema::create('license_logs', function (Blueprint $table) {
             $table->id();
-            $table->string('license');
-            $table->string('ip');
+            $table->string('license_id');
+            $table->string('whmcs_service_id');
+            $table->string('whmcs_license_id');
             $table->string('domain');
-            $table->string('access_at');
+            $table->string('ip');
+            $table->string('last_access');
             $table->timestamps();
         });
     }

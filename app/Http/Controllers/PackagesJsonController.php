@@ -43,6 +43,9 @@ class PackagesJsonController extends Controller
         $data['headers'] = $headers;
         file_put_contents(storage_path().'/manqk-si-da-da'.time().'.txt', json_encode($data, JSON_PRETTY_PRINT));
 
+
+        dd($data);
+
         $targetVersion = $request->get('version', false);
         $findPackage = Package::where('id', $request->get('id'))->first();
 
@@ -315,6 +318,7 @@ class PackagesJsonController extends Controller
 
                     $userLicenseKeysMap = [];
                     $userLicenseKeysValid = [];
+                    $userLicenseIds = [];
 
                     if ($userLicenseKeysForValidation && !empty($userLicenseKeysForValidation) && is_array($userLicenseKeysForValidation)) {
                         foreach ($userLicenseKeysForValidation as $userLicenseKey) {
@@ -331,6 +335,16 @@ class PackagesJsonController extends Controller
                                 if (WhmcsLicenseValidatorHelper::validateLicenseKey($whmcsUrl, $userLicenseKey)) {
                                     $licensed = true;
                                     $userLicenseKeysValid[$k] = $userLicenseKey;
+                                    $getLicenseStatus = WhmcsLicenseValidatorHelper::getLicenseKeyStatus($whmcsUrl, $userLicenseKey);
+
+                                    dd($getLicenseStatus);
+
+                                    if (!empty($getLicenseStatus)) {
+                                        $userLicenseIds[] = [
+                                            'service_id'=>$getLicenseStatus['service_id'],
+                                            'license_id'=>$getLicenseStatus['license_id'],
+                                        ];
+                                    }
                                  }
                             }
                         }
@@ -342,21 +356,24 @@ class PackagesJsonController extends Controller
                     $licensed = true;
                 }
 
-                if ($licensed) {
-                    $package['dist']['url'] = URL::temporarySignedRoute(
-                        'packages.download-private', now()->addMinutes(30), [
-                            'id' => $teamPackage['package_id'],
-                            'version' => $package['version'],
-                            'ip' => request()->ip()
-                        ]
-                    );
-                } else {
+                if (!$licensed) {
                     $package['dist'] = [
                         "type" => "license_key",
                         "url" => $whmcsUrl,
                         "reference" => "license_key",
                         "shasum" => "license_key"
                     ];
+                }
+
+                if ($licensed && $userLicenseKeysValid) {
+                    $package['dist']['url'] = URL::temporarySignedRoute(
+                        'packages.download-private', now()->addMinutes(30), [
+                            'license_ids' => base64_encode(json_encode($userLicenseIds)),
+                            'id' => $teamPackage['package_id'],
+                            'version' => $package['version'],
+                            'ip' => request()->ip()
+                        ]
+                    );
                 }
 
                 if ($licensed) {
