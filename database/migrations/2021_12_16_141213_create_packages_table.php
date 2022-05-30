@@ -34,6 +34,9 @@ class CreatePackagesTable extends Migration
 
             $table->longText('package_json')->nullable();
 
+            $table->string('last_version_filesize')->nullable();
+            $table->string('all_versions_filesize')->nullable();
+
             $table->foreignId('user_id')->nullable()->index();
             $table->foreignId('team_owner_id')->nullable()->index();
 
