@@ -12,6 +12,7 @@ use App\Models\Team;
 use App\Models\TeamPackage;
 use App\Models\WhmcsServer;
 use Carbon\Carbon;
+use DarthSoup\Whmcs\Facades\Whmcs;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
@@ -223,6 +224,8 @@ class PackagesJsonController extends Controller
             }
         }
 
+        $validateLicense = $this->validateLicenses($whmcsServer['id']);
+
         $allPackages = [];
 
         $yml = [];
@@ -388,8 +391,13 @@ class PackagesJsonController extends Controller
         return $package;
     }
 
-    public function validateLicenses()
+    public function validateLicenses($whmcsServerId)
     {
+        $findWhmcsServer = WhmcsServer::where('id', $whmcsServerId)->first();
+        if ($findWhmcsServer == null) {
+            return [];
+        }
+
         if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
             $_SERVER["HTTP_AUTHORIZATION"] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
         }
@@ -428,7 +436,6 @@ class PackagesJsonController extends Controller
                 // when is not empty
                 if ($userLicenseKeys and trim($userLicenseKeys) != '' and $userLicenseKeys != '[]') {
                     $userLicenseKeysForValidation[]['local_key'] = $userLicenseKeys;
-
                 }
             }
 
@@ -448,14 +455,13 @@ class PackagesJsonController extends Controller
                 if (!empty($userLicenseKeysMap)) {
                     foreach ($userLicenseKeysMap as $k=>$userLicenseKey) {
 
-                        $validateWhmcsLicense = WhmcsLicenseValidatorHelper::validateLicenseKey($whmcsUrl, $userLicenseKey);
+                        $validateWhmcsLicense = WhmcsLicenseValidatorHelper::validateLicenseKey($findWhmcsServer->url, $userLicenseKey);
                         if ($validateWhmcsLicense) {
-                            $licensed = true;
                             $userLicenseKeysValid[$k] = $userLicenseKey;
-                            $getLicenseStatus = WhmcsLicenseValidatorHelper::getLicenseKeyStatus($whmcsUrl, $userLicenseKey);
+                            $getLicenseStatus = WhmcsLicenseValidatorHelper::getLicenseKeyStatus($findWhmcsServer->url, $userLicenseKey);
                             if (!empty($getLicenseStatus)) {
 
-                                $findInternalLicense = License::where('whmcs_server_id',$teamPackage['whmcs_server']['id'])
+                                $findInternalLicense = License::where('whmcs_server_id',$findWhmcsServer->id)
                                     ->where('license',$userLicenseKey)
                                     ->where('whmcs_service_id',$getLicenseStatus['service_id'])
                                     ->where('whmcs_license_id',$getLicenseStatus['license_id'])
@@ -463,7 +469,7 @@ class PackagesJsonController extends Controller
 
                                 if ($findInternalLicense == null) {
                                     $findInternalLicense = new License();
-                                    $findInternalLicense->whmcs_server_id = $teamPackage['whmcs_server']['id'];
+                                    $findInternalLicense->whmcs_server_id = $findWhmcsServer->id;
                                     $findInternalLicense->name = $userLicenseKey;
                                     $findInternalLicense->license = $userLicenseKey;
                                     $findInternalLicense->whmcs_service_id = $getLicenseStatus['service_id'];
@@ -485,6 +491,8 @@ class PackagesJsonController extends Controller
                 }
             }
         }
+
+        return ['license_ids'=>$internalLicenseIds];
     }
 
 }
