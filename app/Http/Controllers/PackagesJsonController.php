@@ -76,7 +76,7 @@ class PackagesJsonController extends Controller
                 $licenseLog = new LicenseLog();
                 $licenseLog->license_id = $findLicense->id;
                 $licenseLog->last_access = Carbon::now();
-                $licenseLog->ip = request()->ip();
+                $licenseLog->ip = $ip;
                 $licenseLog->package_id = $request->get('id');
                 // $licenseLog->mw_version = $request->get('id');
                 $licenseLog->save();
@@ -464,6 +464,9 @@ class PackagesJsonController extends Controller
                             $userLicenseKeysValid[$k] = $userLicenseKey;
                             $getLicenseStatus = WhmcsLicenseValidatorHelper::getLicenseKeyStatus($findWhmcsServer->url, $userLicenseKey);
                             if (!empty($getLicenseStatus)) {
+
+
+                                dd($getLicenseStatus);
 
                                 $findInternalLicense = License::where('whmcs_server_id',$findWhmcsServer->id)
                                     ->where('license',$userLicenseKey)
