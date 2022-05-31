@@ -226,7 +226,7 @@ class PackagesJsonController extends Controller
 
         $validateLicense = [];
         if (isset($whmcsServer['id'])) {
-           // $validateLicense = $this->validateLicenses($whmcsServer['id']);
+            $validateLicense = $this->validateLicenses($whmcsServer['id']);
         }
 
         $allPackages = [];
@@ -401,6 +401,8 @@ class PackagesJsonController extends Controller
             return [];
         }
 
+        $internalLicenseIds = [];
+
         if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
             $_SERVER["HTTP_AUTHORIZATION"] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
         }
@@ -444,7 +446,6 @@ class PackagesJsonController extends Controller
 
             $userLicenseKeysMap = [];
             $userLicenseKeysValid = [];
-            $internalLicenseIds = [];
 
             if ($userLicenseKeysForValidation && !empty($userLicenseKeysForValidation) && is_array($userLicenseKeysForValidation)) {
                 foreach ($userLicenseKeysForValidation as $userLicenseKey) {
