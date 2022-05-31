@@ -291,6 +291,17 @@ class PackagesJsonController extends Controller
 
     private function _preparePackage($package, $teamPackage)
     {
+        $extraMeta = [];
+        if (isset($package['extra']['_meta'])) {
+            if (isset($package['extra']['_meta']['readme'])) {
+                $extraMeta['readme'] = $package['extra']['_meta']['readme'];
+            }
+            if (isset($package['extra']['_meta']['screenshot'])) {
+                $extraMeta['screenshot'] = $package['extra']['_meta']['screenshot'];
+            }
+        }
+        $package['extra']['_meta'] = $extraMeta;
+
         if (isset($package['extra']['preview_url'])) {
             if (isset($teamPackage['team_settings']['package_manager_templates_demo_domain'])) {
 
@@ -310,110 +321,12 @@ class PackagesJsonController extends Controller
         $package['extra']['whmcs']['whmcs_url'] = $whmcsUrl;
 
         if (isset($teamPackage['is_paid']) && $teamPackage['is_paid'] == 1) {
-
             if (isset($teamPackage['whmcs_product_ids']) && !empty($teamPackage['whmcs_product_ids'])) {
-
                 $licensed = false;
 
-                if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
-                    $_SERVER["HTTP_AUTHORIZATION"] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
-                }
-
-                if (isset($_SERVER["HTTP_AUTHORIZATION"]) && (strpos(strtolower($_SERVER["HTTP_AUTHORIZATION"]), 'basic') !== false)) {
-
-                    ///  file_put_contents(base_path().'/lic.txt', print_r((substr($_SERVER["HTTP_AUTHORIZATION"], 6)),1));
-
-                    $userLicenseKeys = base64_decode(substr($_SERVER["HTTP_AUTHORIZATION"], 6));
-
-                    if (is_string($userLicenseKeys) and (strpos(strtolower($userLicenseKeys), 'license:') !== false)) {
-                        $userLicenseKeys = substr($userLicenseKeys, 8);
-                        if(StringHelper::isBase64Encoded($userLicenseKeys)){
-                            $userLicenseKeys = base64_decode($userLicenseKeys);
-                        }
-
-                    }
-                    if (is_string($userLicenseKeys) and (strpos(strtolower($userLicenseKeys), 'license:') !== false)) {
-                        $userLicenseKeys = substr($userLicenseKeys, 8);
-                        if(StringHelper::isBase64Encoded($userLicenseKeys)){
-                            $userLicenseKeys = base64_decode($userLicenseKeys);
-                        }
-                    }
-
-                    if(StringHelper::isJSON($userLicenseKeys)) {
-                        $userLicenseKeysJson = json_decode($userLicenseKeys, true);
-                    } else {
-                        $userLicenseKeysJson = [];
-                        $userLicenseKeysJson['none'] = ['rel_type' =>'none','local_key'=>$userLicenseKeys];
-                    }
-                    $userLicenseKeysForValidation = [];
-                    // old method read
-                    if (!empty($userLicenseKeysJson)) {
-                        $userLicenseKeysForValidation = $userLicenseKeysJson;
-                    } else {
-                        // when is not empty
-                        if ($userLicenseKeys and trim($userLicenseKeys) != '' and $userLicenseKeys != '[]') {
-                            $userLicenseKeysForValidation[]['local_key'] = $userLicenseKeys;
-
-                        }
-                    }
-
-                    $userLicenseKeysMap = [];
-                    $userLicenseKeysValid = [];
-                    $internalLicenseIds = [];
-
-                    if ($userLicenseKeysForValidation && !empty($userLicenseKeysForValidation) && is_array($userLicenseKeysForValidation)) {
-                        foreach ($userLicenseKeysForValidation as $userLicenseKey) {
-                            if (isset($userLicenseKey['local_key']) and trim($userLicenseKey['local_key']) != '') {
-                                if(isset($userLicenseKey['rel_type'])){
-                                    $userLicenseKeysMap[$userLicenseKey['rel_type']] = $userLicenseKey['local_key'];
-                                }
-                            }
-                        }
-
-                        if (!empty($userLicenseKeysMap)) {
-                            foreach ($userLicenseKeysMap as $k=>$userLicenseKey) {
-
-                                if (WhmcsLicenseValidatorHelper::validateLicenseKey($whmcsUrl, $userLicenseKey)) {
-                                    $licensed = true;
-                                    $userLicenseKeysValid[$k] = $userLicenseKey;
-                                    $getLicenseStatus = WhmcsLicenseValidatorHelper::getLicenseKeyStatus($whmcsUrl, $userLicenseKey);
-                                    if (!empty($getLicenseStatus)) {
-
-                                        $findInternalLicense = License::where('whmcs_server_id',$teamPackage['whmcs_server']['id'])
-                                                ->where('license',$userLicenseKey)
-                                                ->where('whmcs_service_id',$getLicenseStatus['service_id'])
-                                                ->where('whmcs_license_id',$getLicenseStatus['license_id'])
-                                                ->first();
-
-                                        if ($findInternalLicense == null) {
-                                            $findInternalLicense = new License();
-                                            $findInternalLicense->whmcs_server_id = $teamPackage['whmcs_server']['id'];
-                                            $findInternalLicense->name = $userLicenseKey;
-                                            $findInternalLicense->license = $userLicenseKey;
-                                            $findInternalLicense->whmcs_service_id = $getLicenseStatus['service_id'];
-                                            $findInternalLicense->whmcs_license_id = $getLicenseStatus['license_id'];
-                                        }
-
-                                        $findInternalLicense->whmcs_valid_domain = $getLicenseStatus['valid_domain'];
-                                        $findInternalLicense->whmcs_valid_ip = $getLicenseStatus['valid_ip'];
-                                        $findInternalLicense->whmcs_last_access = $getLicenseStatus['last_access'];
-                                        $findInternalLicense->whmcs_allow_domain_conflicts = $getLicenseStatus['allow_domain_conflicts'];
-                                        $findInternalLicense->whmcs_allow_ip_conflicts = $getLicenseStatus['allow_ip_conflicts'];
-                                        $findInternalLicense->whmcs_status = $getLicenseStatus['status'];
-                                        $findInternalLicense->save();
-
-                                        $internalLicenseIds[] = $findInternalLicense->id;
-                                    }
-                                 }
-                            }
-                        }
-                    }
-
-                }
-
-                if (!$licensed and isset($teamPackage['token_authenticated']) && $teamPackage['token_authenticated'] === true) {
+              /*  if (!$licensed and isset($teamPackage['token_authenticated']) && $teamPackage['token_authenticated'] === true) {
                     $licensed = true;
-                }
+                }*/
 
                 if (!$licensed) {
                     $package['dist'] = [
@@ -424,8 +337,7 @@ class PackagesJsonController extends Controller
                     ];
                 }
 
-                if ($licensed && $userLicenseKeysValid) {
-
+              /*  if ($licensed && $userLicenseKeysValid) {
                     $package['dist']['url'] = URL::temporarySignedRoute(
                         'packages.download-private', now()->addMinutes(30), [
                             'license_ids' => base64_encode(json_encode($internalLicenseIds)),
@@ -434,9 +346,9 @@ class PackagesJsonController extends Controller
                             'ip' => request()->ip()
                         ]
                     );
-                }
+                }*/
 
-                if ($licensed) {
+            /*    if ($licensed) {
                     if (isset($teamPackage['team_package_id'])) {
                         if ($userLicenseKeysValid) {
                             $dataForNotification = [];
@@ -449,9 +361,7 @@ class PackagesJsonController extends Controller
                                 . urlencode(base64_encode(json_encode($dataForNotification)));
                         }
                     }
-                }
-
-
+                }*/
 
                 $package['license_ids'] = $teamPackage['whmcs_product_ids'];
                 $package['extra']['whmcs']['whmcs_product_ids'] = $teamPackage['whmcs_product_ids'];
@@ -478,5 +388,103 @@ class PackagesJsonController extends Controller
         return $package;
     }
 
+    public function validateLicenses()
+    {
+        if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+            $_SERVER["HTTP_AUTHORIZATION"] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+        }
+
+        if (isset($_SERVER["HTTP_AUTHORIZATION"]) && (strpos(strtolower($_SERVER["HTTP_AUTHORIZATION"]), 'basic') !== false)) {
+
+            ///  file_put_contents(base_path().'/lic.txt', print_r((substr($_SERVER["HTTP_AUTHORIZATION"], 6)),1));
+
+            $userLicenseKeys = base64_decode(substr($_SERVER["HTTP_AUTHORIZATION"], 6));
+
+            if (is_string($userLicenseKeys) and (strpos(strtolower($userLicenseKeys), 'license:') !== false)) {
+                $userLicenseKeys = substr($userLicenseKeys, 8);
+                if(StringHelper::isBase64Encoded($userLicenseKeys)){
+                    $userLicenseKeys = base64_decode($userLicenseKeys);
+                }
+
+            }
+            if (is_string($userLicenseKeys) and (strpos(strtolower($userLicenseKeys), 'license:') !== false)) {
+                $userLicenseKeys = substr($userLicenseKeys, 8);
+                if(StringHelper::isBase64Encoded($userLicenseKeys)){
+                    $userLicenseKeys = base64_decode($userLicenseKeys);
+                }
+            }
+
+            if(StringHelper::isJSON($userLicenseKeys)) {
+                $userLicenseKeysJson = json_decode($userLicenseKeys, true);
+            } else {
+                $userLicenseKeysJson = [];
+                $userLicenseKeysJson['none'] = ['rel_type' =>'none','local_key'=>$userLicenseKeys];
+            }
+            $userLicenseKeysForValidation = [];
+            // old method read
+            if (!empty($userLicenseKeysJson)) {
+                $userLicenseKeysForValidation = $userLicenseKeysJson;
+            } else {
+                // when is not empty
+                if ($userLicenseKeys and trim($userLicenseKeys) != '' and $userLicenseKeys != '[]') {
+                    $userLicenseKeysForValidation[]['local_key'] = $userLicenseKeys;
+
+                }
+            }
+
+            $userLicenseKeysMap = [];
+            $userLicenseKeysValid = [];
+            $internalLicenseIds = [];
+
+            if ($userLicenseKeysForValidation && !empty($userLicenseKeysForValidation) && is_array($userLicenseKeysForValidation)) {
+                foreach ($userLicenseKeysForValidation as $userLicenseKey) {
+                    if (isset($userLicenseKey['local_key']) and trim($userLicenseKey['local_key']) != '') {
+                        if(isset($userLicenseKey['rel_type'])){
+                            $userLicenseKeysMap[$userLicenseKey['rel_type']] = $userLicenseKey['local_key'];
+                        }
+                    }
+                }
+
+                if (!empty($userLicenseKeysMap)) {
+                    foreach ($userLicenseKeysMap as $k=>$userLicenseKey) {
+
+                        $validateWhmcsLicense = WhmcsLicenseValidatorHelper::validateLicenseKey($whmcsUrl, $userLicenseKey);
+                        if ($validateWhmcsLicense) {
+                            $licensed = true;
+                            $userLicenseKeysValid[$k] = $userLicenseKey;
+                            $getLicenseStatus = WhmcsLicenseValidatorHelper::getLicenseKeyStatus($whmcsUrl, $userLicenseKey);
+                            if (!empty($getLicenseStatus)) {
+
+                                $findInternalLicense = License::where('whmcs_server_id',$teamPackage['whmcs_server']['id'])
+                                    ->where('license',$userLicenseKey)
+                                    ->where('whmcs_service_id',$getLicenseStatus['service_id'])
+                                    ->where('whmcs_license_id',$getLicenseStatus['license_id'])
+                                    ->first();
+
+                                if ($findInternalLicense == null) {
+                                    $findInternalLicense = new License();
+                                    $findInternalLicense->whmcs_server_id = $teamPackage['whmcs_server']['id'];
+                                    $findInternalLicense->name = $userLicenseKey;
+                                    $findInternalLicense->license = $userLicenseKey;
+                                    $findInternalLicense->whmcs_service_id = $getLicenseStatus['service_id'];
+                                    $findInternalLicense->whmcs_license_id = $getLicenseStatus['license_id'];
+                                }
+
+                                $findInternalLicense->whmcs_valid_domain = $getLicenseStatus['valid_domain'];
+                                $findInternalLicense->whmcs_valid_ip = $getLicenseStatus['valid_ip'];
+                                $findInternalLicense->whmcs_last_access = $getLicenseStatus['last_access'];
+                                $findInternalLicense->whmcs_allow_domain_conflicts = $getLicenseStatus['allow_domain_conflicts'];
+                                $findInternalLicense->whmcs_allow_ip_conflicts = $getLicenseStatus['allow_ip_conflicts'];
+                                $findInternalLicense->whmcs_status = $getLicenseStatus['status'];
+                                $findInternalLicense->save();
+
+                                $internalLicenseIds[] = $findInternalLicense->id;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 }
