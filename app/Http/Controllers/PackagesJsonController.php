@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Helpers\StringHelper;
 use App\Helpers\WhmcsLicenseValidatorHelper;
+use App\Models\License;
 use App\Models\LicenseLog;
 use App\Models\Package;
 use App\Models\PackageDownloadStats;
 use App\Models\Team;
 use App\Models\TeamPackage;
+use App\Models\WhmcsServer;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -25,7 +27,7 @@ class PackagesJsonController extends Controller
             return [];
         }
 
-        return $this->getTeamPackages($findTeam->id);
+        return $this->getTeamPackages($request, $findTeam->id);
     }
 
     public function downloadPrivatePackage(Request $request)
@@ -40,28 +42,32 @@ class PackagesJsonController extends Controller
         $licenseIds = $request->get('license_ids', false);
         $licenseIds = base64_decode($licenseIds);
         $licenseIds = json_decode($licenseIds, TRUE);
+
         if (!empty($licenseIds)) {
-            foreach ($licenseIds as $license) {
+            foreach ($licenseIds as $licenseId) {
+
+                $findLicense = License::where('id', $licenseId)->first();
+                if ($findLicense == null) {
+                    continue;
+                }
+
+                $findWhmcsServer = WhmcsServer::where('id', $findLicense->whmcs_server_id)->first();
+                if ($findWhmcsServer == null) {
+                    continue;
+                }
+                
+                $consumeStatus = WhmcsLicenseValidatorHelper::licenseConsume($findWhmcsServer->url, $findLicense->license);
+
                 $licenseLog = new LicenseLog();
-                $licenseLog->whmcs_service_id = $license['service_id'];
-                $licenseLog->whmcs_license_id = $license['license_id'];
+                $licenseLog->license_id = $findLicense->id;
                 $licenseLog->last_access = Carbon::now();
                 $licenseLog->ip = request()->ip();
                 $licenseLog->package_id = $request->get('id');
-               // $licenseLog->mw_version = $request->get('id');
+                // $licenseLog->mw_version = $request->get('id');
                 $licenseLog->save();
+
             }
         }
-
-        /*
-        $headers = collect($request->header())->transform(function ($item) {
-            return $item[0];
-        });
-        $data['server'] = $_SERVER;
-        $data['request'] = $_REQUEST;
-        $data['headers'] = $headers;
-        file_put_contents(storage_path().'/manqk-si-da-da'.time().'.txt', json_encode($data, JSON_PRETTY_PRINT));*/
-
 
         $targetVersion = $request->get('version', false);
         $findPackage = Package::where('id', $request->get('id'))->first();
@@ -93,7 +99,7 @@ class PackagesJsonController extends Controller
             return [];
         }
 
-        return $this->getTeamPackages($findTeam->id);
+        return $this->getTeamPackages($request, $findTeam->id);
     }
 
     public function singlePackage($vendor, $package, Request $request)
@@ -109,18 +115,16 @@ class PackagesJsonController extends Controller
                 return [];
             }
 
-            return $this->getTeamPackages($findTeam->id, ['package_id'=>$findPackageByName->id]);
+            return $this->getTeamPackages($request, $findTeam->id, ['package_id'=>$findPackageByName->id]);
 
         }
     }
 
-    protected function getTeamPackages($teamId, $filter = [])
+    protected function getTeamPackages($request, $teamId, $filter = [])
     {
         ini_set('memory_limit', '512M');
 
-        $request = request();
-
-        $findTeam = Team::where('id', $teamId)->first();
+        $findTeam = Team::where('id', $teamId)->with('whmcsServer')->first();
         if ($findTeam == null) {
             return [];
         }
@@ -139,6 +143,11 @@ class PackagesJsonController extends Controller
 
         if ($teamPackages == null) {
             return [];
+        }
+
+        $whmcsServer = [];
+        if ($findTeam->whmcsServer != null) {
+            $whmcsServer = $findTeam->whmcsServer->toArray();
         }
 
         $teamSettings = $findTeam->settings()->get();
@@ -223,6 +232,7 @@ class PackagesJsonController extends Controller
                             'team_package_id' => $teamPackage->id,
                             'whmcs_primary_product_id' => $teamPackage->whmcs_primary_product_id,
                             'whmcs_product_ids' => $teamPackage->getWhmcsProductIds(),
+                            'whmcs_server' => $whmcsServer,
                             'is_visible' => $teamPackage->is_visible,
                             'is_paid' => $teamPackage->is_paid,
                             'buy_url' => $teamPackage->buy_url,
@@ -280,8 +290,8 @@ class PackagesJsonController extends Controller
         $package['notification-url'] = route('packages.download-notify');
 
         $whmcsUrl = '';
-        if (isset($teamPackage['team_settings']['whmcs_url'])) {
-            $whmcsUrl = $teamPackage['team_settings']['whmcs_url'];
+        if (isset($teamPackage['whmcs_server']['url'])) {
+            $whmcsUrl = $teamPackage['whmcs_server']['url'];
         }
         $package['extra']['whmcs']['whmcs_url'] = $whmcsUrl;
 
@@ -335,7 +345,7 @@ class PackagesJsonController extends Controller
 
                     $userLicenseKeysMap = [];
                     $userLicenseKeysValid = [];
-                    $userLicenseIds = [];
+                    $internalLicenseIds = [];
 
                     if ($userLicenseKeysForValidation && !empty($userLicenseKeysForValidation) && is_array($userLicenseKeysForValidation)) {
                         foreach ($userLicenseKeysForValidation as $userLicenseKey) {
@@ -354,10 +364,31 @@ class PackagesJsonController extends Controller
                                     $userLicenseKeysValid[$k] = $userLicenseKey;
                                     $getLicenseStatus = WhmcsLicenseValidatorHelper::getLicenseKeyStatus($whmcsUrl, $userLicenseKey);
                                     if (!empty($getLicenseStatus)) {
-                                        $userLicenseIds[] = [
-                                            'service_id'=>$getLicenseStatus['service_id'],
-                                            'license_id'=>$getLicenseStatus['license_id'],
-                                        ];
+
+                                        $findInternalLicense = License::where('whmcs_server_id',$teamPackage['whmcs_server']['id'])
+                                                ->where('license',$userLicenseKey)
+                                                ->where('whmcs_service_id',$getLicenseStatus['service_id'])
+                                                ->where('whmcs_license_id',$getLicenseStatus['license_id'])
+                                                ->first();
+
+                                        if ($findInternalLicense == null) {
+                                            $findInternalLicense = new License();
+                                            $findInternalLicense->whmcs_server_id = $teamPackage['whmcs_server']['id'];
+                                            $findInternalLicense->name = $userLicenseKey;
+                                            $findInternalLicense->license = $userLicenseKey;
+                                            $findInternalLicense->whmcs_service_id = $getLicenseStatus['service_id'];
+                                            $findInternalLicense->whmcs_license_id = $getLicenseStatus['license_id'];
+                                        }
+
+                                        $findInternalLicense->whmcs_valid_domain = $getLicenseStatus['valid_domain'];
+                                        $findInternalLicense->whmcs_valid_ip = $getLicenseStatus['valid_ip'];
+                                        $findInternalLicense->whmcs_last_access = $getLicenseStatus['last_access'];
+                                        $findInternalLicense->whmcs_allow_domain_conflicts = $getLicenseStatus['allow_domain_conflicts'];
+                                        $findInternalLicense->whmcs_allow_ip_conflicts = $getLicenseStatus['allow_ip_conflicts'];
+                                        $findInternalLicense->whmcs_status = $getLicenseStatus['status'];
+                                        $findInternalLicense->save();
+
+                                        $internalLicenseIds[] = $findInternalLicense->id;
                                     }
                                  }
                             }
@@ -380,9 +411,10 @@ class PackagesJsonController extends Controller
                 }
 
                 if ($licensed && $userLicenseKeysValid) {
+
                     $package['dist']['url'] = URL::temporarySignedRoute(
                         'packages.download-private', now()->addMinutes(30), [
-                            'license_ids' => base64_encode(json_encode($userLicenseIds)),
+                            'license_ids' => base64_encode(json_encode($internalLicenseIds)),
                             'id' => $teamPackage['package_id'],
                             'version' => $package['version'],
                             'ip' => request()->ip()

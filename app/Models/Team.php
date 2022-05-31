@@ -94,4 +94,9 @@ class Team extends JetstreamTeam
     {
         return $this->hasMany(PackageAccessPreset::class);
     }
+
+    public function whmcsServer()
+    {
+        return $this->hasOne(WhmcsServer::class);
+    }
 }

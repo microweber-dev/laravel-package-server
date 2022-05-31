@@ -17,6 +17,7 @@ class CreateLicensesTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('license');
+            $table->foreignId('whmcs_server_id');
             $table->string('whmcs_service_id');
             $table->string('whmcs_license_id');
             $table->string('whmcs_valid_domain');
