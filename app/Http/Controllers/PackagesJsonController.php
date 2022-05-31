@@ -224,7 +224,7 @@ class PackagesJsonController extends Controller
             }
         }
 
-        $validateLicense = $this->validateLicenses($whmcsServer['id']);
+        // $validateLicense = $this->validateLicenses($whmcsServer['id']); 
 
         $allPackages = [];
 
