@@ -50,8 +50,8 @@ class SatisPackageBuilder
         if (Base::familyOs() == 'UNIX') {
 
             $performsSshKeyscan = false;
-            $sshKeysDir = '~/.ssh/';
-            if(isset($_SERVER['HOME'])) {
+            $sshKeysDir = dirname(dirname(__DIR__)) . '/.ssh/';
+            if (isset($_SERVER['HOME'])) {
                 $sshKeysDir = $_SERVER['HOME'] . '/.ssh/';
             }
 
