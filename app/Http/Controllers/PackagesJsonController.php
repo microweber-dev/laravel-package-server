@@ -224,9 +224,9 @@ class PackagesJsonController extends Controller
             }
         }
 
-        $validateLicense = [];
+        $validateLicenses = [];
         if (isset($whmcsServer['id'])) {
-            $validateLicense = $this->validateLicenses($request, $whmcsServer['id']);
+            $validateLicenses = $this->validateLicenses($request, $whmcsServer['id']);
         }
 
         $allPackages = [];
@@ -253,6 +253,7 @@ class PackagesJsonController extends Controller
                             'whmcs_primary_product_id' => $teamPackage->whmcs_primary_product_id,
                             'whmcs_product_ids' => $teamPackage->getWhmcsProductIds(),
                             'whmcs_server' => $whmcsServer,
+                            'validate_licenses' => $validateLicenses,
                             'is_visible' => $teamPackage->is_visible,
                             'is_paid' => $teamPackage->is_paid,
                             'buy_url' => $teamPackage->buy_url,
@@ -328,11 +329,21 @@ class PackagesJsonController extends Controller
 
         if (isset($teamPackage['is_paid']) && $teamPackage['is_paid'] == 1) {
             if (isset($teamPackage['whmcs_product_ids']) && !empty($teamPackage['whmcs_product_ids'])) {
+
                 $licensed = false;
 
-              /*  if (!$licensed and isset($teamPackage['token_authenticated']) && $teamPackage['token_authenticated'] === true) {
+                if (!empty($teamPackage['validate_licenses']['valid_licenses'])) {
+                    foreach ($teamPackage['validate_licenses']['valid_licenses'] as $validLicense) {
+                        if (in_array($validLicense['whmcs_product_id'], $teamPackage['whmcs_product_ids'])) {
+                            $licensed = true;
+                        }
+                    }
+                }
+
+                // If you make a token auth private package
+                if (!$licensed and isset($teamPackage['token_authenticated']) && $teamPackage['token_authenticated'] === true) {
                     $licensed = true;
-                }*/
+                }
 
                 if (!$licensed) {
                     $package['dist'] = [
@@ -473,12 +484,16 @@ class PackagesJsonController extends Controller
 
                 if (!empty($userLicenseKeysMap)) {
                     foreach ($userLicenseKeysMap as $k=>$userLicenseKey) {
-                       /* $licenseKeyStatus = WhmcsLicenseValidatorHelper::getLicenseKeyStatus($findWhmcsServer->url, $userLicenseKey);
-                        dump($licenseKeyStatus);*/
                         $consumeLicense = WhmcsLicenseValidatorHelper::licenseConsume($findWhmcsServer->url,$domain,$ip, $userLicenseKey);
                         if (isset($consumeLicense['status']) && $consumeLicense['status']=='Active') {
+                            $licenseKeyStatus = WhmcsLicenseValidatorHelper::getLicenseKeyStatus($findWhmcsServer->url, $userLicenseKey);
+                            $whmcsProductId = false;
+                            if (isset($licenseKeyStatus['package_id'])) {
+                                $whmcsProductId = $licenseKeyStatus['package_id'];
+                            }
                             $licenseKeysValid[] = [
                                 'status'=> 'active',
+                                'whmcs_product_id'=> $whmcsProductId,
                                 'license'=> $userLicenseKey,
                             ];
                         } else {
@@ -499,8 +514,8 @@ class PackagesJsonController extends Controller
 
         return [
             'license_ids'=>$internalLicenseIds,
-            'license_invalid'=>$licenseKeysInvalid,
-            'license_valid'=>$licenseKeysValid,
+            'invalid_licenses'=>$licenseKeysInvalid,
+            'valid_licenses'=>$licenseKeysValid,
         ];
     }
 
