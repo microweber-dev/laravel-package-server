@@ -203,8 +203,6 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         $packageJsonContent = file_get_contents($status['output_path'] . DIRECTORY_SEPARATOR . 'packages.json');
         $packageJsonContent = json_decode($packageJsonContent, true);
 
-        // var_dump($packageJsonContent);
-
         if (empty($packageJsonContent)) {
 
             $packageModel->clone_log = 'Failed to open package json content';
