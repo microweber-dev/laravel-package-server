@@ -226,7 +226,7 @@ class PackagesJsonController extends Controller
 
         $validateLicense = [];
         if (isset($whmcsServer['id'])) {
-            $validateLicense = $this->validateLicenses($whmcsServer['id']);
+            $validateLicense = $this->validateLicenses($request, $whmcsServer['id']);
         }
 
         $allPackages = [];
@@ -394,14 +394,30 @@ class PackagesJsonController extends Controller
         return $package;
     }
 
-    public function validateLicenses($whmcsServerId)
+    public function validateLicenses($request, $whmcsServerId)
     {
         $findWhmcsServer = WhmcsServer::where('id', $whmcsServerId)->first();
         if ($findWhmcsServer == null) {
             return [];
         }
 
+        $requestHeaders = collect($request->header())->transform(function ($item) {
+            return $item[0];
+        });
+
+        $ip = request()->ip();
+        $domain = '';
+
+        if (isset($requestHeaders['x-mw-site-url'])) {
+            $parseUrl = parse_url($requestHeaders['x-mw-site-url']);
+            if (isset($parseUrl['host'])) {
+                $domain = $parseUrl['host'];
+            }
+        }
+
         $internalLicenseIds = [];
+        $licenseKeysValid = [];
+        $licenseKeysInvalid = [];
 
         if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
             $_SERVER["HTTP_AUTHORIZATION"] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
@@ -445,7 +461,6 @@ class PackagesJsonController extends Controller
             }
 
             $userLicenseKeysMap = [];
-            $userLicenseKeysValid = [];
 
             if ($userLicenseKeysForValidation && !empty($userLicenseKeysForValidation) && is_array($userLicenseKeysForValidation)) {
                 foreach ($userLicenseKeysForValidation as $userLicenseKey) {
@@ -458,48 +473,35 @@ class PackagesJsonController extends Controller
 
                 if (!empty($userLicenseKeysMap)) {
                     foreach ($userLicenseKeysMap as $k=>$userLicenseKey) {
-
-                        $validateWhmcsLicense = WhmcsLicenseValidatorHelper::validateLicenseKey($findWhmcsServer->url, $userLicenseKey);
-                        if ($validateWhmcsLicense) {
-                            $userLicenseKeysValid[$k] = $userLicenseKey;
-                            $getLicenseStatus = WhmcsLicenseValidatorHelper::getLicenseKeyStatus($findWhmcsServer->url, $userLicenseKey);
-                            if (!empty($getLicenseStatus)) {
-
-
-                                dd($getLicenseStatus);
-
-                                $findInternalLicense = License::where('whmcs_server_id',$findWhmcsServer->id)
-                                    ->where('license',$userLicenseKey)
-                                    ->where('whmcs_service_id',$getLicenseStatus['service_id'])
-                                    ->where('whmcs_license_id',$getLicenseStatus['license_id'])
-                                    ->first();
-
-                                if ($findInternalLicense == null) {
-                                    $findInternalLicense = new License();
-                                    $findInternalLicense->whmcs_server_id = $findWhmcsServer->id;
-                                    $findInternalLicense->name = $userLicenseKey;
-                                    $findInternalLicense->license = $userLicenseKey;
-                                    $findInternalLicense->whmcs_service_id = $getLicenseStatus['service_id'];
-                                    $findInternalLicense->whmcs_license_id = $getLicenseStatus['license_id'];
-                                }
-
-                                $findInternalLicense->whmcs_valid_domain = $getLicenseStatus['valid_domain'];
-                                $findInternalLicense->whmcs_valid_ip = $getLicenseStatus['valid_ip'];
-                                $findInternalLicense->whmcs_last_access = $getLicenseStatus['last_access'];
-                                $findInternalLicense->whmcs_allow_domain_conflicts = $getLicenseStatus['allow_domain_conflicts'];
-                                $findInternalLicense->whmcs_allow_ip_conflicts = $getLicenseStatus['allow_ip_conflicts'];
-                                $findInternalLicense->whmcs_status = $getLicenseStatus['status'];
-                                $findInternalLicense->save();
-
-                                $internalLicenseIds[] = $findInternalLicense->id;
+                       /* $licenseKeyStatus = WhmcsLicenseValidatorHelper::getLicenseKeyStatus($findWhmcsServer->url, $userLicenseKey);
+                        dump($licenseKeyStatus);*/
+                        $consumeLicense = WhmcsLicenseValidatorHelper::licenseConsume($findWhmcsServer->url,$domain,$ip, $userLicenseKey);
+                        if (isset($consumeLicense['status']) && $consumeLicense['status']=='Active') {
+                            $licenseKeysValid[] = [
+                                'status'=> 'active',
+                                'license'=> $userLicenseKey,
+                            ];
+                        } else {
+                            $messaage = '';
+                            if (isset($consumeLicense['message'])) {
+                                $messaage = $consumeLicense['message'];
                             }
+                            $licenseKeysInvalid[] = [
+                                'message'=> $messaage,
+                                'status'=> mb_strtolower($consumeLicense['status']),
+                                'license'=> $userLicenseKey,
+                            ];
                         }
                     }
                 }
             }
         }
 
-        return ['license_ids'=>$internalLicenseIds];
+        return [
+            'license_ids'=>$internalLicenseIds,
+            'license_invalid'=>$licenseKeysInvalid,
+            'license_valid'=>$licenseKeysValid,
+        ];
     }
 
 }
