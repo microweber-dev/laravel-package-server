@@ -74,7 +74,7 @@ class PackageManagerGitWorker
           //  $repository->push();
 
             $gitPush = self::gitPush($workerGitPath);
-            if (isset($gitPush['push']) and $gitPush['push']) {
+            if (!isset($gitPush['push']) or (isset($gitPush['push']) and $gitPush['push'] === false)) {
                 return ['commit_id'=>false];
             }
 
