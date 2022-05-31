@@ -79,7 +79,15 @@ class WhmcsLicenseValidatorHelper
         }
     }
 
-    public static function licenseConsume($whmcsurl, $licensekey, $localkey = false)
+    /**
+     * @param $whmcsurl Whmcs Url
+     * @param $domain Cosumer Domain
+     * @param $usersip Cosumer User Ip
+     * @param $licensekey Cosumer License Key
+     * @param $localkey Cosumer Local Key
+     * @return array|mixed|string[]
+     */
+    public static function licenseConsume($whmcsurl,$domain,$usersip, $licensekey, $localkey = false)
     {
         $whmcsurl = rtrim($whmcsurl, '/') . '/';
         // Must match what is specified in the MD5 Hash Verification field
@@ -94,8 +102,6 @@ class WhmcsLicenseValidatorHelper
         // -----------------------------------
         $check_token = time() . md5(mt_rand(100000000, mt_getrandmax()) . $licensekey);
         $checkdate = date("Ymd");
-        $domain = $_SERVER['SERVER_NAME'];
-        $usersip = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : $_SERVER['LOCAL_ADDR'];
         $dirpath = dirname(__FILE__);
         $verifyfilepath = 'modules/servers/licensing/verify.php';
         $localkeyvalid = false;
@@ -185,6 +191,11 @@ class WhmcsLicenseValidatorHelper
             if (!is_array($results)) {
                 return ["error"=>"Invalid License Server Response"];
             }
+
+            if (isset($results['status']) && $results['status'] == 'Invalid') {
+                return $results;
+            }
+
             if ($results['md5hash']) {
                 if ($results['md5hash'] != md5($licensing_secret_key . $check_token)) {
                     $results['status'] = "Invalid";

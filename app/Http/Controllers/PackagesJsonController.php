@@ -39,6 +39,10 @@ class PackagesJsonController extends Controller
             abort(401,'Invalid authorization.');
         }
 
+        $requestHeaders = collect($request->header())->transform(function ($item) {
+            return $item[0];
+        });
+
         $licenseIds = $request->get('license_ids', false);
         $licenseIds = base64_decode($licenseIds);
         $licenseIds = json_decode($licenseIds, TRUE);
@@ -55,8 +59,18 @@ class PackagesJsonController extends Controller
                 if ($findWhmcsServer == null) {
                     continue;
                 }
-                
-                $consumeStatus = WhmcsLicenseValidatorHelper::licenseConsume($findWhmcsServer->url, $findLicense->license);
+
+                $ip = request()->ip();
+                $domain = '';
+
+                if (isset($requestHeaders['x-mw-site-url'])) {
+                    $parseUrl = parse_url($requestHeaders['x-mw-site-url']);
+                    if (isset($parseUrl['host'])) {
+                        $domain = $parseUrl['host'];
+                    }
+                }
+
+                $consumeStatus = WhmcsLicenseValidatorHelper::licenseConsume($findWhmcsServer->url, $domain, $ip, $findLicense->license);
 
                 $licenseLog = new LicenseLog();
                 $licenseLog->license_id = $findLicense->id;
