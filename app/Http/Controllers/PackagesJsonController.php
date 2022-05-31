@@ -225,7 +225,7 @@ class PackagesJsonController extends Controller
         }
 
         $validateLicense = [];
-        if (isset($whmcsServer['id'])) { 
+        if (isset($whmcsServer['id'])) {
            // $validateLicense = $this->validateLicenses($whmcsServer['id']);
         }
 
