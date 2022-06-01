@@ -74,11 +74,9 @@ class PackageManagerGitWorker
           //  $repository->push();
 
             $gitPush = self::gitPush($workerGitPath);
-            if ($gitPush['push']) {
-                return ['commit_id'=>false];
+            if (isset($gitPush['push']) && $gitPush['push']) {
+                $lastCommitId = $repository->getLastCommitId();
             }
-
-            $lastCommitId = $repository->getLastCommitId();
         }
 
         return ['commit_id'=>$lastCommitId];
