@@ -14,10 +14,9 @@ class PackageManagerGitWorker
         $gitWorkerRepositoryUrl = $gitWorkerRepositoryUrlParse['host'] . $gitWorkerRepositoryUrlParse['path'];
 
         $gitProvider = env('PACKAGE_MANAGER_WORKER_TYPE');
-
-        if (env('PACKAGE_MANAGER_WORKER_TYPE') == 'github') {
+        if ($gitProvider == 'github') {
             $gitRunnerRepositoryUrl = 'https://'.env('GITHUB_BOT_USERNAME').':'.env('GITHUB_BOT_PASSWORD').'@' . $gitWorkerRepositoryUrl;
-        } else if (env('PACKAGE_MANAGER_WORKER_TYPE') == 'gitlab') {
+        } else if ($gitProvider == 'gitlab') {
             $gitRunnerRepositoryUrl = 'https://'.env('GITLAB_BOT_USERNAME').':'.env('GITLAB_BOT_PASSWORD').'@' . $gitWorkerRepositoryUrl;
         } else {
             return false;
@@ -74,6 +73,7 @@ class PackageManagerGitWorker
           //  $repository->push();
 
             $gitPush = self::gitPush($workerGitPath);
+
             if (isset($gitPush['push']) && $gitPush['push']) {
                 $lastCommitId = $repository->getLastCommitId();
             }
@@ -93,6 +93,14 @@ class PackageManagerGitWorker
         }
 
         if (strpos($status, 'forced update') !== false) {
+            return ['push'=>true];
+        }
+
+        if (strpos($status, 'main -> main') !== false) {
+            return ['push'=>true];
+        }
+
+        if (strpos($status, 'master -> master') !== false) {
             return ['push'=>true];
         }
 
