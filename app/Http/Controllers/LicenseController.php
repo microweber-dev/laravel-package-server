@@ -36,6 +36,10 @@ class LicenseController extends Controller
         }
 
         $consumeLicense = WhmcsLicenseValidatorHelper::licenseConsume($findTeam->whmcsServer->url, $domain, $ip, $license);
+        if (isset($consumeLicense['localkey'])) {
+            unset($consumeLicense['localkey']);
+        }
+        
         if (isset($consumeLicense['status']) && $consumeLicense['status'] == 'Active') {
             return ['valid'=>true,'details'=>$consumeLicense];
         }
