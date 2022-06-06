@@ -117,9 +117,9 @@ class PackagesJsonController extends Controller
         return $this->getTeamPackages($request, $findTeam->id);
     }
 
-    public function singlePackage($vendor, $package, Request $request)
+    public function singlePackage($slug, $package, Request $request)
     {
-        $packageName = $vendor . '/' . $package;
+        $packageName = $slug . '/' . $package;
         $findPackageByName = Package::where('name', $packageName)->first();
         if ($findPackageByName != null) {
 
