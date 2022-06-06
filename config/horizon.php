@@ -174,8 +174,9 @@ return [
             'maxJobs' => 0,
             'memory' => 128,
             'tries' => 1,
-            'timeout' => 60,
+            'timeout' => 3600,
             'nice' => 0,
+
         ],
     ],
 
@@ -186,11 +187,14 @@ return [
                 'maxProcesses' => 1,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
+                'timeout' => 3600
+
             ],
         ],
 
         'local' => [
             'supervisor-1' => [
+                'timeout' => 3600,
                 'connection' => 'redis',
                 'maxProcesses' => 1,
             ],
