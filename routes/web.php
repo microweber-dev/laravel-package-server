@@ -34,11 +34,16 @@ Route::namespace('\App\Http\Controllers')->group(function() {
 
     });
 
+    // Detect by domain
+    Route::get('licenses/check', 'LicenseController@checkFromDomain')->name('license-check');
+    // Detect from slug
+    Route::get('licenses/{slug}/check', 'LicenseController@check')->name('license-check');
+
     Route::get('packages/download-private', 'PackagesJsonController@downloadPrivatePackage')->name('packages.download-private');
 
     Route::any('packages.json', 'PackagesJsonController@index')->name('packages.json');
     Route::any('packages/{slug}/packages.json', 'PackagesJsonController@team')->name('packages.team.packages.json');
-    Route::any('packages/{vendor}/{package}.json', 'PackagesJsonController@singlePackage')->name('packages.team.single-packages.json');
+    Route::any('packages/{slug}/{package}.json', 'PackagesJsonController@singlePackage')->name('packages.team.single-packages.json');
 });
 
 Route::namespace('\App\Http\Controllers')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])->group(function() {
