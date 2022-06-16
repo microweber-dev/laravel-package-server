@@ -196,7 +196,7 @@ class WhmcsLicenseValidatorHelper
                 return $results;
             }
 
-            if ($results['md5hash']) {
+            if (isset($results['md5hash']) && $results['md5hash']) {
                 if ($results['md5hash'] != md5($licensing_secret_key . $check_token)) {
                     $results['status'] = "Invalid";
                     $results['description'] = "MD5 Checksum Verification Failed";

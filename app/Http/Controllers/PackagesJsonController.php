@@ -474,7 +474,7 @@ class PackagesJsonController extends Controller
             $userLicenseKeysMap = [];
 
             if ($userLicenseKeysForValidation && !empty($userLicenseKeysForValidation) && is_array($userLicenseKeysForValidation)) {
-                
+
                 foreach ($userLicenseKeysForValidation as $userLicenseKey) {
                     if (isset($userLicenseKey['local_key']) and trim($userLicenseKey['local_key']) != '') {
                         if(!isset($userLicenseKey['rel_type'])) {
