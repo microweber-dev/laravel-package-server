@@ -203,7 +203,7 @@ class WhmcsLicenseValidatorHelper
                     return $results;
                 }
             }
-            if ($results['status'] == "Active") {
+            if (isset($results['status']) && $results['status'] == "Active") {
                 $results['checkdate'] = $checkdate;
                 $data_encoded = json_encode($results);
                 $data_encoded = base64_encode($data_encoded);
@@ -213,6 +213,7 @@ class WhmcsLicenseValidatorHelper
                 $data_encoded = wordwrap($data_encoded, 80, "\n", true);
                 $results['localkey'] = $data_encoded;
             }
+
             $results['remotecheck'] = true;
         }
         unset($postfields, $data, $matches, $whmcsurl, $licensing_secret_key, $checkdate, $usersip, $localkeydays, $allowcheckfaildays, $md5hash);

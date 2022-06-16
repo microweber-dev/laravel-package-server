@@ -500,12 +500,16 @@ class PackagesJsonController extends Controller
                             ];
                         } else {
                             $messaage = '';
+                            $status = '';
                             if (isset($consumeLicense['message'])) {
                                 $messaage = $consumeLicense['message'];
                             }
+                            if (isset($consumeLicense['status'])) {
+                                $status = $consumeLicense['status'];
+                            }
                             $licenseKeysInvalid[] = [
                                 'message'=> $messaage,
-                                'status'=> mb_strtolower($consumeLicense['status']),
+                                'status'=> mb_strtolower($status),
                                 'license'=> $userLicenseKey,
                             ];
                         }
