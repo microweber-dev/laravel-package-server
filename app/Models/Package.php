@@ -61,7 +61,7 @@ class Package extends Model
         $readmeLink = str_replace('https://example.com/', config('app.url'), $this->readme);
 
         // Fix readme img host links
-        $content = file_get_contents($readmeLink);
+        $content = @file_get_contents($readmeLink);
         $content = str_ireplace('https://example.com/', config('app.url'), $content);
 
         return $content;
