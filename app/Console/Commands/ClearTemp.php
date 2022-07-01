@@ -56,7 +56,6 @@ class ClearTemp extends Command
 
             foreach ($folders as $folder) {
                rmdir_recursive($folder, false);
-               // shell_exec('rm -rf ' . $folder);
             }
         }
 
