@@ -22,6 +22,16 @@ class PackageManagerGitWorker
             return false;
         }
 
+        $checkBuildsFolders = [];
+        $checkBuildsFolders[] = storage_path('package-manager-worker-builds');
+        $checkBuildsFolders[] = storage_path('package-manager-worker-builds-temp');
+
+        foreach ($checkBuildsFolders as $checkBuildsFolder) {
+            if (!is_dir($checkBuildsFolder)) {
+                mkdir_recursive($checkBuildsFolder);
+            }
+        }
+
         $allWorkersPath = storage_path() . '/package-manager-worker/'.md5($satisFile);
         if (!is_dir($allWorkersPath)) {
             mkdir_recursive($allWorkersPath);
