@@ -61,6 +61,7 @@ class MyPackagesEdit extends Component
     public function edit()
     {
         $validation = [];
+        $validation['team_owner_id'] = ['required','integer','not_in:0'];
         $validation['team_ids'] = ['required', 'array', new CanAddRepositoryToTeamRule()];
 
         if (empty($this->package_id)) {

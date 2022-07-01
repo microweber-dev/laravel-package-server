@@ -59,6 +59,7 @@
                 </div>
             </div>
 
+            @error('team_owner_id') <div class="alert alert-danger">{{ $message }}</div> @enderror
            <div class="w-md-75 mt-4 mb-4">
                 <div class="form-group">
                     <x-jet-label for="team_owner_id" value="{{ __('Owner Team') }}" />
