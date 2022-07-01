@@ -10,7 +10,7 @@ class GithubHelper
     public static function getAvailableWorkers()
     {
 
-       $a = GitHub::me()->organizations();
+       $a = GitHub::connection('main')->me()->repositories();
 
        dd($a);
 
