@@ -132,6 +132,7 @@ class TeamPackagesTable extends DataTableComponent
                     'success' => 'Success',
                     'waiting' => 'Waiting',
                     'running'  => 'Running',
+                    'queued'  => 'Queued',
                     'cloning'  => 'Cloning',
                     'failed'  => 'Failed'
                 ])
