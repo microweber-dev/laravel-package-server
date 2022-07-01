@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('package-builder:check-statuses')->everyFiveMinutes();
         $schedule->command('package-builder:queue-waiting-packages')->everyMinute();
+        $schedule->command('package-builder:clear-temp')->everyTenMinutes();
     }
 
     /**
