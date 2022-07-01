@@ -55,7 +55,8 @@ class ClearTemp extends Command
             $folders[] = storage_path('repositories-satis');
 
             foreach ($folders as $folder) {
-                rmdir_recursive($folder);
+              // rmdir_recursive($folder);
+                shell_exec('rm -rf ' . $folder);
             }
         }
 
