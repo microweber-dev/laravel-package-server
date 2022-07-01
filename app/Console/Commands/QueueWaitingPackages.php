@@ -57,10 +57,15 @@ class QueueWaitingPackages extends Command
             $this->error('No packages for dispatching. Time: ' . date('Y-m-d H:i:s'));
             return 0;
         }
-        $this->info('Packages for dispatching:' . $getWaitingPackages->count());
+        $packagesForDispatchingNum = (int) $getWaitingPackages->count();
+        $this->info('Packages for dispatching:' . $packagesForDispatchingNum);
 
         $countDispatchedPackages = 0;
         foreach ($getWaitingPackages as $package) {
+
+            if ($countDispatchedPackages >= $availableWorkers) {
+                break;
+            }
 
             dispatch(new ProcessPackageSatis($package->id, $package->name));
 
@@ -71,15 +76,11 @@ class QueueWaitingPackages extends Command
             $this->info('Dispatch:' . $package->name);
 
             sleep(rand(3,6));
-
             $countDispatchedPackages++;
-            if ($countDispatchedPackages >= $availableWorkers) {
-                break;
-            }
         }
 
         $this->info('Dispatched packages:' . $countDispatchedPackages);
-        $this->info('Waiting Packages:' . $getWaitingPackages->count() - $countDispatchedPackages);
+        $this->info('Waiting Packages:' . ($packagesForDispatchingNum - $countDispatchedPackages));
 
         return 0;
     }
