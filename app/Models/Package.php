@@ -117,13 +117,12 @@ class Package extends Model
                 || ($this->clone_status == self::CLONE_STATUS_QUEUED)
                 || ($this->clone_status == self::CLONE_STATUS_CLONING)
             ) {
-                // Already dispatched
+                // Already waiting
                 return ['dispatched' => false, 'id' => $this->id];
             }
         }
 
-        $this->clone_status = self::CLONE_STATUS_QUEUED;
-        $this->clone_queue_at = Carbon::now();
+        $this->clone_status = self::CLONE_STATUS_WAITING;
         $this->save();
 
         return ['dispatched'=>true,'id'=>$this->id];

@@ -217,6 +217,9 @@ class TeamPackagesTable extends DataTableComponent
                     if ($row->package->clone_status=='running') {
                         return '<span class="badge badge bg-black text-uppercase">Running</span>';
                     }
+                    if ($row->package->clone_status=='queued') {
+                        return '<span class="badge badge bg-black text-uppercase">Queued</span>';
+                    }
                     if ($row->package->clone_status=='cloning') {
                         return '<span class="badge badge bg-black text-uppercase">Cloning</span>';
                     }

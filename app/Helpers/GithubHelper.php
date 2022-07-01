@@ -15,8 +15,6 @@ class GithubHelper
         $response = $client->getHttpClient()->get('/orgs/microweber-api/actions/runners');
         $check = ResponseMediator::getContent($response);
 
-
-        dd($check);
         if (isset($check['runners'])) {
             foreach ($check['runners'] as $runner) {
                 if ($runner['status']=='online' && $runner['busy'] == false) {
