@@ -95,8 +95,7 @@ class ProcessPackageSatisRsync implements ShouldQueue, ShouldBeUnique
         shell_exec("rsync -a ".$this->satisRepositoryOutputPath."/dist/ $outputPublicDist");
         shell_exec("rsync -a ".$this->satisRepositoryOutputPath."/meta/ $outputPublicMeta");
 
-        rmdir_recursive($this->satisRepositoryOutputPath);
-
+        rmdir_recursive($this->satisRepositoryOutputPath, false);
         if ($this->packageBuildZip) {
             @unlink($this->packageBuildZip);
         }
