@@ -42,7 +42,7 @@ return [
 
         'main' => [
             'method'     => 'token',
-            'token'      => '',
+            'token'      => env('PACKAGE_MANAGER_WORKER_TOKEN'),
             // 'backoff'    => false,
             // 'cache'      => false,
             // 'version'    => 'v3',

@@ -10,7 +10,10 @@ class GithubHelper
     public static function getAvailableWorkers()
     {
 
-       $a = GitHub::connection('main')->me()->repositories();
+       $a = GitHub::connection('main')
+           ->repositories()
+           ->selfHostedRunners()
+           ->all('microweber-api', 'package-manager-worker');
 
        dd($a);
 
