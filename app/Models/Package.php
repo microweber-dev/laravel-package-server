@@ -16,6 +16,7 @@ class Package extends Model
     use HasFactory;
 
     public const CLONE_STATUS_WAITING = 'waiting';
+    public const CLONE_STATUS_QUEUED = 'queued';
     public const CLONE_STATUS_RUNNING = 'running';
     public const CLONE_STATUS_CLONING = 'cloning';
     public const CLONE_STATUS_SUCCESS = 'success';
@@ -113,6 +114,7 @@ class Package extends Model
             if ((
                     $this->clone_status == self::CLONE_STATUS_RUNNING)
                 || ($this->clone_status == self::CLONE_STATUS_WAITING)
+                || ($this->clone_status == self::CLONE_STATUS_QUEUED)
                 || ($this->clone_status == self::CLONE_STATUS_CLONING)
             ) {
                 // Already dispatched
@@ -120,11 +122,7 @@ class Package extends Model
             }
         }
 
-        $workers = GithubHelper::getAvailableWorkers();
-
-
-        dispatch(new ProcessPackageSatis($this->id, $this->name));
-        $this->clone_status = self::CLONE_STATUS_WAITING;
+        $this->clone_status = self::CLONE_STATUS_QUEUED;
         $this->clone_queue_at = Carbon::now();
         $this->save();
 
