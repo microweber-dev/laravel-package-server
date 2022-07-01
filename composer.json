@@ -11,6 +11,7 @@
         "erusev/parsedown": "^1.7",
         "fruitcake/laravel-cors": "^2.0",
         "glorand/laravel-model-settings": "^4.4",
+        "graham-campbell/github": "^11.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "joelbutcher/socialstream": "^3.2",
         "laravel/fortify": "^1.8",

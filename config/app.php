@@ -235,7 +235,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
-        'Whmcs' => DarthSoup\Whmcs\Facades\Whmcs::class
+        'Whmcs' => DarthSoup\Whmcs\Facades\Whmcs::class,
+        'GitHub' => GrahamCampbell\GitHub\Facades\GitHub::class,
     ],
 
 ];

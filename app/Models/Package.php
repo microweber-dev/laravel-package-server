@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\Base;
+use App\Helpers\GithubHelper;
 use Carbon\Carbon;
 use App\Jobs\ProcessPackageSatis;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -118,6 +119,9 @@ class Package extends Model
                 return ['dispatched' => false, 'id' => $this->id];
             }
         }
+
+        $workers = GithubHelper::getAvailableWorkers();
+
 
         dispatch(new ProcessPackageSatis($this->id, $this->name));
         $this->clone_status = self::CLONE_STATUS_WAITING;
