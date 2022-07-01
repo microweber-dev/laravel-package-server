@@ -15,9 +15,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+
+        // Important: This command must wait two hours, because of long time of cloning
         $schedule->command('package-builder:check-statuses')->everyTwoHours();
+        $schedule->command('package-builder:clear-temp')->everyTwoHours();
+
+
+        // This is run frequently
         $schedule->command('package-builder:queue-waiting-packages')->everyMinute();
-        $schedule->command('package-builder:clear-temp')->everyTenMinutes();
     }
 
     /**
