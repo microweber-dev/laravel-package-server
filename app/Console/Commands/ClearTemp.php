@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Helpers\GithubHelper;
 use App\Models\Package;
 use Illuminate\Console\Command;
 
@@ -38,7 +39,11 @@ class ClearTemp extends Command
      */
     public function handle()
     {
-
+        $busyWorkers = GithubHelper::getBusyWorkers();
+        if ($busyWorkers != 0) {
+            // wait for all workers to finish
+           return;
+        }
         $getRunningPackages = Package::where('clone_status', Package::CLONE_STATUS_WAITING)
                             ->orWhere('clone_status', Package::CLONE_STATUS_QUEUED)
                             ->orWhere('clone_status', Package::CLONE_STATUS_RUNNING)
@@ -55,7 +60,9 @@ class ClearTemp extends Command
             $folders[] = storage_path('repositories-satis');
 
             foreach ($folders as $folder) {
-               rmdir_recursive($folder, false);
+                // @todo fix this
+                // do not delete the .ftpquota file
+              // rmdir_recursive($folder, false);
             }
         }
 
