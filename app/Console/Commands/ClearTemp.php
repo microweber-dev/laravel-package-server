@@ -55,10 +55,10 @@ class ClearTemp extends Command
 
             // No running packages
             $folders = [];
-            $folders[] = ['path'=>storage_path('package-manager-worker'), 'allowed_files_for_delete'=>['zip']];
+            $folders[] = ['path'=>storage_path('package-manager-worker'), 'allowed_files_for_delete'=>['folders']];
             $folders[] = ['path'=>storage_path('package-manager-worker-builds'), 'allowed_files_for_delete'=>['zip']];
-            $folders[] = ['path'=>storage_path('package-manager-worker-builds-temp'), 'allowed_files_for_delete'=>['zip']];
-            $folders[] = ['path'=>storage_path('repositories-satis'), 'allowed_files_for_delete'=>['zip']];
+            $folders[] = ['path'=>storage_path('package-manager-worker-builds-temp'), 'allowed_files_for_delete'=>['folders']];
+            $folders[] = ['path'=>storage_path('repositories-satis'), 'allowed_files_for_delete'=>['folders']];
 
             foreach ($folders as $folder) {
 
