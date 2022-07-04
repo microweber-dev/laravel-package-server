@@ -41,9 +41,10 @@ class ClearTemp extends Command
     {
         $busyWorkers = GithubHelper::getBusyWorkers();
         if ($busyWorkers != 0) {
-            // wait for all workers to finish
+            // Wait for all workers to finish
            return;
         }
+
         $getRunningPackages = Package::where('clone_status', Package::CLONE_STATUS_WAITING)
                             ->orWhere('clone_status', Package::CLONE_STATUS_QUEUED)
                             ->orWhere('clone_status', Package::CLONE_STATUS_RUNNING)
@@ -54,15 +55,37 @@ class ClearTemp extends Command
 
             // No running packages
             $folders = [];
-            $folders[] = storage_path('package-manager-worker');
-            $folders[] = storage_path('package-manager-worker-builds');
-            $folders[] = storage_path('package-manager-worker-builds-temp');
-            $folders[] = storage_path('repositories-satis');
+            $folders[] = ['path'=>storage_path('package-manager-worker'), 'allowed_files_for_delete'=>['zip']];
+            $folders[] = ['path'=>storage_path('package-manager-worker-builds'), 'allowed_files_for_delete'=>['zip']];
+            $folders[] = ['path'=>storage_path('package-manager-worker-builds-temp'), 'allowed_files_for_delete'=>['zip']];
+            $folders[] = ['path'=>storage_path('repositories-satis'), 'allowed_files_for_delete'=>['zip']];
 
             foreach ($folders as $folder) {
-                // @todo fix this
-                // do not delete the .ftpquota file
-              // rmdir_recursive($folder, false);
+
+                $scanDir = scandir($folder['path']);
+                if (!empty($scanDir)) {
+                    foreach ($scanDir as $pathOrFile) {
+                        if ($pathOrFile == '.' || $pathOrFile == '..') continue;
+
+                        $pathOrFileFullPath = $folder['path'] . DIRECTORY_SEPARATOR . $pathOrFile;
+                        if (is_dir($pathOrFileFullPath)) {
+                            if (in_array('folders', $folder['allowed_files_for_delete'])) {
+                                $this->info('Delete folder: ' . $pathOrFileFullPath);
+                                rmdir_recursive($pathOrFileFullPath, false);
+                            }
+                        }
+
+                        if (is_file($pathOrFileFullPath)) {
+                            $getFileExt = pathinfo($pathOrFileFullPath);
+                            if (isset($getFileExt['extension'])) {
+                                if (in_array($getFileExt['extension'], $folder['allowed_files_for_delete'])) {
+                                    $this->info('Delete file: ' . $pathOrFileFullPath);
+                                    unlink($pathOrFileFullPath);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
