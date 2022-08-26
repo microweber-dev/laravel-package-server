@@ -4181,8 +4181,8 @@ textarea.form-control-lg {
     position: absolute;
   }
   .navbar-expand-md .navbar-nav .nav-link {
-    padding-right: 0.5rem;
-    padding-left: 0.5rem;
+    padding-right: 0.6rem;
+    padding-left: 0.6rem;
   }
   .navbar-expand-md .navbar-nav-scroll {
     overflow: visible;
@@ -4441,6 +4441,7 @@ textarea.form-control-lg {
 }
 .navbar-light .navbar-nav .nav-link {
   color: rgba(0, 0, 0, 0.55);
+    font-size: 14px;
 }
 .navbar-light .navbar-nav .nav-link:hover, .navbar-light .navbar-nav .nav-link:focus {
   color: rgba(0, 0, 0, 0.7);
@@ -4450,7 +4451,9 @@ textarea.form-control-lg {
 }
 .navbar-light .navbar-nav .show > .nav-link,
 .navbar-light .navbar-nav .nav-link.active {
-  color: rgba(0, 0, 0, 0.9);
+    color: #6c757d;
+    background: #f3f4f6;
+    border-radius: 3px;
 }
 .navbar-light .navbar-toggler {
   color: rgba(0, 0, 0, 0.55);

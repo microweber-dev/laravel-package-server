@@ -49,24 +49,40 @@ class RepositoryMediaProcessHelper
 
             // Set extra
             $finder = new Finder();
-            $finder->files()->in($metaFolder)->name(['*.svg', 'video.mp4', 'readme.md','README.md','screenshot.png','screenshot.jpg','screenshot.jpeg','screenshot.gif']);
+            $finder->files()->in($metaFolder)->name(['*.svg', 'video.mp4', 'screenshot.png', 'screenshot.jpg','screenshot.jpeg','screenshot.gif']);
             if ($finder->hasResults()) {
                 foreach ($finder as $file) {
-
-                    // Parse mark down
-                    if ($file->getExtension() == 'md') {
-                        $parseDown = new \Parsedown();
-                        $parseDownHtml = $parseDown->text($file->getContents());
-                        if ($parseDownHtml) {
-                            file_put_contents($file->getRealPath(), $parseDownHtml);
-                        }
-                    }
                     if (file_exists($file->getRealPath())) {
                         $realPathInside = $file->getRealPath();
                         $realPathInside = str_replace($metaFolder,'', $realPathInside);
                         $packageVersion['extra']['_meta'][$file->getFilenameWithoutExtension()] = $metaFolderPublicUrl . $realPathInside;
                     }
                 }
+            }
+
+            // Check for readme.md
+            $markDownReadmeFile = false;
+            if (is_file($metaFolder . 'README.md')) {
+                $markDownReadmeFile = $metaFolder . 'README.md';
+            } else if (is_file($metaFolder . 'readme.md')) {
+                $markDownReadmeFile = $metaFolder . 'readme.md';
+            }
+
+            // Parse mark down
+            if ($markDownReadmeFile) {
+                $markDownReadmeFile = realpath($markDownReadmeFile);
+                $markDownReadmeContent = file_get_contents($markDownReadmeFile);
+
+                $parseDown = new \Parsedown();
+                $parseDownHtml = $parseDown->text($markDownReadmeContent);
+                $parseDownHtml = str_replace('./', $metaFolderPublicUrl, $parseDownHtml);
+
+                if ($parseDownHtml) {
+                    file_put_contents($markDownReadmeFile, $parseDownHtml);
+                }
+
+                $realPathInside = str_replace($metaFolder,'', $markDownReadmeFile);
+                $packageVersion['extra']['_meta']['readme'] = $metaFolderPublicUrl . $realPathInside;
             }
 
             // Remove all files without media files

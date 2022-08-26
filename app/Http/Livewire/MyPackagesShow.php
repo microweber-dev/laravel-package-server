@@ -44,7 +44,7 @@ class MyPackagesShow extends Component
     {
         $package = Package::where('id', $id)->userHasAccess()->first();
 
-        dispatch(new ProcessPackageSatis($package->id));
+        $package->updatePackageWithSatis();
 
         $this->package = $package;
         $this->check_background_job = true;

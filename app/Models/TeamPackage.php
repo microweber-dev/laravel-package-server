@@ -17,14 +17,20 @@ class TeamPackage extends Model
     ];
 
     public $fillable = [
+        'position',
         'is_paid',
         'is_visible',
         'whmcs_product_ids',
+        'package_access_preset_id',
+        'buy_url',
+        'buy_url_from',
     ];
 
     public $casts = [
+        'position'=>'int',
         'is_paid'=>'int',
         'is_visible'=>'int',
+        'package_access_preset_id'=>'int',
         'whmcs_product_ids'=>'array'
     ];
 
@@ -36,5 +42,20 @@ class TeamPackage extends Model
     public function team()
     {
         return $this->hasOne(Team::class, 'id', 'team_id');
+    }
+
+    public function getWhmcsProductIds()
+    {
+        if (is_numeric($this->package_access_preset_id) && $this->package_access_preset_id > 0) {
+
+            $getPreset = PackageAccessPreset::where('id',$this->package_access_preset_id)->first();
+            if ($getPreset !== null) {
+                if(isset($getPreset->settings['whmcs_product_ids'])) {
+                   return $getPreset->settings['whmcs_product_ids'];
+                }
+            }
+        }
+
+        return $this->whmcs_product_ids;
     }
 }

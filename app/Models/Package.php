@@ -2,8 +2,13 @@
 
 namespace App\Models;
 
+use App\Helpers\Base;
+use App\Helpers\GithubHelper;
+use Carbon\Carbon;
+use App\Jobs\ProcessPackageSatis;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use Laravel\Jetstream\Jetstream;
 
 class Package extends Model
@@ -11,9 +16,26 @@ class Package extends Model
     use HasFactory;
 
     public const CLONE_STATUS_WAITING = 'waiting';
+    public const CLONE_STATUS_QUEUED = 'queued';
     public const CLONE_STATUS_RUNNING = 'running';
+    public const CLONE_STATUS_CLONING = 'cloning';
     public const CLONE_STATUS_SUCCESS = 'success';
     public const CLONE_STATUS_FAILED = 'failed';
+
+    public function getLatestDistUrl()
+    {
+        $json = json_decode($this->package_json, true);
+
+        if (is_array($json)) {
+            $json = end($json);
+            $json = end($json);
+            if (isset($json['dist']['url'])) {
+                return $json['dist']['url'];
+            }
+        }
+
+        return false;
+    }
 
     public function scopeUserHasAccess($query)
     {
@@ -38,7 +60,13 @@ class Package extends Model
 
     public function readme()
     {
-        return @file_get_contents(str_replace('https://example.com/', config('app.url'), $this->readme));
+        $readmeLink = str_replace('https://example.com/', config('app.url'), $this->readme);
+
+        // Fix readme img host links
+        $content = @file_get_contents($readmeLink);
+        $content = str_ireplace('https://example.com/', config('app.url'), $content);
+
+        return $content;
     }
 
     public function displayName()
@@ -78,5 +106,25 @@ class Package extends Model
         }
 
         return $ids;
+    }
+
+    public function updatePackageWithSatis($forceUpdate = false)
+    {
+        if (!$forceUpdate) {
+            if ((
+                    $this->clone_status == self::CLONE_STATUS_RUNNING)
+                || ($this->clone_status == self::CLONE_STATUS_WAITING)
+                || ($this->clone_status == self::CLONE_STATUS_QUEUED)
+                || ($this->clone_status == self::CLONE_STATUS_CLONING)
+            ) {
+                // Already waiting
+                return ['dispatched' => false, 'id' => $this->id];
+            }
+        }
+
+        $this->clone_status = self::CLONE_STATUS_WAITING;
+        $this->save();
+
+        return ['dispatched'=>true,'id'=>$this->id];
     }
 }

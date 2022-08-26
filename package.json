@@ -17,6 +17,7 @@
         "axios": "^0.21",
         "bootstrap": "^5.1.0",
         "laravel-mix": "^6.0.6",
+        "livewire-sortable": "^0.2.2",
         "lodash": "^4.17.19",
         "postcss": "^8.1.14",
         "postcss-import": "^14.0.1",

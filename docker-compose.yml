@@ -1,0 +1,43 @@
+version: '3'
+services:
+  composer_installation:
+    container_name: composer_installation
+    depends_on:
+      - 'mysql'
+      - 'php-apache'
+    links:
+      - 'mysql'
+    image: composer
+    volumes:
+      - ./:/app
+    command: composer install --ignore-platform-reqs --no-interaction
+  php-apache:
+    container_name: php-apache
+    image: thecodingmachine/php:8.1-v4-apache
+    ports:
+      - 80:80
+    volumes:
+     - ./:/var/www/html
+    links:
+      - 'mysql'
+    environment:
+      APACHE_EXTENSION_DAV: 0
+      APACHE_DOCUMENT_ROOT: /var/www/html/public
+      PHP_INI_MEMORY_LIMIT: 10g
+      PHP_INI_ERROR_REPORTING: E_ALL
+      PHP_EXTENSIONS: pgsql gettext imap sockets dom gd mbstring zip curl soap xml xmlrpc fileinfo intl xml pdo_sqlite pdo_mysql pdo_pgsql
+  mysql:
+    container_name: mysql
+    image: mariadb:10.3
+    volumes:
+    - mysql:/var/lib/mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: 'laravel'
+      MYSQL_PASSWORD: 'laravel'
+      MYSQL_DATABASE: 'laravel'
+    ports:
+      - 3306:3306
+volumes:
+  mysql:

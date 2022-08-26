@@ -6,18 +6,23 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "czproject/git-php": "^4.0",
         "darthsoup/laravel-whmcs": "^0.3.1",
         "erusev/parsedown": "^1.7",
         "fruitcake/laravel-cors": "^2.0",
         "glorand/laravel-model-settings": "^4.4",
+        "graham-campbell/github": "^11.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "joelbutcher/socialstream": "^3.2",
         "laravel/fortify": "^1.8",
         "laravel/framework": "^8.75",
+        "laravel/horizon": "^5.9",
         "laravel/jetstream": "^2.5",
         "laravel/sanctum": "^2.11",
+        "laravel/telescope": "^4.9",
         "laravel/tinker": "^2.5",
-        "livewire/livewire": "dev-master",
+        "livewire/livewire": "*",
+        "rappasoft/laravel-livewire-tables": "^2.7",
         "symfony/filesystem": "^5.4",
         "symplify/git-wrapper": "^9.3"
     },
@@ -35,7 +40,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

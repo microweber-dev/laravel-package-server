@@ -1,9 +1,9 @@
 <div class="row">
 
     <x-slot name="header">
-        <h2 class="h4 font-weight-bold">
-            {{ __('My Packages') }}
-        </h2>
+        <div class="font-weight-bold">
+            {{ __('General Packages') }}
+        </div>
     </x-slot>
 
     @if ($checkBackgroundJob)
@@ -47,10 +47,15 @@
                      Add Package
                     </a>
                 </div>
-                <div class="col-md-2">
-                    <button type="button" wire:click="updateAllPacakges" class="btn btn-outline-dark">
-                     Update all
-                    </button>
+                <div class="col-md-3">
+                    <div class="btn-group">
+                        <button type="button" wire:click="updateAllPacakges" class="btn btn-outline-dark">
+                         Update all
+                        </button>
+                        <button type="button" wire:click="updateAllFailedPacakges" class="btn btn-outline-danger">
+                         Update all failed
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -59,8 +64,10 @@
         <table class="table table-bordered bg-white">
             <thead>
             <tr>
-                <th scope="col">Details</th>
-                <th scope="col">Repository Url</th>
+                <th scope="col">#</th>
+                <th scope="col" style="width: 20px">Screenshot</th>
+                <th scope="col" style="width: 500px">Details</th>
+                <th scope="col" style="width: 20px">Provider</th>
                 <th scope="col">Status</th>
                 <th scope="col">Last Update</th>
                 <th scope="col">Action</th>
@@ -69,6 +76,7 @@
             <tbody>
             @foreach ($packages as $package)
                 <tr>
+                    <td><b> {{$package->id}}</b></td>
                     <td>
                         @if(!empty($package->screenshot))
                           <div style="max-height:100px;text-align:center;overflow: hidden;">
@@ -87,17 +95,24 @@
                            <div> <span class="badge bg-success">v{{$package->version}}</span></div>
                         @endif
 
-                        @if($package->clone_status != \App\Models\Package::CLONE_STATUS_SUCCESS)
+                        @if($package->clone_status == \App\Models\Package::CLONE_STATUS_FAILED)
                             <div style="max-height: 100px;max-width: 700px;overflow: scroll" class="text-danger">
                                 {{$package->clone_log}}
                             </div>
                         @endif
                     </td>
+                    <td style="text-align: center;margin-top: 15px">
+                        <a href="{{$package->repository_url}}" target="_blank" title="Visit the repository">
+                            <img src="{{asset('/')}}images/{{\App\Helpers\RepositoryPathHelper::getRepositoryProviderByUrl($package->repository_url)}}.svg" />
+                        </a>
+                    </td>
                     <td>
                         @if($package->clone_status == \App\Models\Package::CLONE_STATUS_SUCCESS)
                         <span class="badge bg-success">{{$package->clone_status}}</span>
-                        @else
+                        @elseif($package->clone_status == \App\Models\Package::CLONE_STATUS_FAILED)
                             <span class="badge bg-danger">{{$package->clone_status}}</span>
+                        @else
+                            <span class="badge bg-primary">{{$package->clone_status}}</span>
                         @endif
                     </td>
                     <td>{{$package->updated_at}}</td>

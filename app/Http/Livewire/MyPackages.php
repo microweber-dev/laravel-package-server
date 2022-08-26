@@ -44,7 +44,7 @@ class MyPackages extends Component
     {
         $package = Package::where('id', $id)->userHasAccess()->first();
 
-        dispatch(new ProcessPackageSatis($package->id));
+        $package->updatePackageWithSatis();
 
         $this->checkBackgroundJob = true;
 
@@ -55,7 +55,19 @@ class MyPackages extends Component
         $packages = Package::select(['id','user_id'])->userHasAccess()->get();
         if ($packages->count() > 0) {
             foreach ($packages as $package) {
-                dispatch(new ProcessPackageSatis($package->id));
+                $package->updatePackageWithSatis();
+            }
+            $this->checkBackgroundJob = true;
+        }
+
+    }
+
+    public function updateAllFailedPacakges()
+    {
+        $packages = Package::select(['id','user_id'])->where('clone_status', Package::CLONE_STATUS_FAILED)->userHasAccess()->get();
+        if ($packages->count() > 0) {
+            foreach ($packages as $package) {
+                $package->updatePackageWithSatis();
             }
             $this->checkBackgroundJob = true;
         }

@@ -16,7 +16,7 @@ class WebhookController extends Controller
         if (isset($hookJson['project']['web_url'])) {
             $findPackage = Package::where('repository_url', $hookJson['project']['web_url'])->first();
             if ($findPackage != null) {
-                dispatch(new ProcessPackageSatis($findPackage->id));
+                dispatch(new ProcessPackageSatis($findPackage->id, $findPackage->name));
                 return ['success' => true];
             }
         }
@@ -25,7 +25,7 @@ class WebhookController extends Controller
         if (isset($hookJson['repository']['full_name'])) {
             $findPackage = Package::where('name', $hookJson['repository']['full_name'])->first();
             if ($findPackage != null) {
-                dispatch(new ProcessPackageSatis($findPackage->id));
+                dispatch(new ProcessPackageSatis($findPackage->id, $findPackage->name));
                 return ['success' => true];
             }
         }

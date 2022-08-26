@@ -1,13 +1,13 @@
 <div class="row">
 
     <x-slot name="header">
-        <h2 class="h4 font-weight-bold">
+        <div class="font-weight-bold">
             @if($package_id)
                 {{ __('Edit package') }}
             @else
                 {{ __('Add package') }}
             @endif
-        </h2>
+        </div>
     </x-slot>
 
 
@@ -59,6 +59,7 @@
                 </div>
             </div>
 
+            @error('team_owner_id') <div class="alert alert-danger">{{ $message }}</div> @enderror
            <div class="w-md-75 mt-4 mb-4">
                 <div class="form-group">
                     <x-jet-label for="team_owner_id" value="{{ __('Owner Team') }}" />

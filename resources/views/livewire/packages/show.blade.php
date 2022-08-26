@@ -1,9 +1,9 @@
 <div class="row">
 
     <x-slot name="header">
-        <h2 class="h4 font-weight-bold">
+        <div class="font-weight-bold">
             {{ __('Show package') }} >  {{$package->description}}
-        </h2>
+        </div>
     </x-slot>
 
     <div class="row">
@@ -66,7 +66,7 @@
                             @endif
                             </div>
 
-                            <div class="mt-3"> 
+                            <div class="mt-3">
                                 <b>Last update: {{$package->updated_at}}</b>
                             </div>
 

@@ -61,6 +61,7 @@ class MyPackagesEdit extends Component
     public function edit()
     {
         $validation = [];
+        $validation['team_owner_id'] = ['required','integer','not_in:0'];
         $validation['team_ids'] = ['required', 'array', new CanAddRepositoryToTeamRule()];
 
         if (empty($this->package_id)) {
@@ -77,7 +78,8 @@ class MyPackagesEdit extends Component
         $user = auth()->user();
 
         $newPackageAdd = false;
-        $package = Package::where('user_id', $user->id)->where('id', $this->package_id)->first();
+        $package = Package::where('id', $this->package_id)->userHasAccess()->first();
+
         if ($package == null) {
 
             $package = new Package();
@@ -97,7 +99,7 @@ class MyPackagesEdit extends Component
         }
 
         if ($newPackageAdd) {
-            dispatch(new ProcessPackageSatis($package->id));
+            $package->updatePackageWithSatis();
         }
 
         $this->redirect(route('my-packages').'?check_for_background_job=1');

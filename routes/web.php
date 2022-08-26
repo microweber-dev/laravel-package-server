@@ -14,24 +14,41 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+
+    if (\Illuminate\Support\Facades\Auth::check()) {
+        return redirect('team-packages');
+    }
     return view('welcome');
 });
 
 
 Route::namespace('\App\Http\Controllers')->group(function() {
 
-    Route::any('webhook', 'WebhookController@index')
-        ->middleware(\Illuminate\Routing\Middleware\ThrottleRequests::class)
+    Route::middleware(\Illuminate\Routing\Middleware\ThrottleRequests::class)
         ->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class)
-        ->name('webhook');
+        ->group(function() {
+
+        Route::any('git-worker-webhook', 'GitWorkerWebhookController@index')->name('git-worker-webhook');
+        Route::any('git-notification-webhook', 'GitWorkerWebhookController@notification')->name('git-webhook-notification');
+        Route::any('webhook', 'WebhookController@index')->name('webhook');
+
+    });
+
+    // Detect by domain
+    Route::get('licenses/check', 'LicenseController@checkFromDomain')->name('license-check');
+    // Detect from slug
+    Route::get('licenses/{slug}/check', 'LicenseController@check')->name('license-check');
+
+    Route::get('packages/download-private', 'PackagesJsonController@downloadPrivatePackage')->name('packages.download-private');
 
     Route::any('packages.json', 'PackagesJsonController@index')->name('packages.json');
     Route::any('packages/{slug}/packages.json', 'PackagesJsonController@team')->name('packages.team.packages.json');
-    Route::any('packages/{vendor}/{package}.json', 'PackagesJsonController@singlePackage')->name('packages.team.single-package.json');
+    Route::any('packages/{slug}/{package}.json', 'PackagesJsonController@singlePackage')->name('packages.team.single-packages.json');
 });
 
 Route::namespace('\App\Http\Controllers')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])->group(function() {
-    Route::post('packages/download-notify', 'PackagesJsonController@downloadNotify')->name('packages.download-notify');
+    Route::post('packages/download-notify', 'PackageInstallNotifyController@downloadNotify')->name('packages.download-notify');
+    Route::post('packages/download-notify-private', 'PackageInstallNotifyController@downloadNotifyPrivate')->name('packages.download-notify-private');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function() {

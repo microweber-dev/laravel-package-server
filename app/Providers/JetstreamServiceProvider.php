@@ -10,6 +10,7 @@ use App\Actions\Jetstream\InviteTeamMember;
 use App\Actions\Jetstream\RemoveTeamMember;
 use App\Actions\Jetstream\UpdateTeamName;
 use App\Http\Livewire\UpdateTeamNameForm;
+use App\Http\Livewire\UpdateTeamPackageAccessPresets;
 use App\Http\Livewire\UpdateTeamPackageManagerForm;
 use App\Http\Livewire\UpdateTeamWhmcsForm;
 use Illuminate\Support\ServiceProvider;
@@ -30,6 +31,7 @@ class JetstreamServiceProvider extends ServiceProvider
         $this->app->afterResolving(BladeCompiler::class, function () {
             Livewire::component('teams.update-team-package-manager-form', UpdateTeamPackageManagerForm::class);
             Livewire::component('teams.update-team-whmcs-form', UpdateTeamWhmcsForm::class);
+            Livewire::component('teams.update-team-package-access-presets', UpdateTeamPackageAccessPresets::class);
             Livewire::component('teams.update-team-name-form', UpdateTeamNameForm::class);
         });
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Helpers\GithubHelper;
 use App\Jobs\ProcessPackageSatis;
 use App\Jobs\ProcessPackageSubmit;
 use App\Models\Package;
@@ -15,23 +16,16 @@ use Livewire\WithPagination;
 class TeamPackages extends Component
 {
     use AuthorizesRequests;
-    use WithPagination;
-
-    protected $paginationTheme = 'bootstrap';
 
     public $team;
     public $keyword = '';
     public $check_background_job = false;
 
-    public $confirming_delete_id = true;
     public $add_existing_repository_url = '';
     public $add_existing_repository_id = false;
     public $show_add_team_package_form = false;
     public $add_from_existing = false;
     public $existing_packages_grouped = [];
-
-    public $is_visible = [];
-    public $is_paid = [];
 
     public function showAddTeamPackageForm()
     {
@@ -74,7 +68,7 @@ class TeamPackages extends Component
             }
         }
 
-        // Is visible
+      /*  // Is visible
         if (!empty($this->is_visible)) {
            foreach ($this->is_visible as $packageId=>$isVisible) {
                $isVisible = intval($isVisible);
@@ -85,12 +79,14 @@ class TeamPackages extends Component
                    if (((int) $findTeamPackageEdit->is_visible) != $isVisible) {
                        $findTeamPackageEdit->is_visible = $isVisible;
                        $findTeamPackageEdit->save();
+
+                       $this->confirming_is_visible = false;
                    }
                }
            }
-        }
+        }*/
 
-        // Is paid
+       /* // Is paid
         if (!empty($this->is_paid)) {
            foreach ($this->is_paid as $packageId=>$isPaid) {
                $isPaid = intval($isPaid);
@@ -101,12 +97,14 @@ class TeamPackages extends Component
                    if (((int) $findTeamPackageEdit->is_paid) != $isPaid) {
                        $findTeamPackageEdit->is_paid = $isPaid;
                        $findTeamPackageEdit->save();
+
+                       $this->confirming_is_paid = false;
                    }
                }
            }
-        }
+        }*/
 
-        $teamPackages = TeamPackage::where('team_id', $teamId)
+    /*    $teamPackages = TeamPackage::where('team_id', $teamId)
             ->whereHas('package', function (Builder $query) {
            //     $query->where('clone_status',Package::CLONE_STATUS_SUCCESS);
             })
@@ -121,10 +119,27 @@ class TeamPackages extends Component
                 $this->is_visible[$teamPackage->id] = (int) $teamPackage->is_visible;
                 $this->is_paid[$teamPackage->id] = (int) $teamPackage->is_paid;
             }
+        }*/
+
+        return view('livewire.team-packages.index');
+
+    }
+
+    public function reorderPackagesByNew() {
+
+        $user = auth()->user();
+        $teamId = $user->currentTeam->id;
+
+        $teamPackages = TeamPackage::where('team_id', $teamId)->orderBy('id','desc')->get();
+        if (!empty($teamPackages)) {
+            $position = 1;
+            foreach ($teamPackages as $package) {
+                $package->position = $position;
+                $package->save();
+                $position++;
+            }
         }
-
-        return view('livewire.team-packages.index', compact('teamPackages'));
-
+        return $this->redirect(route('team-packages'));
     }
 
     public function addTeamPackage()
@@ -159,42 +174,6 @@ class TeamPackages extends Component
         $this->show_add_team_package_form = false;
         $this->add_from_existing = false;
         $this->add_existing_repository_id = false;
-    }
-
-
-    public function confirmDelete($id)
-    {
-        $this->confirming_delete_id = $id;
-    }
-
-    public function delete($id)
-    {
-        $user = auth()->user();
-        $team = $user->currentTeam;
-
-        if (!$user->hasTeamRole($team, 'admin')) {
-           return [];
-        }
-
-        $findTeamPackage = TeamPackage::where('id', $id)->where('team_id', $team->id)->first();
-        $findTeamPackage->delete();
-    }
-
-    public function packageUpdate($id)
-    {
-        $user = auth()->user();
-
-        $package = Package::where('id',$id)
-           // ->userHasAccess()
-            ->first();
-        if ($package == null) {
-            return [];
-        }
-
-        dispatch(new ProcessPackageSatis($package->id));
-
-        $this->check_background_job = true;
-
     }
 
 }

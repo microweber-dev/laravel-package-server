@@ -89,4 +89,14 @@ class Team extends JetstreamTeam
     {
         return $this->belongsToMany(Package::class, 'team_packages')->withTimestamps();
     }
+
+    public function packageAccessPresets()
+    {
+        return $this->hasMany(PackageAccessPreset::class);
+    }
+
+    public function whmcsServer()
+    {
+        return $this->hasOne(WhmcsServer::class);
+    }
 }
