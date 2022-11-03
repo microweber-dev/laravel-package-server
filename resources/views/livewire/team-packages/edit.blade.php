@@ -122,6 +122,7 @@
                 </h5>
 
                 <select class="form-control" wire:model="package_access_preset_id">
+                    <option value="0">Please select</option>
                     @if(!empty($package_access_presets))
                         @foreach($package_access_presets as $preset)
                              <option value="{{$preset->id}}">{{$preset->name}}</option>
