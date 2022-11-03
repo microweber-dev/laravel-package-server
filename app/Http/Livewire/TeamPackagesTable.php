@@ -240,13 +240,16 @@ class TeamPackagesTable extends DataTableComponent
                     '1' => '<span class="badge badge bg-success text-uppercase">Visible</span>'
                 ])
                 ->sortable(),
-            BooleanSwitchColumn::make('Paid', 'is_paid')
-                ->options([
-                    '0' => '<span class="badge badge bg-success text-uppercase">Free</span>',
-                    '1' => '<span class="badge badge bg-primary text-uppercase">$ Paid</span>',
-                ])
-                ->sortable(),
 
+            HtmlColumn::make('Clone Status','is_paid')
+                ->setOutputHtml(function($row) {
+                    if ($row->is_paid == 1) {
+                        if (!empty($row->getWhmcsProductIds())) {
+                            return '<span class="badge badge bg-primary text-uppercase">$ Paid</span>';
+                        }
+                    }
+                    return '<span class="badge badge bg-success text-uppercase">Free</span>';
+                }),
 
             HtmlColumn::make('Full size','package.clone_status')
                 ->setOutputHtml(function($row) {
@@ -324,7 +327,7 @@ class TeamPackagesTable extends DataTableComponent
         $team = $user->currentTeam;
 
         $query = TeamPackage::query();
-        $query->select(['team_packages.id','team_packages.team_id','team_packages.package_id']);
+        $query->select(['team_packages.id','team_packages.package_access_preset_id','team_packages.is_paid','team_packages.team_id','team_packages.package_id']);
         $query->where('team_id', $team->id);
 
         $query->whereHas('package');
