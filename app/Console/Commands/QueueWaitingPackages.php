@@ -67,6 +67,11 @@ class QueueWaitingPackages extends Command
                 break;
             }
 
+            $availableWorkers = GithubHelper::getAvailableWorkers();
+            if ($availableWorkers == 0) {
+                break;
+            }
+
             dispatch(new ProcessPackageSatis($package->id, $package->name));
 
             $package->clone_status = Package::CLONE_STATUS_QUEUED;
@@ -75,7 +80,7 @@ class QueueWaitingPackages extends Command
 
             $this->info('Dispatch:' . $package->name);
 
-            sleep(rand(3,6));
+            sleep(rand(10, 15));
             $countDispatchedPackages++;
         }
 
