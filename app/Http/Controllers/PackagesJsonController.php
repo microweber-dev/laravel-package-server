@@ -198,6 +198,17 @@ class PackagesJsonController extends Controller
             }
         }
 
+        $requestIp = Base::userIp();
+
+        // Check this ip is server licensed
+        $findPleskServer = PleskServer::where('server_ip', $requestIp)->first();
+        if ($findPleskServer) {
+            $findPleskServer->access_count =  $findPleskServer->access_count + 1;
+            $findPleskServer->last_access_date = Carbon::now();
+            $findPleskServer->save();
+            $logged = true;
+        }
+
         $authHeader = $request->header('authorization', false);
         if ($authHeader) {
 
