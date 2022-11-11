@@ -139,6 +139,14 @@ class PackagesJsonController extends Controller
     {
         ini_set('memory_limit', '512M');
 
+        /*file_put_contents(storage_path(time() . '-plesk-file.txt'),
+            json_encode([
+                'request'=>$_REQUEST,
+                'request'=>$_SERVER,
+            ],JSON_PRETTY_PRINT
+            )
+        );*/
+
         $findTeam = Team::where('id', $teamId)->with('whmcsServer')->first();
         if ($findTeam == null) {
             return [];
@@ -190,14 +198,18 @@ class PackagesJsonController extends Controller
 
         $authHeader = $request->header('authorization', false);
         if ($authHeader) {
+
             $authDecode = str_replace('Basic','', $authHeader);
             $authDecode = trim($authDecode);
             $authDecode = base64_decode($authDecode);
 
-            if (str_contains($authDecode, 'plesk|')) {
-                // Request from plesk
+            if (str_contains($authDecode, 'license:')) {
+
+                $authDecode = str_replace('license:','', $authDecode);
+                $authDecode = trim($authDecode);
+                $authDecode = base64_decode($authDecode);
                 $authDecodeLicenses = json_decode($authDecode, true);
-                if (!empty($authDecodeLicenses)) {
+                if (!empty($authDecodeLicenses) && is_array($authDecodeLicenses)) {
                     foreach ($authDecodeLicenses as $decodeLicense) {
                         if (str_contains($decodeLicense, 'plesk|')) {
                             $decodeLicense = str_replace('plesk|', false, $decodeLicense);
