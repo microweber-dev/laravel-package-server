@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Base;
 use App\Helpers\StringHelper;
 use App\Helpers\WhmcsLicenseValidatorHelper;
 use App\Models\License;
 use App\Models\LicenseLog;
 use App\Models\Package;
 use App\Models\PackageDownloadStats;
+use App\Models\PleskServer;
 use App\Models\Team;
 use App\Models\TeamPackage;
 use App\Models\WhmcsServer;
@@ -214,12 +216,78 @@ class PackagesJsonController extends Controller
                         if (str_contains($decodeLicense, 'plesk|')) {
                             $decodeLicense = str_replace('plesk|', false, $decodeLicense);
                             $decodeLicenseData = json_decode(base64_decode($decodeLicense), true);
-
-                            dd($decodeLicenseData);
-
                             if (isset($decodeLicenseData['lim_date'])
                                 && isset($decodeLicenseData['active'])
                                 && $decodeLicenseData['active'] == true) {
+
+                                $findPleskServer = PleskServer::where('product',$decodeLicenseData['product'])
+                                                            ->where('key_number', $decodeLicenseData['key-number'])
+                                                            ->first();
+                                if ($findPleskServer == null) {
+
+                                    $findPleskServer = new PleskServer();
+
+                                    if (isset($decodeLicenseData['number'])) {
+                                        $findPleskServer->number = $decodeLicenseData['number'];
+                                    }
+
+                                    if (isset($decodeLicenseData['name'])) {
+                                        $findPleskServer->name = $decodeLicenseData['name'];
+                                    }
+
+                                    if (isset($decodeLicenseData['app'])) {
+                                        $findPleskServer->app = $decodeLicenseData['app'];
+                                    }
+
+                                    if (isset($decodeLicenseData['product'])) {
+                                        $findPleskServer->product = $decodeLicenseData['product'];
+                                    }
+
+                                    if (isset($decodeLicenseData['start-date'])) {
+                                        $findPleskServer->start_date = $decodeLicenseData['start-date'];
+                                    }
+
+                                    if (isset($decodeLicenseData['lim_date'])) {
+                                        $findPleskServer->lim_date = $decodeLicenseData['lim_date'];
+                                    }
+
+                                    if (isset($decodeLicenseData['license-server-url'])) {
+                                        $findPleskServer->license_server_url = $decodeLicenseData['license-server-url'];
+                                    }
+
+                                    if (isset($decodeLicenseData['product'])) {
+                                        $findPleskServer->license_update_date = $decodeLicenseData['license_update_date'];
+                                    }
+
+                                    if (isset($decodeLicenseData['key-number'])) {
+                                        $findPleskServer->key_number = $decodeLicenseData['key-number'];
+                                    }
+
+                                    if (isset($decodeLicenseData['key-version'])) {
+                                        $findPleskServer->key_version = $decodeLicenseData['key-version'];
+                                    }
+
+                                    if (isset($decodeLicenseData['key-body'])) {
+                                        $findPleskServer->key_body = $decodeLicenseData['key-body'];
+                                    }
+
+                                    if (isset($decodeLicenseData['extension_info'])) {
+                                        $findPleskServer->extension_info = $decodeLicenseData['extension_info'];
+                                    }
+
+                                    if (isset($decodeLicenseData['properties-config'])) {
+                                        $findPleskServer->properties_config = $decodeLicenseData['properties-config'];
+                                    }
+
+                                    $findPleskServer->first_access_date = Carbon::now();
+                                    $findPleskServer->access_count = 0;
+                                }
+
+                                $findPleskServer->server_ip = Base::userIp();
+                                $findPleskServer->access_count = $findPleskServer->access_count + 1;
+                                $findPleskServer->last_access_date = Carbon::now();
+                                $findPleskServer->save();
+
                                 $logged = true;
                             }
                         }

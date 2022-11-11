@@ -9,5 +9,4 @@ class PleskServer extends Model
 {
     use HasFactory;
 
-    
 }
