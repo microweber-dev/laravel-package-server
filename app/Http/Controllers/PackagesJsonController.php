@@ -214,6 +214,9 @@ class PackagesJsonController extends Controller
                         if (str_contains($decodeLicense, 'plesk|')) {
                             $decodeLicense = str_replace('plesk|', false, $decodeLicense);
                             $decodeLicenseData = json_decode(base64_decode($decodeLicense), true);
+
+                            dd($decodeLicenseData);
+
                             if (isset($decodeLicenseData['lim_date'])
                                 && isset($decodeLicenseData['active'])
                                 && $decodeLicenseData['active'] == true) {
