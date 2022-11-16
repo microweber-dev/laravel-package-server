@@ -224,7 +224,7 @@ class PackagesJsonController extends Controller
                 $authDecodeLicenses = json_decode($authDecode, true);
                 if (!empty($authDecodeLicenses) && is_array($authDecodeLicenses)) {
                     foreach ($authDecodeLicenses as $decodeLicense) {
-                        if (str_contains($decodeLicense, 'plesk|')) {
+                        if (is_string($decodeLicense) && str_contains($decodeLicense, 'plesk|')) {
                             $decodeLicense = str_replace('plesk|', false, $decodeLicense);
                             $decodeLicenseData = json_decode(base64_decode($decodeLicense), true);
                             if (isset($decodeLicenseData['lim_date'])
