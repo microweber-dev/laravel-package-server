@@ -41,7 +41,7 @@ class CheckBuildedPackagesStatuses extends Command
     {
         $getPackages = Package::select(['id','name','description','clone_status'])
             ->whereNotIn('clone_status', [Package::CLONE_STATUS_SUCCESS])
-            ->whereDate('clone_queue_at', '<=', Carbon::now()->subMinutes(120))
+            ->whereDate('clone_queue_at', '<=', Carbon::now()->subHours(4))
             ->get();
 
         foreach ($getPackages as $package) {
