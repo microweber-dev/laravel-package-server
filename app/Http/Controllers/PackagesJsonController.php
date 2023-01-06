@@ -164,6 +164,7 @@ class PackagesJsonController extends Controller
             ->where('is_visible', 1)
             ->orderBy('position','asc')
             ->with('package')
+            ->with('packageAccessPreset')
             ->get();
 
         if ($teamPackages == null) {
@@ -344,6 +345,8 @@ class PackagesJsonController extends Controller
                             'team_id' => $teamPackage->team_id,
                             'package_id' => $teamPackage->package_id,
                             'team_package_id' => $teamPackage->id,
+                            'package_access_preset_id' => $teamPackage->package_access_preset_id,
+                            'package_access_preset_settings' => $teamPackage->packageAccessPreset->settings,
                             'whmcs_primary_product_id' => $teamPackage->whmcs_primary_product_id,
                             'whmcs_product_ids' => $teamPackage->getWhmcsProductIds(),
                             'whmcs_server' => $whmcsServer,
@@ -491,6 +494,12 @@ class PackagesJsonController extends Controller
 
                 if ($teamPackage['buy_url_from'] == 'custom') {
                     $package['extra']['whmcs']['buy_link'] = $teamPackage['buy_url'];
+                }
+
+                if ($teamPackage['buy_url_from'] == 'package_access_preset') {
+                    if (isset($teamPackage['package_access_preset_settings']['buy_url'])) { 
+                        $package['extra']['whmcs']['buy_link'] = $teamPackage['package_access_preset_settings']['buy_url'];
+                    }
                 }
 
             }

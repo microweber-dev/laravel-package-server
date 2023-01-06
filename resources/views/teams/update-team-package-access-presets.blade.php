@@ -53,7 +53,20 @@
                         @endforeach
                     @endif
 
-                <div class="d-flex align-items-baseline">
+                    <div class="w-md-75">
+                        <div class="form-group">
+                            <x-jet-label for="buy_url" value="{{ __('Buy Url') }}"/>
+
+                            <x-jet-input id="buy_url"
+                                         type="text"
+                                         class="{{ $errors->has('buy_url') ? 'is-invalid' : '' }}"
+                                         wire:model.defer="buy_url" />
+
+                            <x-jet-input-error for="buy_url"/>
+                        </div>
+                    </div>
+
+                <div class="d-flex align-items-baseline mt-4">
                     @if ($presetEdit)
                         <button type="button" wire:click="save({{$presetId}})" class="btn btn-outline-dark">Save</button>
                     @else

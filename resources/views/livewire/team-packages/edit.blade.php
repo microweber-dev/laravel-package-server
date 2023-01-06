@@ -78,6 +78,7 @@
             <h5>Generate Buy link from:</h5>
             <select class="form-control" name="buy_url_from" wire:model="buy_url_from">
                 <option value="license">WHMCS Plan\License</option>
+                <option value="package_access_preset">Package Access Preset</option>
                 <option value="custom">Custom</option>
             </select>
 

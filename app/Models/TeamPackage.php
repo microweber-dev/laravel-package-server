@@ -44,6 +44,11 @@ class TeamPackage extends Model
         return $this->hasOne(Team::class, 'id', 'team_id');
     }
 
+    public function packageAccessPreset()
+    {
+        return $this->hasOne(PackageAccessPreset::class, 'id', 'package_access_preset_id');
+    }
+
     public function getWhmcsProductIds()
     {
         if (is_numeric($this->package_access_preset_id) && $this->package_access_preset_id > 0) {

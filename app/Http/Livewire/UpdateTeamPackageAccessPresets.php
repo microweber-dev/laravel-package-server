@@ -28,6 +28,7 @@ class UpdateTeamPackageAccessPresets extends Component
 
     public $title = '';
     public $whmcs_product_ids = [];
+    public $buy_url = '';
     public $showPresetForm = false;
     public $presetId = false;
     public $presetEdit = false;
@@ -71,6 +72,7 @@ class UpdateTeamPackageAccessPresets extends Component
 
         $this->presetId = false;
         $this->name = '';
+        $this->buy_url = '';
         $this->whmcs_product_ids = [];
 
     }
@@ -81,6 +83,7 @@ class UpdateTeamPackageAccessPresets extends Component
 
         $this->presetId = false;
         $this->name = '';
+        $this->buy_url = '';
         $this->whmcs_product_ids = [];
     }
 
@@ -107,10 +110,16 @@ class UpdateTeamPackageAccessPresets extends Component
 
         $findPreset = PackageAccessPreset::where('team_id', $teamId)->where('id', $presetId)->first();
         if ($findPreset != null) {
+
             $this->showPresetForm = true;
             $this->presetEdit = true;
             $this->presetId = $findPreset->id;
             $this->name = $findPreset->name;
+
+            if (isset($findPreset->settings['buy_url'])) {
+                $this->buy_url = $findPreset->settings['buy_url'];
+            }
+
             if (is_array($findPreset->settings['whmcs_product_ids'])) {
                 $this->whmcs_product_ids = $findPreset->settings['whmcs_product_ids'];
             }
@@ -139,10 +148,14 @@ class UpdateTeamPackageAccessPresets extends Component
         }
 
         $preset->name = $this->name;
-        $preset->settings = ['whmcs_product_ids'=>$this->whmcs_product_ids];
+        $preset->settings = [
+            'buy_url'=>$this->buy_url,
+            'whmcs_product_ids'=>$this->whmcs_product_ids,
+        ];
         $preset->save();
 
         $this->name = '';
+        $this->buy_url = '';
         $this->whmcs_product_ids = [];
         $this->showPresetForm = false;
     }
