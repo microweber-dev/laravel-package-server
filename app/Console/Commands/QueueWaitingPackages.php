@@ -82,6 +82,11 @@ class QueueWaitingPackages extends Command
 
             sleep(rand(10, 15));
             $countDispatchedPackages++;
+
+            if($countDispatchedPackages == 3){
+                break;
+            }
+
         }
 
         $this->info('Dispatched packages:' . $countDispatchedPackages);
