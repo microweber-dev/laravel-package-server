@@ -64,7 +64,7 @@ Route::get('/clear-old-files', function () {
                 if (!empty($filesForDelete)) {
                     foreach ($filesForDelete as $fileForDelete) {
                         unlink($fileForDelete);
-                        echo 'deleted: '.$fileForDelete.'<br>';
+                        echo 'Deleted: '.$fileForDelete.'<br>';
                     }
                 }
             }
