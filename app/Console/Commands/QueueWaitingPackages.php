@@ -80,7 +80,7 @@ class QueueWaitingPackages extends Command
 
             $this->info('Dispatch:' . $package->name);
 
-            sleep(rand(10, 15));
+            sleep(rand(0, 15));
             $countDispatchedPackages++;
 
             if($countDispatchedPackages == 3){

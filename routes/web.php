@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Package;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,8 +19,60 @@ Route::get('/', function () {
     if (\Illuminate\Support\Facades\Auth::check()) {
         return redirect('team-packages');
     }
+
     return view('welcome');
 });
+
+Route::get('/clear-old-files', function () {
+
+    $latestVersionDistFiles = [];
+    $getPackages = \App\Models\Package::where('clone_status', Package::CLONE_STATUS_SUCCESS)->get();
+    if (!empty($getPackages)) {
+        foreach ($getPackages as $package) {
+           $packageJson = json_decode($package->package_json, true);
+           foreach ($packageJson as $packageName=>$packageVersions) {
+               foreach ($packageVersions as $packageVersion) {
+                   $metaPath = 'meta/'.str_replace('/','-',$packageName);
+                   $realPath = $packageVersion['dist']['url'];
+                   $realPath = str_replace('https://example.com/', '', $realPath);
+                   $mainPath = dirname($realPath);
+                   $latestVersionDistFiles[$mainPath][] = public_path($realPath);
+               }
+           }
+        }
+    }
+
+    if (!empty($latestVersionDistFiles)) {
+        foreach ($latestVersionDistFiles as $packageDistPath=>$packageDistFiles) {
+
+            $finder = new \Symfony\Component\Finder\Finder();
+            $finder->files()->in($packageDistPath);
+            if ($finder->hasResults()) {
+
+                $filesForDelete = [];
+                $foundedFiles = [];
+                foreach ($finder as $fileOrFolder) {
+                    if (!$fileOrFolder->isDir()) {
+                        if (in_array($fileOrFolder->getRealPath(), $packageDistFiles)) {
+                            $foundedFiles[] = $fileOrFolder->getRealPath();
+                        } else {
+                            $filesForDelete[] = $fileOrFolder->getRealPath();
+                        }
+                    }
+                }
+
+                if (!empty($filesForDelete)) {
+                    foreach ($filesForDelete as $fileForDelete) {
+                        unlink($fileForDelete);
+                        echo 'deleted: '.$fileForDelete.'<br>';
+                    }
+                }
+            }
+        }
+    }
+
+});
+
 
 
 Route::namespace('\App\Http\Controllers')->group(function() {
