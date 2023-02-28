@@ -55,6 +55,10 @@ Route::get('/clear-old-files', function () {
     if (!empty($latestVersionMetaFolders)) {
         foreach ($latestVersionMetaFolders as $packageMetaPath=>$packageMetaFolders) {
 
+            if (!is_dir($packageMetaPath)) {
+                continue;
+            }
+
             $pathsForDelete = [];
             $foundedPaths = [];
             $dirs = scandir($packageMetaPath);
