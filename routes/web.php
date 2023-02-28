@@ -79,7 +79,19 @@ Route::get('/clear-old-files', function () {
 
             if (!empty($pathsForDelete)) {
                 foreach ($pathsForDelete as $pathForDelete) {
-                    rmdir_recursive($pathForDelete);
+
+                    $files = new RecursiveIteratorIterator(
+                        new RecursiveDirectoryIterator($pathForDelete, RecursiveDirectoryIterator::SKIP_DOTS),
+                        RecursiveIteratorIterator::CHILD_FIRST
+                    );
+
+                    foreach ($files as $fileinfo) {
+                        $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+                        $todo($fileinfo->getRealPath());
+                    }
+
+                    rmdir($pathForDelete);
+
                     echo 'Deleted meta folder: '.$pathForDelete.'<br>';
                 }
             }
