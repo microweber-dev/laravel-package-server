@@ -26,22 +26,65 @@ Route::get('/', function () {
 Route::get('/clear-old-files', function () {
 
     $latestVersionDistFiles = [];
+    $latestVersionMetaFolders = [];
     $getPackages = \App\Models\Package::where('clone_status', Package::CLONE_STATUS_SUCCESS)->get();
     if (!empty($getPackages)) {
         foreach ($getPackages as $package) {
            $packageJson = json_decode($package->package_json, true);
            foreach ($packageJson as $packageName=>$packageVersions) {
                foreach ($packageVersions as $packageVersion) {
-                   $metaPath = 'meta/'.str_replace('/','-',$packageName);
+
                    $realPath = $packageVersion['dist']['url'];
                    $realPath = str_replace('https://example.com/', '', $realPath);
-                   $mainPath = dirname($realPath);
+                   $mainPath = public_path(dirname($realPath));
                    $latestVersionDistFiles[$mainPath][] = public_path($realPath);
+
+
+                   $versionWithoutDots = str_replace('.','', $packageVersion['version']);
+                   $metaMainPath = 'meta/'.str_replace('/','-',$packageName);
+                   $metaMainPath = public_path($metaMainPath);
+                   $metaPath = $metaMainPath . DIRECTORY_SEPARATOR . $versionWithoutDots;
+
+                   $latestVersionMetaFolders[$metaMainPath][] = $metaPath;
                }
            }
         }
     }
 
+    // Delete meta
+    if (!empty($latestVersionMetaFolders)) {
+        foreach ($latestVersionMetaFolders as $packageMetaPath=>$packageMetaFolders) {
+
+            $pathsForDelete = [];
+            $foundedPaths = [];
+            $dirs = scandir($packageMetaPath);
+            if (!empty($dirs)) {
+                foreach ($dirs as $dir) {
+                    if ($dir != '.' && $dir != '..') {
+                        $dirPath = $packageMetaPath . DIRECTORY_SEPARATOR . $dir;
+                        if (is_dir($dirPath)) {
+                            if (in_array($dirPath, $packageMetaFolders)) {
+                                $foundedPaths[] = $dirPath;
+                            } else {
+                                $pathsForDelete[] = $dirPath;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!empty($pathsForDelete)) {
+                foreach ($pathsForDelete as $pathForDelete) {
+                    rmdir_recursive($pathForDelete);
+                    echo 'Deleted meta folder: '.$pathForDelete.'<br>';
+                }
+            }
+        }
+    }
+
+
+
+    // Delete dits
     if (!empty($latestVersionDistFiles)) {
         foreach ($latestVersionDistFiles as $packageDistPath=>$packageDistFiles) {
 
@@ -64,7 +107,7 @@ Route::get('/clear-old-files', function () {
                 if (!empty($filesForDelete)) {
                     foreach ($filesForDelete as $fileForDelete) {
                         unlink($fileForDelete);
-                        echo 'Deleted: '.$fileForDelete.'<br>';
+                        echo 'Delete dist: '.$fileForDelete.'<br>';
                     }
                 }
             }
