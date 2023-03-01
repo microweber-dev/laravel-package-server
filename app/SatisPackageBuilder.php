@@ -95,8 +95,8 @@ class SatisPackageBuilder
         $process = '
 docker run --rm --init -it \
   --user $(id -u):$(id -g) \
-  --volume $(pwd):/build \
-  --volume "${COMPOSER_HOME:-$HOME/.composer}:/composer" \
+  --volume $(pwd):/home/marketplace/code/ \
+  --volume "$(pwd)/composer:/composer" \
   composer/satis build '.$satisConfigFile.' '.$satisRepositoryOutputPath.'
 ';
 
