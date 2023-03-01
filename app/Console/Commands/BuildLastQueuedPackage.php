@@ -49,7 +49,7 @@ class BuildLastQueuedPackage extends Command
 
         $getWaitingPackage = Package::where('clone_status', Package::CLONE_STATUS_WAITING)->first();
         if ($getWaitingPackage == null) {
-            $this->error('No packages for dispatching. Time: ' . date('Y-m-d H:i:s'));
+            $this->error('No packages for processing. Time: ' . date('Y-m-d H:i:s'));
             return 0;
         }
 
