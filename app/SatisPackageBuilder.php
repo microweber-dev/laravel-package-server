@@ -93,58 +93,17 @@ class SatisPackageBuilder
         $satisConfigFile = $saitsRepositoryPath . 'satis.json';
 
         $process = '
-
 docker run --rm --init -it \
   --user $(id -u):$(id -g) \
   --volume $(pwd):/build \
   --volume "${COMPOSER_HOME:-$HOME/.composer}:/composer" \
   composer/satis build '.$satisConfigFile.' '.$satisRepositoryOutputPath.'
-
 ';
 
 echo $process;
 die();
-        dd($process);
 
-//        $satisCommand = [];
-//        $satisCommand[] = 'php';
-//        $satisCommand[] = '-d memory_limit=-1 max_execution_time=6000';
-//        $satisCommand[] = '-c ' . base_path() . '/php.ini';
-//        $satisCommand[] = $satisBinPath;
-//        $satisCommand[] = 'build';
-//        $satisCommand[] = $saitsRepositoryPath . 'satis.json';
-//        $satisCommand[] = $satisRepositoryOutputPath;
 
-        $composerCacheDir = base_path() . '/composer-cache';
-        if (!is_dir($composerCacheDir)) {
-            mkdir($composerCacheDir);
-        }
-
-        $process = new Process($satisCommand, null, [
-            'HOME' => dirname(base_path()),
-            'COMPOSER_CACHE_DIR ' => $composerCacheDir,
-            'COMPOSER_MEMORY_LIMIT ' => '-1',
-            'COMPOSER_PROCESS_TIMEOUT ' => 100000,
-            'COMPOSER_HOME' => $saitsRepositoryPath
-        ]);
-
-        dd($process->getCommandLine());
-        $process->setTimeout(null);
-        $process->setIdleTimeout(null);
-        $process->mustRun();
-
-        $process->run(function ($type, $buffer)   {
-            if (Process::ERR === $type) {
-                $this->line($buffer);
-            } else {
-                $this->line($buffer);
-            }
-        });
-
-        // executes after the command finishes
-        if (!$process->isSuccessful()) {
-            throw new ProcessFailedException($process);
-        }
 
         $packagesJsonFilePath = $satisRepositoryOutputPath . '/packages.json';
         if (!is_file($packagesJsonFilePath)) {
