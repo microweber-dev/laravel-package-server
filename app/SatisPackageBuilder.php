@@ -93,17 +93,14 @@ class SatisPackageBuilder
         $satisConfigFile = $saitsRepositoryPath . 'satis.json';
 
         $process = '
-docker run --rm --init -it \
-  --user $(id -u):$(id -g) \
-  --volume $(pwd):/home/marketplace/code/ \
-  --volume "$(pwd)/composer:/composer" \
-  composer/satis build '.$satisConfigFile.' '.$satisRepositoryOutputPath.'
-';
+        docker run --rm --init -it \
+          --user $(id -u):$(id -g) \
+          --volume $(pwd):/home/marketplace/code/ \
+          --volume "$(pwd)/composer:/composer" \
+          composer/satis build '.$satisConfigFile.' '.$satisRepositoryOutputPath.'
+        ';
 
-echo $process;
-die();
-
-
+        $process = shell_exec($process);
 
         $packagesJsonFilePath = $satisRepositoryOutputPath . '/packages.json';
         if (!is_file($packagesJsonFilePath)) {
