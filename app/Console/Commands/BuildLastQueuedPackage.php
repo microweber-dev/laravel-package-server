@@ -56,6 +56,8 @@ class BuildLastQueuedPackage extends Command
         $run = new ProcessPackageSatis($getWaitingPackage->id, $getWaitingPackage->name);
         $run->handle();
 
+        $this->info('Job work done.');
+
         return 0;
     }
 }
