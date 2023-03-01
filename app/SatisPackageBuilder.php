@@ -100,7 +100,11 @@ class SatisPackageBuilder
           composer/satis build '.$satisConfigFile.' '.$satisRepositoryOutputPath.'
         ';
 
-        $process = shell_exec($process);
+        $retval = NULL;
+        $output = NULL;
+        $response = exec($process, $output, $retval);
+
+        sleep(5);
 
         $packagesJsonFilePath = $satisRepositoryOutputPath . '/packages.json';
         if (!is_file($packagesJsonFilePath)) {

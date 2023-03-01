@@ -46,7 +46,7 @@ class Test extends Command
     public function handle()
     {
 
-        $package = Package::first();
+        $package = Package::where('id',262)->first();
 
         dispatch_sync(new ProcessPackageSatis($package->id, $package->name));
 
