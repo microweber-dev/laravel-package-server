@@ -29,7 +29,6 @@ class SatisPackageBuilder
         }
 
         $saitsRepositoryPath = dirname($file) . DIRECTORY_SEPARATOR;
-        $satisBinPath = base_path() . '/satis-builder/vendor/composer/satis/bin/satis';
         $satisRepositoryOutputPath = $saitsRepositoryPath . 'output-build';
 
         /*  $signature = false;
@@ -91,14 +90,30 @@ class SatisPackageBuilder
             mkdir($saitsRepositoryPath);
         }
 
-        $satisCommand = [];
-        $satisCommand[] = 'php';
-        $satisCommand[] = '-d memory_limit=-1 max_execution_time=6000';
-        $satisCommand[] = '-c ' . base_path() . '/php.ini';
-        $satisCommand[] = $satisBinPath;
-        $satisCommand[] = 'build';
-        $satisCommand[] = $saitsRepositoryPath . 'satis.json';
-        $satisCommand[] = $satisRepositoryOutputPath;
+        $satisConfigFile = $saitsRepositoryPath . 'satis.json';
+
+        $process = '
+
+docker run --rm --init -it \
+  --user $(id -u):$(id -g) \
+  --volume $(pwd):/build \
+  --volume "${COMPOSER_HOME:-$HOME/.composer}:/composer" \
+  composer/satis build '.$satisConfigFile.' '.$satisRepositoryOutputPath.'
+
+';
+
+echo $process;
+die();
+        dd($process);
+
+//        $satisCommand = [];
+//        $satisCommand[] = 'php';
+//        $satisCommand[] = '-d memory_limit=-1 max_execution_time=6000';
+//        $satisCommand[] = '-c ' . base_path() . '/php.ini';
+//        $satisCommand[] = $satisBinPath;
+//        $satisCommand[] = 'build';
+//        $satisCommand[] = $saitsRepositoryPath . 'satis.json';
+//        $satisCommand[] = $satisRepositoryOutputPath;
 
         $composerCacheDir = base_path() . '/composer-cache';
         if (!is_dir($composerCacheDir)) {
