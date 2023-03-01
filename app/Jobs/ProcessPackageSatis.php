@@ -201,7 +201,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
             'packageName' => $packageModel->name,
             'satisRepositoryOutputPath' => $status['output_path']
         ]);
-        $run->handle();
+        return $run->handle();
     }
 
      public function failed($error)

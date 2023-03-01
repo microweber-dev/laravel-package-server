@@ -53,6 +53,8 @@ class BuildLastQueuedPackage extends Command
             return 0;
         }
 
+        $this->info('Package: ' . $getWaitingPackage->name);
+
         $run = new ProcessPackageSatis($getWaitingPackage->id, $getWaitingPackage->name);
         $run->handle();
 
