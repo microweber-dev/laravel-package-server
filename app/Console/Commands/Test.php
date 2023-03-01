@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use App\Helpers\Base;
 use App\Helpers\PackageManagerGitWorker;
 use App\Helpers\RepositoryMediaProcessHelper;
+use App\Jobs\ProcessPackageSatis;
+use App\Models\Package;
 use CzProject\GitPhp\Git;
 use Illuminate\Console\Command;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -43,7 +45,11 @@ class Test extends Command
      */
     public function handle()
     {
-        PackageManagerGitWorker::pushSatis('');
+
+        $package = Package::first();
+
+        dispatch_sync(new ProcessPackageSatis($package->id, $package->name));
+
         return 0;
     }
 }

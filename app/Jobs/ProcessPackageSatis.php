@@ -102,7 +102,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
             // job already running
             $packageModel->clone_log = "Already running.";
             $packageModel->save();
-            return;
+          //  return;
         }
 
         $packageModel->clone_log = "Job is started.";
@@ -169,6 +169,8 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         file_put_contents($satisFile, $satisJson);
 
         $status = SatisPackageBuilder::build($satisFile);
+
+        dd($status);
 
         $packageJsonContent = file_get_contents($status['output_path'] . DIRECTORY_SEPARATOR . 'packages.json');
         $packageJsonContent = json_decode($packageJsonContent, true);
