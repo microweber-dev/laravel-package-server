@@ -53,7 +53,8 @@ class BuildLastQueuedPackage extends Command
             return 0;
         }
 
-        dispatch_sync(new ProcessPackageSatis($getWaitingPackage->id, $getWaitingPackage->name));
+        $run = new ProcessPackageSatis($getWaitingPackage->id, $getWaitingPackage->name);
+        $run->handle();
 
         return 0;
     }
