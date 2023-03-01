@@ -105,10 +105,6 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
             return;
         }
 
-        $signature = md5($packageModel->id . time() . rand(111, 999));
-        $callbackUrl = route('git-worker-webhook');
-
-        $packageModel->remote_build_signature = $signature;
         $packageModel->clone_log = "Job is started.";
         $packageModel->clone_status = Package::CLONE_STATUS_RUNNING;
         $packageModel->save();
@@ -172,32 +168,6 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         $satisFile = $saitsRepositoryPath . 'satis.json';
         file_put_contents($satisFile, $satisJson);
 
-        // Build settings json
-        $buildSettingsJson = [
-            "runner_config" => [
-                "signature" => $signature,
-                "callback_url" => $callbackUrl
-            ]
-        ];
-        $buildSettingsJson = json_encode($buildSettingsJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-        $buildSettingsFile = $saitsRepositoryPath . 'build-settings.json';
-        file_put_contents($buildSettingsFile, $buildSettingsJson);
-
-        if (env('PACKAGE_MANAGER_WORKER_TYPE') == 'github' || env('PACKAGE_MANAGER_WORKER_TYPE') == 'gitlab') {
-
-            $response = PackageManagerGitWorker::pushSatis($satisFile, $buildSettingsFile);
-            if (!$response['commit_id']) {
-
-                $packageModel->clone_log = "Can't git push.";
-                $packageModel->clone_status = Package::CLONE_STATUS_FAILED;
-
-                return $packageModel->save();
-            }
-
-            $packageModel->remote_build_commit_id = $response['commit_id'];
-            return $packageModel->save();
-        }
-
         $status = SatisPackageBuilder::build($satisFile);
 
         $packageJsonContent = file_get_contents($status['output_path'] . DIRECTORY_SEPARATOR . 'packages.json');
@@ -221,7 +191,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
          }*/
 
         $packageModel->package_json = json_encode($packageJsonContent['packages'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-        $packageModel->clone_log = 'done!';
+        $packageModel->clone_log = 'Done!';
         $packageModel->clone_status = Package::CLONE_STATUS_SUCCESS;
         $packageModel->save();
 
