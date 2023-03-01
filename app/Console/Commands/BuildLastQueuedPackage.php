@@ -12,14 +12,14 @@ use Illuminate\Console\Command;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
-class Test extends Command
+class BuildLastQueuedPackage extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'test-command:run';
+    protected $signature = 'build-last-queued-package';
 
     /**
      * The console command description.
@@ -45,10 +45,15 @@ class Test extends Command
      */
     public function handle()
     {
+        $this->info('Start job work...');
 
-        $package = Package::where('id',315)->first();
+        $getWaitingPackage = Package::where('clone_status', Package::CLONE_STATUS_WAITING)->first();
+        if ($getWaitingPackage == null) {
+            $this->error('No packages for dispatching. Time: ' . date('Y-m-d H:i:s'));
+            return 0;
+        }
 
-        dispatch_sync(new ProcessPackageSatis($package->id, $package->name));
+        dispatch_sync(new ProcessPackageSatis($getWaitingPackage->id, $getWaitingPackage->name));
 
         return 0;
     }

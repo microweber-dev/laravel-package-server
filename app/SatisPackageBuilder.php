@@ -98,7 +98,6 @@ class SatisPackageBuilder
           --volume $(pwd):/home/marketplace/code/ \
           --volume "$(pwd)/composer:/composer" \
           composer/satis build '.$satisConfigFile.' '.$satisRepositoryOutputPath.'
-          2>&1
         ';
 
         $outputLog = exec($process);
