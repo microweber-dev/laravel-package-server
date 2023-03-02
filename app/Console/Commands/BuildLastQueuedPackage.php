@@ -45,20 +45,23 @@ class BuildLastQueuedPackage extends Command
      */
     public function handle()
     {
-        $this->info('Start job work...');
 
-        $getWaitingPackage = Package::where('clone_status', Package::CLONE_STATUS_WAITING)->first();
-        if ($getWaitingPackage == null) {
-            $this->error('No packages for processing. Time: ' . date('Y-m-d H:i:s'));
-            return 0;
-        }
+        // this is when horizon job server not working
 
-        $this->info('Package: ' . $getWaitingPackage->name);
-
-        $run = new ProcessPackageSatis($getWaitingPackage->id, $getWaitingPackage->name);
-        $run->handle();
-
-        $this->info('Job work done.');
+//        $this->info('Start job work...');
+//
+//        $getWaitingPackage = Package::where('clone_status', Package::CLONE_STATUS_WAITING)->first();
+//        if ($getWaitingPackage == null) {
+//            $this->error('No packages for processing. Time: ' . date('Y-m-d H:i:s'));
+//            return 0;
+//        }
+//
+//        $this->info('Package: ' . $getWaitingPackage->name);
+//
+//        $run = new ProcessPackageSatis($getWaitingPackage->id, $getWaitingPackage->name);
+//        $run->handle();
+//
+//        $this->info('Job work done.');
 
         return 0;
     }

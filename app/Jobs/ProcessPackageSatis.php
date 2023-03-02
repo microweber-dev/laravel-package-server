@@ -205,12 +205,11 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         $packageModel->save();
 
         // Maker rsync on another job
-        $run = new ProcessPackageSatisRsync([
+        dispatch_sync(new ProcessPackageSatisRsync([
             'packageId' => $packageModel->id,
             'packageName' => $packageModel->name,
             'satisRepositoryOutputPath' => $status['output_path']
-        ]);
-        return $run->handle();
+        ]));
     }
 
      public function failed($error)
