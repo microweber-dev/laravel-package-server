@@ -8,7 +8,7 @@ echo "mainPath: $mainPath"
 echo "satisConfig: $satisConfig"
 echo "satisOutputBuild: $satisOutputBuild"
 
-docker run --rm --init -it \
+docker run --rm --init -T \
           --user $(id -u):$(id -g) \
           --volume $(pwd):$mainPath \
           --volume "$(pwd)/composer:/composer" \
