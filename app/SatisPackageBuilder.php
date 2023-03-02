@@ -102,7 +102,7 @@ class SatisPackageBuilder
         exec($shellCommand);
 
         $i = 0;
-        $maxI = 40;
+        $maxI = 60;
         $lastLogText = '';
         while (true) {
             if ($i >= $maxI) {
@@ -114,7 +114,7 @@ class SatisPackageBuilder
                 break;
             }
             $i++;
-            sleep(6);
+            sleep(10);
         }
 
         $packagesJsonFilePath = $satisRepositoryOutputPath . '/packages.json';
