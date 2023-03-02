@@ -116,7 +116,7 @@ class SatisPackageBuilder
             $i++;
             sleep(10);
         }
-
+        
         $packagesJsonFilePath = $satisRepositoryOutputPath . '/packages.json';
         if (!is_file($packagesJsonFilePath)) {
             throw new \Exception('Build failed. packages.json missing. Error: ' . $lastLogText);
