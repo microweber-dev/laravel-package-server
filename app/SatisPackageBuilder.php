@@ -91,16 +91,32 @@ class SatisPackageBuilder
         }
 
         $satisConfigFile = $saitsRepositoryPath . 'satis.json';
+        $satisBuildLog = $saitsRepositoryPath . 'docker-satis-build.log';
 
-        $process = '
-        docker run --rm --init -it \
-          --user $(id -u):$(id -g) \
-          --volume $(pwd):/home/marketplace/code/ \
-          --volume "$(pwd)/composer:/composer" \
-          composer/satis build '.$satisConfigFile.' '.$satisRepositoryOutputPath.'
-        ';
 
-        $outputLog = exec($process);
+        $shellFile = dirname(__DIR__) . '/run-docker-satis-build.sh';
+        $shellCommand = $shellFile;
+        $shellCommand .= ' ' . dirname(__DIR__);
+        $shellCommand .= ' ' . $satisConfigFile;
+        $shellCommand .= ' ' . $satisRepositoryOutputPath;
+        $shellCommand .= ' > ' . $satisBuildLog . ' 2>&1';
+        exec($shellCommand);
+
+        $i = 0;
+        $maxI = 40;
+        while (true) {
+            if ($i >= $maxI) {
+                break;
+            }
+            $getLog = file_get_contents($satisBuildLog) . PHP_EOL;
+            if (strpos($getLog, 'Writing web view') !== false) {
+                break;
+            }
+            $i++;
+            sleep(2);
+        }
+
+        echo 'qkoo!';
 
         $packagesJsonFilePath = $satisRepositoryOutputPath . '/packages.json';
         if (!is_file($packagesJsonFilePath)) {
