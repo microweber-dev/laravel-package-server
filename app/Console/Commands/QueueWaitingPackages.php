@@ -63,7 +63,7 @@ class QueueWaitingPackages extends Command
 
             $this->info('Dispatch:' . $package->name);
 
-            sleep(rand(3,6));
+            sleep(10);
             $countDispatchedPackages++;
         }
 
