@@ -93,7 +93,6 @@ class SatisPackageBuilder
         $satisConfigFile = $saitsRepositoryPath . 'satis.json';
         $satisBuildLog = $saitsRepositoryPath . 'docker-satis-build.log';
 
-
         $shellFile = dirname(__DIR__) . '/run-docker-satis-build.sh';
         $shellCommand = $shellFile;
         $shellCommand .= ' ' . dirname(__DIR__);
@@ -115,8 +114,6 @@ class SatisPackageBuilder
             $i++;
             sleep(2);
         }
-
-        echo 'qkoo!';
 
         $packagesJsonFilePath = $satisRepositoryOutputPath . '/packages.json';
         if (!is_file($packagesJsonFilePath)) {
