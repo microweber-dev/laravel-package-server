@@ -98,7 +98,7 @@ class SatisPackageBuilder
         $shellCommand .= ' ' . dirname(__DIR__);
         $shellCommand .= ' ' . $satisConfigFile;
         $shellCommand .= ' ' . $satisRepositoryOutputPath;
-        $shellCommand .= ' > ' . $satisBuildLog . ' 2>&1';
+        $shellCommand .= ' > ' . $satisBuildLog;
         exec($shellCommand);
 
         $i = 0;
@@ -109,10 +109,11 @@ class SatisPackageBuilder
             }
             $getLog = file_get_contents($satisBuildLog) . PHP_EOL;
             if (strpos($getLog, 'Writing web view') !== false) {
+                sleep(3);
                 break;
             }
             $i++;
-            sleep(2);
+            sleep(6);
         }
 
         $packagesJsonFilePath = $satisRepositoryOutputPath . '/packages.json';
