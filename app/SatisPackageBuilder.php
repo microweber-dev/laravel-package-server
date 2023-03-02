@@ -103,12 +103,13 @@ class SatisPackageBuilder
 
         $i = 0;
         $maxI = 40;
+        $lastLogText = '';
         while (true) {
             if ($i >= $maxI) {
                 break;
             }
-            $getLog = file_get_contents($satisBuildLog) . PHP_EOL;
-            if (strpos($getLog, 'Writing web view') !== false) {
+            $lastLogText = file_get_contents($satisBuildLog) . PHP_EOL;
+            if (strpos($lastLogText, 'Writing web view') !== false) {
                 sleep(3);
                 break;
             }
@@ -118,7 +119,7 @@ class SatisPackageBuilder
 
         $packagesJsonFilePath = $satisRepositoryOutputPath . '/packages.json';
         if (!is_file($packagesJsonFilePath)) {
-            throw new \Exception('Build failed. packages.json missing.');
+            throw new \Exception('Build failed. packages.json missing. Error: ' . $lastLogText);
         }
 
         $packagesJson = json_decode(file_get_contents($packagesJsonFilePath), true);
