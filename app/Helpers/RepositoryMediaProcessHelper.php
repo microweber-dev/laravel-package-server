@@ -49,7 +49,19 @@ class RepositoryMediaProcessHelper
 
             // Set extra
             $finder = new Finder();
-            $finder->files()->in($metaFolder)->name(['*.svg', 'video.mp4', 'screenshot.png', 'screenshot.jpg','screenshot.jpeg','screenshot.gif']);
+            $finder->files()->in($metaFolder)->name([
+                '*.svg',
+                'video.mp4',
+                'screenshot_large.jpeg',
+                'screenshot_large.jpg',
+                'screenshot_large.png',
+                'screenshot_large.gif',
+                'screenshot.png',
+                'screenshot.jpg',
+                'screenshot.jpeg',
+                'screenshot.gif'
+            ]);
+
             if ($finder->hasResults()) {
                 foreach ($finder as $file) {
                     if (file_exists($file->getRealPath())) {
