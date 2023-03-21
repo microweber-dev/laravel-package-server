@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Base;
 use App\Helpers\StringHelper;
 use App\Helpers\WhmcsLicenseValidatorHelper;
 use App\Models\License;
 use App\Models\LicenseLog;
 use App\Models\Package;
 use App\Models\PackageDownloadStats;
+use App\Models\PleskServer;
 use App\Models\Team;
 use App\Models\TeamPackage;
 use App\Models\WhmcsServer;
@@ -139,6 +141,14 @@ class PackagesJsonController extends Controller
     {
         ini_set('memory_limit', '512M');
 
+        /*file_put_contents(storage_path(time() . '-plesk-file.txt'),
+            json_encode([
+                'request'=>$_REQUEST,
+                'request'=>$_SERVER,
+            ],JSON_PRETTY_PRINT
+            )
+        );*/
+
         $findTeam = Team::where('id', $teamId)->with('whmcsServer')->first();
         if ($findTeam == null) {
             return [];
@@ -154,6 +164,7 @@ class PackagesJsonController extends Controller
             ->where('is_visible', 1)
             ->orderBy('position','asc')
             ->with('package')
+            ->with('packageAccessPreset')
             ->get();
 
         if ($teamPackages == null) {
@@ -188,23 +199,107 @@ class PackagesJsonController extends Controller
             }
         }
 
+        $requestIp = Base::userIp();
+
+        // Check this ip is server licensed
+        $findPleskServer = PleskServer::where('server_ip', $requestIp)->first();
+        if ($findPleskServer) {
+            $findPleskServer->access_count =  $findPleskServer->access_count + 1;
+            $findPleskServer->last_access_date = Carbon::now();
+            $findPleskServer->save();
+            $logged = true;
+        }
+
         $authHeader = $request->header('authorization', false);
         if ($authHeader) {
+
             $authDecode = str_replace('Basic','', $authHeader);
             $authDecode = trim($authDecode);
             $authDecode = base64_decode($authDecode);
 
-            if (str_contains($authDecode, 'plesk|')) {
-                // Request from plesk
+            if (str_contains($authDecode, 'license:')) {
+
+                $authDecode = str_replace('license:','', $authDecode);
+                $authDecode = trim($authDecode);
+                $authDecode = base64_decode($authDecode);
                 $authDecodeLicenses = json_decode($authDecode, true);
-                if (!empty($authDecodeLicenses)) {
+                if (!empty($authDecodeLicenses) && is_array($authDecodeLicenses)) {
                     foreach ($authDecodeLicenses as $decodeLicense) {
-                        if (str_contains($decodeLicense, 'plesk|')) {
+                        if (is_string($decodeLicense) && str_contains($decodeLicense, 'plesk|')) {
                             $decodeLicense = str_replace('plesk|', false, $decodeLicense);
                             $decodeLicenseData = json_decode(base64_decode($decodeLicense), true);
                             if (isset($decodeLicenseData['lim_date'])
                                 && isset($decodeLicenseData['active'])
                                 && $decodeLicenseData['active'] == true) {
+
+                                $findPleskServer = PleskServer::where('product',$decodeLicenseData['product'])
+                                                            ->where('key_number', $decodeLicenseData['key-number'])
+                                                            ->first();
+                                if ($findPleskServer == null) {
+
+                                    $findPleskServer = new PleskServer();
+
+                                    if (isset($decodeLicenseData['number'])) {
+                                        $findPleskServer->number = $decodeLicenseData['number'];
+                                    }
+
+                                    if (isset($decodeLicenseData['name'])) {
+                                        $findPleskServer->name = $decodeLicenseData['name'];
+                                    }
+
+                                    if (isset($decodeLicenseData['app'])) {
+                                        $findPleskServer->app = $decodeLicenseData['app'];
+                                    }
+
+                                    if (isset($decodeLicenseData['product'])) {
+                                        $findPleskServer->product = $decodeLicenseData['product'];
+                                    }
+
+                                    if (isset($decodeLicenseData['start-date'])) {
+                                        $findPleskServer->start_date = $decodeLicenseData['start-date'];
+                                    }
+
+                                    if (isset($decodeLicenseData['lim_date'])) {
+                                        $findPleskServer->lim_date = $decodeLicenseData['lim_date'];
+                                    }
+
+                                    if (isset($decodeLicenseData['license-server-url'])) {
+                                        $findPleskServer->license_server_url = $decodeLicenseData['license-server-url'];
+                                    }
+
+                                    if (isset($decodeLicenseData['product'])) {
+                                        $findPleskServer->license_update_date = $decodeLicenseData['license_update_date'];
+                                    }
+
+                                    if (isset($decodeLicenseData['key-number'])) {
+                                        $findPleskServer->key_number = $decodeLicenseData['key-number'];
+                                    }
+
+                                    if (isset($decodeLicenseData['key-version'])) {
+                                        $findPleskServer->key_version = $decodeLicenseData['key-version'];
+                                    }
+
+                                    if (isset($decodeLicenseData['key-body'])) {
+                                        $findPleskServer->key_body = $decodeLicenseData['key-body'];
+                                    }
+
+                                    if (isset($decodeLicenseData['extension_info'])) {
+                                        $findPleskServer->extension_info = $decodeLicenseData['extension_info'];
+                                    }
+
+                                    if (isset($decodeLicenseData['properties-config'])) {
+                                        $findPleskServer->properties_config = $decodeLicenseData['properties-config'];
+                                    }
+
+                                    $findPleskServer->first_access_date = Carbon::now();
+                                    $findPleskServer->access_count = 0;
+                                }
+
+                                $findPleskServer->server_ip = Base::userIp();
+                                $findPleskServer->access_count = $findPleskServer->access_count + 1;
+                                $findPleskServer->last_access_date = Carbon::now();
+                                $findPleskServer->save();
+
                                 $logged = true;
                             }
                         }
@@ -245,11 +340,18 @@ class PackagesJsonController extends Controller
                 if (!empty($packageContent) && is_array($packageContent)) {
                     foreach ($packageContent as $packageName => $packageVersions) {
 
+                        $packageAccessPresetSettings = [];
+                        if ($teamPackage->packageAccessPreset) {
+                            $packageAccessPresetSettings = $teamPackage->packageAccessPreset->settings;
+                        }
+
                         $allPackages[$packageName] = $this->_prepareVersions($packageVersions, [
                             'token_authenticated' => $logged,
                             'team_id' => $teamPackage->team_id,
                             'package_id' => $teamPackage->package_id,
                             'team_package_id' => $teamPackage->id,
+                            'package_access_preset_id' => $teamPackage->package_access_preset_id,
+                            'package_access_preset_settings' => $packageAccessPresetSettings,
                             'whmcs_primary_product_id' => $teamPackage->whmcs_primary_product_id,
                             'whmcs_product_ids' => $teamPackage->getWhmcsProductIds(),
                             'whmcs_server' => $whmcsServer,
@@ -397,6 +499,12 @@ class PackagesJsonController extends Controller
 
                 if ($teamPackage['buy_url_from'] == 'custom') {
                     $package['extra']['whmcs']['buy_link'] = $teamPackage['buy_url'];
+                }
+
+                if ($teamPackage['buy_url_from'] == 'package_access_preset') {
+                    if (isset($teamPackage['package_access_preset_settings']['buy_url'])) {
+                        $package['extra']['whmcs']['buy_link'] = $teamPackage['package_access_preset_settings']['buy_url'];
+                    }
                 }
 
             }

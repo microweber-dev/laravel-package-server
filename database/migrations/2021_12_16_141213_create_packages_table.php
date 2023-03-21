@@ -16,7 +16,7 @@ class CreatePackagesTable extends Migration
         Schema::create('packages', function (Blueprint $table) {
 
             $table->id();
-            $table->string('name')->nullable();
+            $table->string('name')->unique()->nullable();
             $table->string('repository_url')->nullable();
 
             $table->string('preview_url')->nullable();

@@ -78,6 +78,7 @@
             <h5>Generate Buy link from:</h5>
             <select class="form-control" name="buy_url_from" wire:model="buy_url_from">
                 <option value="license">WHMCS Plan\License</option>
+                <option value="package_access_preset">Package Access Preset</option>
                 <option value="custom">Custom</option>
             </select>
 
@@ -122,6 +123,7 @@
                 </h5>
 
                 <select class="form-control" wire:model="package_access_preset_id">
+                    <option value="0">Please select</option>
                     @if(!empty($package_access_presets))
                         @foreach($package_access_presets as $preset)
                              <option value="{{$preset->id}}">{{$preset->name}}</option>

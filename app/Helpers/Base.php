@@ -20,4 +20,30 @@ class Base
         return sprintf("%.{$dec}f", $bytes / pow(1024, $factor)) . @$size[$factor];
     }
 
+    public static function userIp()
+    {
+        $ipaddress = '127.0.0.1';
+
+        if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+            $ipaddress = $_SERVER['HTTP_CF_CONNECTING_IP'];
+        }  else if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+            $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+        } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
+            $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+        } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+            $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+        } else if (isset($_SERVER['HTTP_FORWARDED'])) {
+            $ipaddress = $_SERVER['HTTP_FORWARDED'];
+        } else if (isset($_SERVER['HTTP_X_CLUSTER_CLIENT_IP'])) {
+            $ipaddress = $_SERVER['HTTP_X_CLUSTER_CLIENT_IP'];
+        } else if (isset($_SERVER['HTTP_X_REAL_IP'])) {
+            $ipaddress = $_SERVER['HTTP_X_REAL_IP'];
+        } else if (isset($_SERVER['REMOTE_ADDR'])) {
+            $ipaddress = $_SERVER['REMOTE_ADDR'];
+        }
+
+        return $ipaddress;
+    }
 }
