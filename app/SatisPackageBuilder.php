@@ -29,7 +29,6 @@ class SatisPackageBuilder
         }
 
         $saitsRepositoryPath = dirname($file) . DIRECTORY_SEPARATOR;
-        $satisBinPath = base_path() . '/satis-builder/vendor/composer/satis/bin/satis';
         $satisRepositoryOutputPath = $saitsRepositoryPath . 'output-build';
 
         /*  $signature = false;
@@ -91,50 +90,36 @@ class SatisPackageBuilder
             mkdir($saitsRepositoryPath);
         }
 
-        $satisCommand = [];
-        $satisCommand[] = 'php';
-        $satisCommand[] = '-d memory_limit=-1 max_execution_time=6000';
-        $satisCommand[] = '-c ' . base_path() . '/php.ini';
-        $satisCommand[] = $satisBinPath;
-        $satisCommand[] = 'build';
-        $satisCommand[] = $saitsRepositoryPath . 'satis.json';
-        $satisCommand[] = $satisRepositoryOutputPath;
+        $satisConfigFile = $saitsRepositoryPath . 'satis.json';
+        $satisBuildLog = $saitsRepositoryPath . 'docker-satis-build.log';
 
-        $composerCacheDir = base_path() . '/composer-cache';
-        if (!is_dir($composerCacheDir)) {
-            mkdir($composerCacheDir);
-        }
+        $shellFile = dirname(__DIR__) . '/run-docker-satis-build.sh';
+        $shellCommand = $shellFile;
+        $shellCommand .= ' ' . dirname(__DIR__);
+        $shellCommand .= ' ' . $satisConfigFile;
+        $shellCommand .= ' ' . $satisRepositoryOutputPath;
+        $shellCommand .= ' > ' . $satisBuildLog;
+        exec($shellCommand);
 
-        $process = new Process($satisCommand, null, [
-            'HOME' => dirname(base_path()),
-            'COMPOSER_CACHE_DIR ' => $composerCacheDir,
-            'COMPOSER_MEMORY_LIMIT ' => '-1',
-            'COMPOSER_PROCESS_TIMEOUT ' => 100000,
-            'COMPOSER_HOME' => $saitsRepositoryPath
-        ]);
-        $process->setTimeout(null);
-        $process->setIdleTimeout(null);
-        $process->mustRun();
-        $output = $process->getOutput();
-
-
-      /*  $process->run(function ($type, $buffer)   {
-            if (Process::ERR === $type) {
-                $this->line($buffer);
-            } else {
-                $this->line($buffer);
+        $i = 0;
+        $maxI = 60;
+        $lastLogText = '';
+        while (true) {
+            if ($i >= $maxI) {
+                break;
             }
-        });*/
-
-   /*     // executes after the command finishes
-        if (!$process->isSuccessful()) {
-            throw new ProcessFailedException($process);
+            $lastLogText = file_get_contents($satisBuildLog) . PHP_EOL;
+            if (strpos($lastLogText, 'Writing web view') !== false) {
+                sleep(3);
+                break;
+            }
+            $i++;
+            sleep(10);
         }
-        $output = $process->getOutput();*/
 
         $packagesJsonFilePath = $satisRepositoryOutputPath . '/packages.json';
         if (!is_file($packagesJsonFilePath)) {
-            throw new \Exception('Build failed. packages.json missing.');
+            throw new \Exception('Build failed. packages.json missing. Error: ' . $lastLogText);
         }
 
         $packagesJson = json_decode(file_get_contents($packagesJsonFilePath), true);

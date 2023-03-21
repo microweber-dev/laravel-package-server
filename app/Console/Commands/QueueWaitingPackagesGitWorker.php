@@ -8,14 +8,14 @@ use App\Models\Package;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
-class QueueWaitingPackages extends Command
+class QueueWaitingPackagesGitWorker extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'package-builder:queue-waiting-packages';
+    protected $signature = 'package-builder:queue-waiting-packages-git-worker';
 
     /**
      * The console command description.
@@ -41,19 +41,31 @@ class QueueWaitingPackages extends Command
      */
     public function handle()
     {
+        $this->info('Starting queue waiting packages...');
+
+        $availableWorkers = GithubHelper::getAvailableWorkers();
+        if ($availableWorkers < 1) {
+            $this->error('No github workers available. Time: ' . date('Y-m-d H:i:s'));
+            return 0;
+        }
+
         $this->info('Start dispatching jobs...');
+        $this->info('GitHub Available Workers:' . $availableWorkers);
 
         $getWaitingPackages = Package::where('clone_status', Package::CLONE_STATUS_WAITING)->get();
         if ($getWaitingPackages == null) {
             $this->error('No packages for dispatching. Time: ' . date('Y-m-d H:i:s'));
             return 0;
         }
-
         $packagesForDispatchingNum = (int) $getWaitingPackages->count();
         $this->info('Packages for dispatching:' . $packagesForDispatchingNum);
 
         $countDispatchedPackages = 0;
         foreach ($getWaitingPackages as $package) {
+
+            if ($countDispatchedPackages >= $availableWorkers) {
+                break;
+            }
 
             dispatch(new ProcessPackageSatis($package->id, $package->name));
 
@@ -63,7 +75,7 @@ class QueueWaitingPackages extends Command
 
             $this->info('Dispatch:' . $package->name);
 
-            sleep(10);
+            sleep(rand(3,6));
             $countDispatchedPackages++;
         }
 
