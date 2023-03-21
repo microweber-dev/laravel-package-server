@@ -42,45 +42,46 @@ class ClearTemp extends Command
         $busyWorkers = GithubHelper::getBusyWorkers();
         if ($busyWorkers != 0) {
             // Wait for all workers to finish
-           return;
+            return;
         }
 
         $getRunningPackages = Package::where('clone_status', Package::CLONE_STATUS_WAITING)
-                            ->orWhere('clone_status', Package::CLONE_STATUS_QUEUED)
-                            ->orWhere('clone_status', Package::CLONE_STATUS_RUNNING)
-                            ->orWhere('clone_status', Package::CLONE_STATUS_CLONING)
-                            ->get();
+            ->orWhere('clone_status', Package::CLONE_STATUS_QUEUED)
+            ->orWhere('clone_status', Package::CLONE_STATUS_RUNNING)
+            ->orWhere('clone_status', Package::CLONE_STATUS_CLONING)
+            ->get();
 
         if ($getRunningPackages->count() == 0) {
 
             // No running packages
             $folders = [];
-            $folders[] = ['path'=>storage_path('package-manager-worker'), 'allowed_files_for_delete'=>['folders']];
-            $folders[] = ['path'=>storage_path('package-manager-worker-builds'), 'allowed_files_for_delete'=>['zip']];
-            $folders[] = ['path'=>storage_path('package-manager-worker-builds-temp'), 'allowed_files_for_delete'=>['folders']];
-            $folders[] = ['path'=>storage_path('repositories-satis'), 'allowed_files_for_delete'=>['folders']];
+            $folders[] = ['path' => storage_path('package-manager-worker'), 'allowed_files_for_delete' => ['folders']];
+            $folders[] = ['path' => storage_path('package-manager-worker-builds'), 'allowed_files_for_delete' => ['zip']];
+            $folders[] = ['path' => storage_path('package-manager-worker-builds-temp'), 'allowed_files_for_delete' => ['folders']];
+            $folders[] = ['path' => storage_path('repositories-satis'), 'allowed_files_for_delete' => ['folders']];
 
             foreach ($folders as $folder) {
+                if (!is_dir($folder['path'])) {
+                    $scanDir = scandir($folder['path']);
+                    if (!empty($scanDir)) {
+                        foreach ($scanDir as $pathOrFile) {
+                            if ($pathOrFile == '.' || $pathOrFile == '..') continue;
 
-                $scanDir = scandir($folder['path']);
-                if (!empty($scanDir)) {
-                    foreach ($scanDir as $pathOrFile) {
-                        if ($pathOrFile == '.' || $pathOrFile == '..') continue;
-
-                        $pathOrFileFullPath = $folder['path'] . DIRECTORY_SEPARATOR . $pathOrFile;
-                        if (is_dir($pathOrFileFullPath)) {
-                            if (in_array('folders', $folder['allowed_files_for_delete'])) {
-                                $this->info('Delete folder: ' . $pathOrFileFullPath);
-                                rmdir_recursive($pathOrFileFullPath, false);
+                            $pathOrFileFullPath = $folder['path'] . DIRECTORY_SEPARATOR . $pathOrFile;
+                            if (is_dir($pathOrFileFullPath)) {
+                                if (in_array('folders', $folder['allowed_files_for_delete'])) {
+                                    $this->info('Delete folder: ' . $pathOrFileFullPath);
+                                    rmdir_recursive($pathOrFileFullPath, false);
+                                }
                             }
-                        }
 
-                        if (is_file($pathOrFileFullPath)) {
-                            $getFileExt = pathinfo($pathOrFileFullPath);
-                            if (isset($getFileExt['extension'])) {
-                                if (in_array($getFileExt['extension'], $folder['allowed_files_for_delete'])) {
-                                    $this->info('Delete file: ' . $pathOrFileFullPath);
-                                    unlink($pathOrFileFullPath);
+                            if (is_file($pathOrFileFullPath)) {
+                                $getFileExt = pathinfo($pathOrFileFullPath);
+                                if (isset($getFileExt['extension'])) {
+                                    if (in_array($getFileExt['extension'], $folder['allowed_files_for_delete'])) {
+                                        $this->info('Delete file: ' . $pathOrFileFullPath);
+                                        unlink($pathOrFileFullPath);
+                                    }
                                 }
                             }
                         }
