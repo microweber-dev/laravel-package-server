@@ -83,6 +83,10 @@ class SatisHelper
             $lastVersionMetaData['screenshot'] = $packageVersion['extra']['_meta']['screenshot'];
         }
 
+        if (isset($packageVersion['extra']['_meta']['screenshot_large'])) {
+            $lastVersionMetaData['screenshot_large'] = $packageVersion['extra']['_meta']['screenshot_large'];
+        }
+
         if (isset($packageVersion['extra']['_meta']['readme'])) {
             $lastVersionMetaData['readme'] = $packageVersion['extra']['_meta']['readme'];
         }
