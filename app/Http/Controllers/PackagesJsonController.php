@@ -408,6 +408,9 @@ class PackagesJsonController extends Controller
             if (isset($package['extra']['_meta']['screenshot'])) {
                 $extraMeta['screenshot'] = $package['extra']['_meta']['screenshot'];
             }
+            if (isset($package['extra']['_meta']['screenshot_large'])) {
+                $extraMeta['screenshot_large'] = $package['extra']['_meta']['screenshot_large'];
+            }
         }
         $package['extra']['_meta'] = $extraMeta;
 

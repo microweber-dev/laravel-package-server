@@ -11,7 +11,6 @@ class Base
         return (stripos(PHP_OS, "WIN") === 0)? "DOS" : "UNIX";
     }
 
-
     public static function humanFilesize($bytes, $dec = 2)
     {
         $size = array('B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');

@@ -8,5 +8,4 @@ use Illuminate\Database\Eloquent\Model;
 class PleskServer extends Model
 {
     use HasFactory;
-
 }
