@@ -47,7 +47,7 @@ class TestBuild extends Command
     {
         $this->info('Start job work...');
 
-        $getWaitingPackage = Package::where('id', 194)->first();
+        $getWaitingPackage = Package::where('id', 161)->first();
         if ($getWaitingPackage == null) {
             $this->error('No packages for processing. Time: ' . date('Y-m-d H:i:s'));
             return 0;

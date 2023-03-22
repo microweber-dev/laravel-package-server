@@ -153,8 +153,6 @@ class SatisPackageBuilder
 
                         $packageVersion = RepositoryMediaProcessHelper::preparePackageMedia($packageVersion, $satisRepositoryOutputPath);
 
-                        $lastVersionMetaData = SatisHelper::getMetaDataFromPackageVersion($packageVersion);
-
                         $preparedPackageVersions[$packageVersionKey] = $packageVersion;
                     }
                     $preparedPackages[$packageKey] = $preparedPackageVersions;
