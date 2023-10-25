@@ -433,84 +433,86 @@ class PackagesJsonController extends Controller
         $package['extra']['whmcs']['whmcs_url'] = $whmcsUrl;
 
         if (isset($teamPackage['is_paid']) && $teamPackage['is_paid'] == 1) {
-            if (isset($teamPackage['whmcs_product_ids']) && !empty($teamPackage['whmcs_product_ids'])) {
 
-                $licensed = false;
+            $licensed = false;
 
-                if (!empty($teamPackage['validate_licenses']['valid_licenses'])) {
-                    foreach ($teamPackage['validate_licenses']['valid_licenses'] as $validLicense) {
+            if (!empty($teamPackage['validate_licenses']['valid_licenses'])) {
+                foreach ($teamPackage['validate_licenses']['valid_licenses'] as $validLicense) {
+                    if (isset($teamPackage['whmcs_product_ids']) && !empty($teamPackage['whmcs_product_ids'])) {
                         if (in_array($validLicense['whmcs_product_id'], $teamPackage['whmcs_product_ids'])) {
                             $licensed = true;
                         }
                     }
                 }
+            }
 
-                // If you make a token auth private package
-                if (!$licensed and isset($teamPackage['token_authenticated']) && $teamPackage['token_authenticated'] === true) {
-                    $licensed = true;
-                }
+            // If you make a token auth private package
+            if (!$licensed and isset($teamPackage['token_authenticated']) && $teamPackage['token_authenticated'] === true) {
+                $licensed = true;
+            }
 
-                if (!$licensed) {
-                    $package['dist'] = [
-                        "type" => "license_key",
-                        "url" => $whmcsUrl,
-                        "reference" => "license_key",
-                        "shasum" => "license_key"
-                    ];
-                }
+            if (!$licensed) {
+                $package['dist'] = [
+                    "type" => "license_key",
+                    "url" => $whmcsUrl,
+                    "reference" => "license_key",
+                    "shasum" => "license_key"
+                ];
+            }
 
-              /*  if ($licensed && $userLicenseKeysValid) {
-                    $package['dist']['url'] = URL::temporarySignedRoute(
-                        'packages.download-private', now()->addMinutes(30), [
-                            'license_ids' => base64_encode(json_encode($internalLicenseIds)),
-                            'id' => $teamPackage['package_id'],
-                            'version' => $package['version'],
-                            'ip' => request()->ip()
-                        ]
-                    );
-                }*/
+          /*  if ($licensed && $userLicenseKeysValid) {
+                $package['dist']['url'] = URL::temporarySignedRoute(
+                    'packages.download-private', now()->addMinutes(30), [
+                        'license_ids' => base64_encode(json_encode($internalLicenseIds)),
+                        'id' => $teamPackage['package_id'],
+                        'version' => $package['version'],
+                        'ip' => request()->ip()
+                    ]
+                );
+            }*/
 
-            /*    if ($licensed) {
-                    if (isset($teamPackage['team_package_id'])) {
-                        if ($userLicenseKeysValid) {
-                            $dataForNotification = [];
-                            $dataForNotification['valid_license_keys'] = $userLicenseKeysValid;
-                            $dataForNotification['package_name'] = $package['name'];
-                            $dataForNotification['team_package_id'] = $teamPackage['team_package_id'];
+        /*    if ($licensed) {
+                if (isset($teamPackage['team_package_id'])) {
+                    if ($userLicenseKeysValid) {
+                        $dataForNotification = [];
+                        $dataForNotification['valid_license_keys'] = $userLicenseKeysValid;
+                        $dataForNotification['package_name'] = $package['name'];
+                        $dataForNotification['team_package_id'] = $teamPackage['team_package_id'];
 
-                            $package['notification-url'] = route('packages.download-notify-private')
-                                . '?used_keys_data='
-                                . urlencode(base64_encode(json_encode($dataForNotification)));
-                        }
+                        $package['notification-url'] = route('packages.download-notify-private')
+                            . '?used_keys_data='
+                            . urlencode(base64_encode(json_encode($dataForNotification)));
                     }
-                }*/
+                }
+            }*/
 
+            if (isset($teamPackage['whmcs_product_ids']) && !empty($teamPackage['whmcs_product_ids'])) {
                 $package['license_ids'] = $teamPackage['whmcs_product_ids'];
                 $package['extra']['whmcs']['whmcs_product_ids'] = $teamPackage['whmcs_product_ids'];
 
                 // Default buy link from first whmcs product id
                 $whmcProductId = $teamPackage['whmcs_product_ids'][0];
-               // $package['extra']['whmcs']['add_to_cart_link'] = $whmcsUrl . '/cart.php?a=add&pid=' . $whmcProductId;
+                // $package['extra']['whmcs']['add_to_cart_link'] = $whmcsUrl . '/cart.php?a=add&pid=' . $whmcProductId;
                 $package['extra']['whmcs']['buy_link'] = $whmcsUrl . '/cart.php?a=add&pid=' . $whmcProductId;
 
                 // Primary product id buy link
                 if ($teamPackage['whmcs_primary_product_id'] > 0) {
                     $whmcProductId = $teamPackage['whmcs_primary_product_id'];
-                  //  $package['extra']['whmcs']['add_to_cart_link'] = $whmcsUrl . '/cart.php?a=add&pid=' . $whmcProductId;
+                    //  $package['extra']['whmcs']['add_to_cart_link'] = $whmcsUrl . '/cart.php?a=add&pid=' . $whmcProductId;
                     $package['extra']['whmcs']['buy_link'] = $whmcsUrl . '/cart.php?a=add&pid=' . $whmcProductId;
                 }
-
-                if ($teamPackage['buy_url_from'] == 'custom') {
-                    $package['extra']['whmcs']['buy_link'] = $teamPackage['buy_url'];
-                }
-
-                if ($teamPackage['buy_url_from'] == 'package_access_preset') {
-                    if (isset($teamPackage['package_access_preset_settings']['buy_url'])) {
-                        $package['extra']['whmcs']['buy_link'] = $teamPackage['package_access_preset_settings']['buy_url'];
-                    }
-                }
-
             }
+
+            if ($teamPackage['buy_url_from'] == 'custom') {
+                $package['extra']['whmcs']['buy_link'] = $teamPackage['buy_url'];
+            }
+
+            if ($teamPackage['buy_url_from'] == 'package_access_preset') {
+                if (isset($teamPackage['package_access_preset_settings']['buy_url'])) {
+                    $package['extra']['whmcs']['buy_link'] = $teamPackage['package_access_preset_settings']['buy_url'];
+                }
+            }
+
         }
 
         return $package;
