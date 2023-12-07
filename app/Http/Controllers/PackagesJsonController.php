@@ -340,6 +340,10 @@ class PackagesJsonController extends Controller
                 if (!empty($packageContent) && is_array($packageContent)) {
                     foreach ($packageContent as $packageName => $packageVersions) {
 
+                        if (empty($packageVersions)) {
+                            continue;
+                        }
+
                         $packageAccessPresetSettings = [];
                         if ($teamPackage->packageAccessPreset) {
                             $packageAccessPresetSettings = $teamPackage->packageAccessPreset->settings;
