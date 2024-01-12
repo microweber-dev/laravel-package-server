@@ -77,6 +77,7 @@
                     <div class="mb-3 p-3" style="background: #e9ecef">
             <h5>Generate Buy link from:</h5>
             <select class="form-control" name="buy_url_from" wire:model="buy_url_from">
+                <option value="">Please select</option>
                 <option value="license">WHMCS Plan\License</option>
                 <option value="package_access_preset">Package Access Preset</option>
                 <option value="custom">Custom</option>
@@ -100,6 +101,7 @@
                 <p>Select whmcs plan\license to generate buy link on premium packages</p>
 
                 <select class="form-control" name="whmcs_primary_product_id" wire:model.defer="whmcs_primary_product_id">
+                    <option value="">Please select</option>
                     @if(!empty($this->whmcs_product_types))
                         @foreach($this->whmcs_product_types as $whmcs_product_type_name=>$whmcs_product_type)
                             <optgroup label="{{ucfirst($whmcs_product_type_name)}}">
@@ -123,7 +125,7 @@
                 </h5>
 
                 <select class="form-control" wire:model="package_access_preset_id">
-                    <option value="0">Please select</option>
+                    <option value="">Please select</option>
                     @if(!empty($package_access_presets))
                         @foreach($package_access_presets as $preset)
                              <option value="{{$preset->id}}">{{$preset->name}}</option>
