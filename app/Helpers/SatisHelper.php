@@ -32,12 +32,15 @@ class SatisHelper
         $latestVersion = [];
         if (!empty($packages)) {
             foreach ($packages as $packageKey => $packageVersions) {
+                $versions = [];
                 foreach ($packageVersions as $packageVersionKey => $packageVersion) {
                     if (strpos($packageVersionKey, 'dev') !== false) {
                         continue;
                     }
-                    $latestVersion = $packageVersion;
+                    $versions[$packageVersionKey] = $packageVersion;
                 }
+                sort($versions);
+                $latestVersion = end($versions);
             }
         }
 

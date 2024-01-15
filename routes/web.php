@@ -23,6 +23,54 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/tests', function () {
+
+    $packages = [
+        [
+            '0.0.3' => [
+                'name' => 'test/test',
+                'version' => '0.0.3',
+                'type' => 'library',
+                'description' => 'Test package',
+                'dist' => [
+                    'type' => 'zip',
+                    'url' => 'https://example.com/test/test/0.0.3.zip',
+                    'reference' => 'master',
+                    'shasum' => '1234567890'
+                ]
+            ],
+            '0.0.1' => [
+                'name' => 'test/test',
+                'version' => '0.0.1',
+                'type' => 'library',
+                'description' => 'Test package',
+                'dist' => [
+                    'type' => 'zip',
+                    'url' => 'https://example.com/test/test/0.0.1.zip',
+                    'reference' => 'master',
+                    'shasum' => '1234567890'
+                ]
+            ],
+            '0.0.2' => [
+                'name' => 'test/test',
+                'version' => '0.0.2',
+                'type' => 'library',
+                'description' => 'Test package',
+                'dist' => [
+                    'type' => 'zip',
+                    'url' => 'https://example.com/test/test/0.0.2.zip',
+                    'reference' => 'master',
+                    'shasum' => '1234567890'
+                ]
+            ]
+        ]
+    ];
+    $latestVersion = \App\Helpers\SatisHelper::getLatestVersionFromPackage($packages);
+
+    dd($latestVersion);
+
+});
+
 Route::get('/clear-old-files', function () {
 
     $latestVersionDistFiles = [];
