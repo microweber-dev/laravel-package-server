@@ -80,7 +80,6 @@ class ProcessPackageSatisRsync implements ShouldQueue, ShouldBeUnique
         $packageJson = file_get_contents($this->satisRepositoryOutputPath.'/packages.json');
         $packageJson = json_decode($packageJson, true);
 
-
         $latestVersion = SatisHelper::getLatestVersionFromPackage($packageJson['packages']);
         $latestVersionMetaData = SatisHelper::getMetaDataFromPackageVersion($latestVersion);
 

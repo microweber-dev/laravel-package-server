@@ -47,13 +47,17 @@ class TestBuild extends Command
     {
         $this->info('Start job work...');
 
-        $getPackage = Package::where('id', 2)->first();
+        $getPackage = Package::where('id', 3)->first();
         if ($getPackage == null) {
             $this->error('No packages for processing. Time: ' . date('Y-m-d H:i:s'));
             return 0;
         }
 
         $this->info('Package: ' . $getPackage->name);
+
+//        $packageJson = json_decode($getPackage->package_json, true);
+//        $latestVersion = \App\Helpers\SatisHelper::getLatestVersionFromPackage($packageJson);
+//        dd($latestVersion);
 
         $getPackage->clone_status = Package::CLONE_STATUS_WAITING;
         $getPackage->save();
