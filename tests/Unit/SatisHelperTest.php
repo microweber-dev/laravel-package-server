@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Helpers\SatisHelper;
 use PHPUnit\Framework\TestCase;
 
 class SatisHelperTest extends TestCase
@@ -13,6 +14,11 @@ class SatisHelperTest extends TestCase
      */
     public function test_example()
     {
-        $this->assertTrue(true);
+
+        $packages = [
+
+        ];
+        $latestVersion = SatisHelper::getLatestVersionFromPackage($packages);
+
     }
 }
