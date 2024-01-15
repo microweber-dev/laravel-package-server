@@ -175,6 +175,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function() {
 
     Route::any('my-packages', \App\Http\Livewire\MyPackages::class)->name('my-packages');
     Route::any('my-packages/add', \App\Http\Livewire\MyPackagesEdit::class)->name('my-packages.add');
+    Route::any('my-packages/bulk-add', \App\Http\Livewire\MyPackagesBulkAdd::class)->name('my-packages.bulk-add');
     Route::any('my-packages/{id}/edit', \App\Http\Livewire\MyPackagesEdit::class)->name('my-packages.edit');
     Route::any('my-packages/{id}/show', \App\Http\Livewire\MyPackagesShow::class)->name('my-packages.show');
 
