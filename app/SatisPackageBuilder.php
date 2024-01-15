@@ -99,6 +99,7 @@ class SatisPackageBuilder
         $shellCommand .= ' ' . $satisConfigFile;
         $shellCommand .= ' ' . $satisRepositoryOutputPath;
         $shellCommand .= ' > ' . $satisBuildLog;
+
         exec($shellCommand);
 
         $i = 0;

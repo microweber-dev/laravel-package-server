@@ -47,16 +47,19 @@ class TestBuild extends Command
     {
         $this->info('Start job work...');
 
-        $getWaitingPackage = Package::where('id', 161)->first();
-        if ($getWaitingPackage == null) {
+        $getPackage = Package::where('id', 10)->first();
+        if ($getPackage == null) {
             $this->error('No packages for processing. Time: ' . date('Y-m-d H:i:s'));
             return 0;
         }
 
-        $this->info('Package: ' . $getWaitingPackage->name);
+        $this->info('Package: ' . $getPackage->name);
 
-        $run = new ProcessPackageSatis($getWaitingPackage->id, $getWaitingPackage->name);
-        $run->handle();
+        $getPackage->clone_status = Package::CLONE_STATUS_WAITING;
+        $getPackage->save();
+
+        $run = new ProcessPackageSatis($getPackage->id, $getPackage->name);
+        $status = $run->handle();
 
         $this->info('Job work done.');
 

@@ -44,6 +44,7 @@ class CreatePackagesTable extends Migration
             $table->timestamp('clone_queue_at')->nullable();
             $table->longText('clone_log')->nullable();
             $table->integer('is_cloned')->default(0)->nullable();
+            $table->integer('debug_count')->nullable();
 
             $table->timestamps();
         });

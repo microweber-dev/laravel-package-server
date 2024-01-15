@@ -102,7 +102,10 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
             // job already running
             $packageModel->clone_log = "Already running.";
             $packageModel->save();
-            return;
+            return [
+                'status' => 'error',
+                'message' => 'Already running.'
+            ];
         }
 
         $packageModel->clone_log = "Job is started.";
