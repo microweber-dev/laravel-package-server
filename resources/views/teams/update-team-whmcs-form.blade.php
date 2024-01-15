@@ -44,8 +44,9 @@
 
          <div class="w-md-75 mt-4">
             <div class="form-group">
-                <x-jet-label for="whmcs_auth_type" value="{{ __('WHMSC Auth Type') }}" />
+                <x-jet-label for="whmcs_auth_type" value="{{ __('WHMCS Auth Type') }}" />
                 <select id="whmcs_auth_type" name="whmcs_auth_type" wire:model="settings.whmcs_auth_type" class="form-control">
+                    <option value="">Select</option>
                     <option value="api">API</option>
                     <option value="password">Username &amp; Password</option>
                 </select>
