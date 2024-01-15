@@ -60,13 +60,18 @@ class Package extends Model
 
     public function readme()
     {
-        $readmeLink = str_replace('https://example.com/', config('app.url'), $this->readme);
+        try {
+            $readmeLink = str_replace('https://example.com/', config('app.url'), $this->readme);
+            if (!empty($readmeLink)) {
+                // Fix readme img host links
+                $content = @file_get_contents($readmeLink);
+                $content = str_ireplace('https://example.com/', config('app.url'), $content);
 
-        // Fix readme img host links
-        $content = @file_get_contents($readmeLink);
-        $content = str_ireplace('https://example.com/', config('app.url'), $content);
-
-        return $content;
+                return $content;
+            }
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     public function displayName()
