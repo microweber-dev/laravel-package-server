@@ -46,6 +46,9 @@
                     <a href="{{route('my-packages.add')}}" class="btn btn-outline-dark">
                      Add Package
                     </a>
+                    <a href="{{route('my-packages.bulk-add')}}" class="btn btn-outline-dark">
+                        Add Packages Bulk
+                    </a>
                 </div>
                 <div class="col-md-3">
                     <div class="btn-group">
