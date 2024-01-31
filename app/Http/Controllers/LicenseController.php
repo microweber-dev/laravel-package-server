@@ -54,8 +54,22 @@ class LicenseController extends Controller
             return ['valid' => false];
         }
 
-        $consumeLicense = WhmcsLicenseValidatorHelper::licenseConsume($findTeam->whmcsServer->url, $domain, $ip, $license);
 
+        // New license server
+        try {
+            $checkLicense = @file_get_contents('https://microweber.com/license-server/validate-legacy?&local_key=' . $license . '&rel_type=default');
+            $checkLicense = json_decode($checkLicense, true);
+            if (isset($checkLicense['default'])) {
+                if (isset($checkLicense['default']['status']) && $checkLicense['default']['status'] == 'Active') {
+                    return ['valid' => true, 'details' => $checkLicense['default']];
+                }
+            }
+        } catch (\Exception $e) {
+            //dd($e->getMessage());
+        }
+
+        // Must be deprecated soon
+        $consumeLicense = WhmcsLicenseValidatorHelper::licenseConsume($findTeam->whmcsServer->url, $domain, $ip, $license);
         if (isset($consumeLicense['localkey'])) {
             unset($consumeLicense['localkey']);
         }
