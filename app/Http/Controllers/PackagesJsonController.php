@@ -399,6 +399,8 @@ class PackagesJsonController extends Controller
             $prepareVersions[$version] = $preparedPackage;
         }
 
+        ksort($prepareVersions);
+
         return $prepareVersions;
     }
 
