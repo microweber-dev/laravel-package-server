@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Base;
+use App\Helpers\MicroweberSAASLicenseValidatorHelper;
 use App\Helpers\StringHelper;
 use App\Helpers\WhmcsLicenseValidatorHelper;
 use App\Models\License;
@@ -211,6 +212,7 @@ class PackagesJsonController extends Controller
         }
 
         $authHeader = $request->header('authorization', false);
+
         if ($authHeader) {
 
             $authDecode = str_replace('Basic','', $authHeader);
@@ -444,11 +446,12 @@ class PackagesJsonController extends Controller
 
             if (!empty($teamPackage['validate_licenses']['valid_licenses'])) {
                 foreach ($teamPackage['validate_licenses']['valid_licenses'] as $validLicense) {
-                    if (isset($teamPackage['whmcs_product_ids']) && !empty($teamPackage['whmcs_product_ids'])) {
-                        if (in_array($validLicense['whmcs_product_id'], $teamPackage['whmcs_product_ids'])) {
-                            $licensed = true;
-                        }
-                    }
+//                    if (isset($teamPackage['whmcs_product_ids']) && !empty($teamPackage['whmcs_product_ids'])) {
+//                        if (in_array($validLicense['whmcs_product_id'], $teamPackage['whmcs_product_ids'])) {
+//                            $licensed = true;
+//                        }
+//                    }
+                    $licensed = true;
                 }
             }
 
@@ -605,12 +608,14 @@ class PackagesJsonController extends Controller
 
                 if (!empty($userLicenseKeysMap)) {
                     foreach ($userLicenseKeysMap as $k=>$userLicenseKey) {
-                        $consumeLicense = WhmcsLicenseValidatorHelper::licenseConsume($findWhmcsServer->url,$domain,$ip, $userLicenseKey);
+
+                        $consumeLicense = MicroweberSAASLicenseValidatorHelper::getLicenseStatus($userLicenseKey);
+
                         if (isset($consumeLicense['status']) && $consumeLicense['status']=='Active') {
-                            $licenseKeyStatus = WhmcsLicenseValidatorHelper::getLicenseKeyStatus($findWhmcsServer->url, $userLicenseKey);
+
                             $whmcsProductId = false;
-                            if (isset($licenseKeyStatus['package_id'])) {
-                                $whmcsProductId = $licenseKeyStatus['package_id'];
+                            if (isset($consumeLicense['package_id'])) {
+                                $whmcsProductId = $consumeLicense['package_id'];
                             }
                             $licenseKeysValid[] = [
                                 'status'=> 'active',
