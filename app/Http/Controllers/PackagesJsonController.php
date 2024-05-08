@@ -561,7 +561,7 @@ class PackagesJsonController extends Controller
 //dd($_SERVER);
         if (isset($_SERVER["HTTP_AUTHORIZATION"]) && (strpos(strtolower($_SERVER["HTTP_AUTHORIZATION"]), 'basic') !== false)) {
 
-            ///  file_put_contents(base_path().'/lic.txt', print_r((substr($_SERVER["HTTP_AUTHORIZATION"], 6)),1));
+         //    file_put_contents(base_path().'/lic11.txt', print_r((substr($_SERVER["HTTP_AUTHORIZATION"], 6)),1));
 
             $userLicenseKeys = base64_decode(substr($_SERVER["HTTP_AUTHORIZATION"], 6));
 
@@ -594,6 +594,9 @@ class PackagesJsonController extends Controller
                     $userLicenseKeysForValidation[]['local_key'] = $userLicenseKeys;
                 }
             }
+        //    file_put_contents(base_path().'/lic22.txt', print_r($userLicenseKeysForValidation ,1));
+        //    file_put_contents(base_path().'/lic33.txt', print_r($userLicenseKeys ,1));
+         //   file_put_contents(base_path().'/lic444.txt', print_r($_SERVER ,1));
 
             $userLicenseKeysMap = [];
 
@@ -612,7 +615,9 @@ class PackagesJsonController extends Controller
                     foreach ($userLicenseKeysMap as $k=>$userLicenseKey) {
 
                         $consumeLicense = MicroweberSAASLicenseValidatorHelper::getLicenseStatus($userLicenseKey);
-                        if (isset($consumeLicense['status']) && strtolower($consumeLicense['status'])=='active') {
+
+
+                         if (isset($consumeLicense['status']) && strtolower($consumeLicense['status'])=='active') {
 
                             $whmcsProductId = false;
                             if (isset($consumeLicense['package_id'])) {
@@ -623,6 +628,9 @@ class PackagesJsonController extends Controller
                                 'whmcs_product_id'=> $whmcsProductId,
                                 'license'=> $userLicenseKey,
                             ];
+
+
+
                         } else {
                             $messaage = '';
                             $status = '';
