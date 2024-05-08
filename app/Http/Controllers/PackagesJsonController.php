@@ -223,8 +223,11 @@ class PackagesJsonController extends Controller
 
                 $authDecode = str_replace('license:','', $authDecode);
                 $authDecode = trim($authDecode);
-                $authDecode = base64_decode($authDecode);
-                $authDecodeLicenses = json_decode($authDecode, true);
+                $authDecode = @base64_decode($authDecode);
+
+
+
+                $authDecodeLicenses = @json_decode($authDecode, true);
                 if (!empty($authDecodeLicenses) && is_array($authDecodeLicenses)) {
                     foreach ($authDecodeLicenses as $decodeLicense) {
                         if (is_string($decodeLicense) && str_contains($decodeLicense, 'plesk|')) {
@@ -394,7 +397,7 @@ class PackagesJsonController extends Controller
             $preparedPackage = $this->_preparePackage($package, $teamPackage);
             if($preparedPackage['dist']['type'] == 'license_key') {
                 if (isset($teamPackage['composer_request']) && $teamPackage['composer_request']) {
-                    continue;
+                     continue;
                 }
             }
 
@@ -555,7 +558,7 @@ class PackagesJsonController extends Controller
         if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
             $_SERVER["HTTP_AUTHORIZATION"] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
         }
-
+//dd($_SERVER);
         if (isset($_SERVER["HTTP_AUTHORIZATION"]) && (strpos(strtolower($_SERVER["HTTP_AUTHORIZATION"]), 'basic') !== false)) {
 
             ///  file_put_contents(base_path().'/lic.txt', print_r((substr($_SERVER["HTTP_AUTHORIZATION"], 6)),1));
@@ -567,7 +570,6 @@ class PackagesJsonController extends Controller
                 if(StringHelper::isBase64Encoded($userLicenseKeys)){
                     $userLicenseKeys = base64_decode($userLicenseKeys);
                 }
-
             }
             if (is_string($userLicenseKeys) and (strpos(strtolower($userLicenseKeys), 'license:') !== false)) {
                 $userLicenseKeys = substr($userLicenseKeys, 8);
@@ -610,8 +612,7 @@ class PackagesJsonController extends Controller
                     foreach ($userLicenseKeysMap as $k=>$userLicenseKey) {
 
                         $consumeLicense = MicroweberSAASLicenseValidatorHelper::getLicenseStatus($userLicenseKey);
-
-                        if (isset($consumeLicense['status']) && $consumeLicense['status']=='Active') {
+                        if (isset($consumeLicense['status']) && strtolower($consumeLicense['status'])=='active') {
 
                             $whmcsProductId = false;
                             if (isset($consumeLicense['package_id'])) {
