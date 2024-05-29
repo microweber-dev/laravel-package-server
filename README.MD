@@ -47,3 +47,8 @@ docker volume ls -f dangling=true
 docker image prune -a -f
 docker volume  prune
 ```
+
+## Delete unused package files
+```
+php artisan package-builder:delete-old-package-files
+```
