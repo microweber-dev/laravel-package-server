@@ -55,36 +55,66 @@ class DeleteOldPackageFiles extends Command
                 $packageWhitelistedVersions = [];
                 foreach ($packageVersions as $packageVersion) {
                     $packageNameSlug = str_replace('/', '-', $packageName);
+                    $distUrl = $packageVersion['dist']['url'];
+                    $distZip = str_replace('https://example.com/dist/microweber-templates/business/', '', $distUrl);
                     $packageWhitelistedVersions[] = [
                         'version' => $packageVersion['version'],
                         'packageFolder' => $packageNameSlug,
+                        'distUrl'=>$packageVersion['dist']['url'],
+                        'distZip'=>$distZip,
                         'versionFolder'=> str_replace('.', '', $packageVersion['version'])
                     ];
                 }
+                $packageDistFolder = $packageName;
+                $distPackagePath = (base_path() . '/public/dist/' . $packageDistFolder);
+                if (!is_dir($distPackagePath)) {
+                    $this->info('No such directory: ' . $distPackagePath);
+                } else {
+                    $distPackagePathVersions = scandir($distPackagePath);
+                    foreach ($distPackagePathVersions as $distPackagePathVersionZip) {
+                        if ($distPackagePathVersionZip == '.' || $distPackagePathVersionZip == '..') {
+                            continue;
+                        }
+                        $isVersionWhitelisted = false;
+                        foreach ($packageWhitelistedVersions as $packageWhitelistedVersion) {
+                            if ($packageWhitelistedVersion['distZip'] == $distPackagePathVersionZip) {
+                                $isVersionWhitelisted = true;
+                                break;
+                            }
+                        }
+                        if ($isVersionWhitelisted) {
+                            $whitelistedFiles[] = $distPackagePath . '/' . $distPackagePathVersionZip;
+                            continue;
+                        }
+
+                        $filesForDelete[] = $distPackagePath . '/' . $distPackagePathVersionZip;
+                    }
+                }
+
                 $metaPackagePath = (base_path() . '/public/meta/' . $packageNameSlug);
                 if (!is_dir($metaPackagePath)) {
                     $this->info('No such directory: ' . $metaPackagePath);
-                    continue;
-                }
-                $metaPackagePathVersions = scandir($metaPackagePath);
-                foreach ($metaPackagePathVersions as $metaPackagePathVersion) {
-                    if ($metaPackagePathVersion == '.' || $metaPackagePathVersion == '..') {
-                        continue;
-                    }
-                    $isVersionWhitelisted = false;
-                    foreach ($packageWhitelistedVersions as $packageWhitelistedVersion) {
-                        if ($metaPackagePathVersion == $packageWhitelistedVersion['versionFolder']) {
-                            $isVersionWhitelisted = true;
-                            break;
+                } else {
+                    $metaPackagePathVersions = scandir($metaPackagePath);
+                    foreach ($metaPackagePathVersions as $metaPackagePathVersion) {
+                        if ($metaPackagePathVersion == '.' || $metaPackagePathVersion == '..') {
+                            continue;
                         }
-                    }
-                    if ($isVersionWhitelisted) {
-                        $whitelistedFiles[] = $metaPackagePath . '/' . $metaPackagePathVersion;
-                        continue;
-                    }
+                        $isVersionWhitelisted = false;
+                        foreach ($packageWhitelistedVersions as $packageWhitelistedVersion) {
+                            if ($metaPackagePathVersion == $packageWhitelistedVersion['versionFolder']) {
+                                $isVersionWhitelisted = true;
+                                break;
+                            }
+                        }
+                        if ($isVersionWhitelisted) {
+                            $whitelistedFiles[] = $metaPackagePath . '/' . $metaPackagePathVersion;
+                            continue;
+                        }
 
-                    $filesForDelete[] = $metaPackagePath . '/' . $metaPackagePathVersion;
+                        $filesForDelete[] = $metaPackagePath . '/' . $metaPackagePathVersion;
 
+                    }
                 }
             }
 
