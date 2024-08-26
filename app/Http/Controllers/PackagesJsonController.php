@@ -565,6 +565,19 @@ class PackagesJsonController extends Controller
 
             $userLicenseKeys = base64_decode(substr($_SERVER["HTTP_AUTHORIZATION"], 6));
 
+            $userLicenseKeys = trim($userLicenseKeys,':');
+            $userLicenseKeys = trim($userLicenseKeys,' ');
+
+            $userLicenseKeysIsBase64FromUsername = @base64_decode($userLicenseKeys);
+            if (is_string($userLicenseKeysIsBase64FromUsername) and (str_starts_with(strtolower($userLicenseKeysIsBase64FromUsername), 'license:'))) {
+                /// for phyre panel
+                $userLicenseKeys = substr($userLicenseKeysIsBase64FromUsername, 8);
+                if(StringHelper::isBase64Encoded($userLicenseKeys)){
+                    $userLicenseKeys = base64_decode($userLicenseKeys);
+                }
+            }
+
+
             if (is_string($userLicenseKeys) and (strpos(strtolower($userLicenseKeys), 'license:') !== false)) {
                 $userLicenseKeys = substr($userLicenseKeys, 8);
                 if(StringHelper::isBase64Encoded($userLicenseKeys)){
@@ -579,6 +592,7 @@ class PackagesJsonController extends Controller
             }
 
             if(StringHelper::isJSON($userLicenseKeys)) {
+
                 $userLicenseKeysJson = json_decode($userLicenseKeys, true);
             } else {
                 $userLicenseKeysJson = [];
