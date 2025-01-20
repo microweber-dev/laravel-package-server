@@ -103,7 +103,7 @@ class SatisPackageBuilder
         exec($shellCommand);
 
         $i = 0;
-        $maxI = 60;
+        $maxI = 120;
         $lastLogText = '';
         while (true) {
             if ($i >= $maxI) {
