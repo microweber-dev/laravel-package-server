@@ -124,7 +124,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
                     'url' => $packageModel->repository_url,
                 ]
             ],
-            'require-all' => true,
+            'require-all' => false,
             "archive" => [
                 "directory" => "dist",
                 "format" => "zip",
