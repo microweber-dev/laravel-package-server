@@ -114,6 +114,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
 
         $isPrivateRepository = SatisHelper::checkRepositoryIsPrivate($packageModel->repository_url);
 
+
         $satisContent = [
             'name' => 'microweber/packages',
             'homepage' => 'https://example.com',
@@ -131,6 +132,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
                 //"checksum"=> false
             ],
             "config" => [
+                "process-timeout" => 6000,
                 "disable-tls" => true,
             ]
         ];
@@ -214,7 +216,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
             'satisRepositoryOutputPath' => $status['output_path']
         ]);
         $rsync->handle();
-        
+
     }
 
      public function failed($error)
