@@ -36,11 +36,11 @@ class PackagesJsonController extends Controller
 
     public function downloadPrivatePackage(Request $request)
     {
-        if (! $request->hasValidSignature()) {
+        if (!$request->hasValidSignature()) {
             abort(401);
         }
         if (request()->ip() !== $request->get('ip')) {
-            abort(401,'Invalid authorization.');
+            abort(401, 'Invalid authorization.');
         }
 
         $requestHeaders = collect($request->header())->transform(function ($item) {
@@ -133,7 +133,7 @@ class PackagesJsonController extends Controller
                 return [];
             }
 
-            return $this->getTeamPackages($request, $findTeam->id, ['package_id'=>$findPackageByName->id]);
+            return $this->getTeamPackages($request, $findTeam->id, ['package_id' => $findPackageByName->id]);
 
         }
     }
@@ -163,7 +163,7 @@ class PackagesJsonController extends Controller
                 $query->whereNotIn('clone_status', [Package::CLONE_STATUS_FAILED]);
             })
             ->where('is_visible', 1)
-            ->orderBy('position','asc')
+            ->orderBy('position', 'asc')
             ->with('package')
             ->with('packageAccessPreset')
             ->get();
@@ -205,7 +205,7 @@ class PackagesJsonController extends Controller
         // Check this ip is server licensed
         $findPleskServer = PleskServer::where('server_ip', $requestIp)->first();
         if ($findPleskServer) {
-            $findPleskServer->access_count =  $findPleskServer->access_count + 1;
+            $findPleskServer->access_count = $findPleskServer->access_count + 1;
             $findPleskServer->last_access_date = Carbon::now();
             $findPleskServer->save();
             $logged = true;
@@ -215,16 +215,15 @@ class PackagesJsonController extends Controller
 
         if ($authHeader) {
 
-            $authDecode = str_replace('Basic','', $authHeader);
+            $authDecode = str_replace('Basic', '', $authHeader);
             $authDecode = trim($authDecode);
             $authDecode = base64_decode($authDecode);
 
             if (str_contains($authDecode, 'license:')) {
 
-                $authDecode = str_replace('license:','', $authDecode);
+                $authDecode = str_replace('license:', '', $authDecode);
                 $authDecode = trim($authDecode);
                 $authDecode = @base64_decode($authDecode);
-
 
 
                 $authDecodeLicenses = @json_decode($authDecode, true);
@@ -237,9 +236,9 @@ class PackagesJsonController extends Controller
                                 && isset($decodeLicenseData['active'])
                                 && $decodeLicenseData['active'] == true) {
 
-                                $findPleskServer = PleskServer::where('product',$decodeLicenseData['product'])
-                                                            ->where('key_number', $decodeLicenseData['key-number'])
-                                                            ->first();
+                                $findPleskServer = PleskServer::where('product', $decodeLicenseData['product'])
+                                    ->where('key_number', $decodeLicenseData['key-number'])
+                                    ->first();
                                 if ($findPleskServer == null) {
 
                                     $findPleskServer = new PleskServer();
@@ -328,11 +327,14 @@ class PackagesJsonController extends Controller
         if (isset($whmcsServer['id'])) {
             $validateLicenses = $this->validateLicenses($request, $whmcsServer['id']);
         }
-
+        $hasValidLicenseFromCheck = (!empty($validateLicenses['valid_licenses']) ?? false);
         $allPackages = [];
+
 
         $yml = [];
         $format = $request->get('format', false);
+
+        $skipFree = ['microweber-templates/human-resources-free', 'microweber-templates/big-free'];
 
         if ($teamPackages->count() > 0) {
             foreach ($teamPackages as $teamPackage) {
@@ -349,10 +351,17 @@ class PackagesJsonController extends Controller
                             continue;
                         }
 
+                        if ($hasValidLicenseFromCheck) {
+                            if (in_array($packageName, $skipFree)) {
+                                continue;
+                            }
+                        }
+
                         $packageAccessPresetSettings = [];
                         if ($teamPackage->packageAccessPreset) {
                             $packageAccessPresetSettings = $teamPackage->packageAccessPreset->settings;
                         }
+
 
                         $allPackages[$packageName] = $this->_prepareVersions($packageVersions, [
                             'token_authenticated' => $logged,
@@ -385,7 +394,7 @@ class PackagesJsonController extends Controller
             return json_encode($yml, JSON_PRETTY_PRINT);
         }
 
-        return ['packages'=>$allPackages,'time'=>time()];
+        return ['packages' => $allPackages, 'time' => time()];
 
     }
 
@@ -395,9 +404,9 @@ class PackagesJsonController extends Controller
         foreach ($versions as $version => $package) {
 
             $preparedPackage = $this->_preparePackage($package, $teamPackage);
-            if($preparedPackage['dist']['type'] == 'license_key') {
+            if ($preparedPackage['dist']['type'] == 'license_key') {
                 if (isset($teamPackage['composer_request']) && $teamPackage['composer_request']) {
-                     continue;
+                    continue;
                 }
             }
 
@@ -472,31 +481,31 @@ class PackagesJsonController extends Controller
                 ];
             }
 
-          /*  if ($licensed && $userLicenseKeysValid) {
-                $package['dist']['url'] = URL::temporarySignedRoute(
-                    'packages.download-private', now()->addMinutes(30), [
-                        'license_ids' => base64_encode(json_encode($internalLicenseIds)),
-                        'id' => $teamPackage['package_id'],
-                        'version' => $package['version'],
-                        'ip' => request()->ip()
-                    ]
-                );
-            }*/
+            /*  if ($licensed && $userLicenseKeysValid) {
+                  $package['dist']['url'] = URL::temporarySignedRoute(
+                      'packages.download-private', now()->addMinutes(30), [
+                          'license_ids' => base64_encode(json_encode($internalLicenseIds)),
+                          'id' => $teamPackage['package_id'],
+                          'version' => $package['version'],
+                          'ip' => request()->ip()
+                      ]
+                  );
+              }*/
 
-        /*    if ($licensed) {
-                if (isset($teamPackage['team_package_id'])) {
-                    if ($userLicenseKeysValid) {
-                        $dataForNotification = [];
-                        $dataForNotification['valid_license_keys'] = $userLicenseKeysValid;
-                        $dataForNotification['package_name'] = $package['name'];
-                        $dataForNotification['team_package_id'] = $teamPackage['team_package_id'];
+            /*    if ($licensed) {
+                    if (isset($teamPackage['team_package_id'])) {
+                        if ($userLicenseKeysValid) {
+                            $dataForNotification = [];
+                            $dataForNotification['valid_license_keys'] = $userLicenseKeysValid;
+                            $dataForNotification['package_name'] = $package['name'];
+                            $dataForNotification['team_package_id'] = $teamPackage['team_package_id'];
 
-                        $package['notification-url'] = route('packages.download-notify-private')
-                            . '?used_keys_data='
-                            . urlencode(base64_encode(json_encode($dataForNotification)));
+                            $package['notification-url'] = route('packages.download-notify-private')
+                                . '?used_keys_data='
+                                . urlencode(base64_encode(json_encode($dataForNotification)));
+                        }
                     }
-                }
-            }*/
+                }*/
 
             if (isset($teamPackage['whmcs_product_ids']) && !empty($teamPackage['whmcs_product_ids'])) {
                 $package['license_ids'] = $teamPackage['whmcs_product_ids'];
@@ -561,18 +570,18 @@ class PackagesJsonController extends Controller
 //dd($_SERVER);
         if (isset($_SERVER["HTTP_AUTHORIZATION"]) && (strpos(strtolower($_SERVER["HTTP_AUTHORIZATION"]), 'basic') !== false)) {
 
-         //    file_put_contents(base_path().'/lic11.txt', print_r((substr($_SERVER["HTTP_AUTHORIZATION"], 6)),1));
+            //    file_put_contents(base_path().'/lic11.txt', print_r((substr($_SERVER["HTTP_AUTHORIZATION"], 6)),1));
 
             $userLicenseKeys = base64_decode(substr($_SERVER["HTTP_AUTHORIZATION"], 6));
 
-            $userLicenseKeys = trim($userLicenseKeys,':');
-            $userLicenseKeys = trim($userLicenseKeys,' ');
+            $userLicenseKeys = trim($userLicenseKeys, ':');
+            $userLicenseKeys = trim($userLicenseKeys, ' ');
 
             $userLicenseKeysIsBase64FromUsername = @base64_decode($userLicenseKeys);
             if (is_string($userLicenseKeysIsBase64FromUsername) and (str_starts_with(strtolower($userLicenseKeysIsBase64FromUsername), 'license:'))) {
                 /// for phyre panel
                 $userLicenseKeys = substr($userLicenseKeysIsBase64FromUsername, 8);
-                if(StringHelper::isBase64Encoded($userLicenseKeys)){
+                if (StringHelper::isBase64Encoded($userLicenseKeys)) {
                     $userLicenseKeys = base64_decode($userLicenseKeys);
                 }
             }
@@ -580,23 +589,23 @@ class PackagesJsonController extends Controller
 
             if (is_string($userLicenseKeys) and (strpos(strtolower($userLicenseKeys), 'license:') !== false)) {
                 $userLicenseKeys = substr($userLicenseKeys, 8);
-                if(StringHelper::isBase64Encoded($userLicenseKeys)){
+                if (StringHelper::isBase64Encoded($userLicenseKeys)) {
                     $userLicenseKeys = base64_decode($userLicenseKeys);
                 }
             }
             if (is_string($userLicenseKeys) and (strpos(strtolower($userLicenseKeys), 'license:') !== false)) {
                 $userLicenseKeys = substr($userLicenseKeys, 8);
-                if(StringHelper::isBase64Encoded($userLicenseKeys)){
+                if (StringHelper::isBase64Encoded($userLicenseKeys)) {
                     $userLicenseKeys = base64_decode($userLicenseKeys);
                 }
             }
 
-            if(StringHelper::isJSON($userLicenseKeys)) {
+            if (StringHelper::isJSON($userLicenseKeys)) {
 
                 $userLicenseKeysJson = json_decode($userLicenseKeys, true);
             } else {
                 $userLicenseKeysJson = [];
-                $userLicenseKeysJson['none'] = ['rel_type' =>'none','local_key'=>$userLicenseKeys];
+                $userLicenseKeysJson['none'] = ['rel_type' => 'none', 'local_key' => $userLicenseKeys];
             }
             $userLicenseKeysForValidation = [];
             // old method read
@@ -608,9 +617,9 @@ class PackagesJsonController extends Controller
                     $userLicenseKeysForValidation[]['local_key'] = $userLicenseKeys;
                 }
             }
-        //    file_put_contents(base_path().'/lic22.txt', print_r($userLicenseKeysForValidation ,1));
-        //    file_put_contents(base_path().'/lic33.txt', print_r($userLicenseKeys ,1));
-         //   file_put_contents(base_path().'/lic444.txt', print_r($_SERVER ,1));
+            //    file_put_contents(base_path().'/lic22.txt', print_r($userLicenseKeysForValidation ,1));
+            //    file_put_contents(base_path().'/lic33.txt', print_r($userLicenseKeys ,1));
+            //   file_put_contents(base_path().'/lic444.txt', print_r($_SERVER ,1));
 
             $userLicenseKeysMap = [];
 
@@ -618,7 +627,7 @@ class PackagesJsonController extends Controller
 
                 foreach ($userLicenseKeysForValidation as $userLicenseKey) {
                     if (isset($userLicenseKey['local_key']) and trim($userLicenseKey['local_key']) != '') {
-                        if(!isset($userLicenseKey['rel_type'])) {
+                        if (!isset($userLicenseKey['rel_type'])) {
                             $userLicenseKey['rel_type'] = $userLicenseKey['local_key'];
                         }
                         $userLicenseKeysMap[$userLicenseKey['rel_type']] = $userLicenseKey['local_key'];
@@ -626,23 +635,22 @@ class PackagesJsonController extends Controller
                 }
 
                 if (!empty($userLicenseKeysMap)) {
-                    foreach ($userLicenseKeysMap as $k=>$userLicenseKey) {
+                    foreach ($userLicenseKeysMap as $k => $userLicenseKey) {
 
                         $consumeLicense = MicroweberSAASLicenseValidatorHelper::getLicenseStatus($userLicenseKey);
 
 
-                         if (isset($consumeLicense['status']) && strtolower($consumeLicense['status'])=='active') {
+                        if (isset($consumeLicense['status']) && strtolower($consumeLicense['status']) == 'active') {
 
                             $whmcsProductId = false;
                             if (isset($consumeLicense['package_id'])) {
                                 $whmcsProductId = $consumeLicense['package_id'];
                             }
                             $licenseKeysValid[] = [
-                                'status'=> 'active',
-                                'whmcs_product_id'=> $whmcsProductId,
-                                'license'=> $userLicenseKey,
+                                'status' => 'active',
+                                'whmcs_product_id' => $whmcsProductId,
+                                'license' => $userLicenseKey,
                             ];
-
 
 
                         } else {
@@ -655,9 +663,9 @@ class PackagesJsonController extends Controller
                                 $status = $consumeLicense['status'];
                             }
                             $licenseKeysInvalid[] = [
-                                'message'=> $messaage,
-                                'status'=> mb_strtolower($status),
-                                'license'=> $userLicenseKey,
+                                'message' => $messaage,
+                                'status' => mb_strtolower($status),
+                                'license' => $userLicenseKey,
                             ];
                         }
                     }
@@ -666,9 +674,9 @@ class PackagesJsonController extends Controller
         }
 
         return [
-            'license_ids'=>$internalLicenseIds,
-            'invalid_licenses'=>$licenseKeysInvalid,
-            'valid_licenses'=>$licenseKeysValid,
+            'license_ids' => $internalLicenseIds,
+            'invalid_licenses' => $licenseKeysInvalid,
+            'valid_licenses' => $licenseKeysValid,
         ];
     }
 
