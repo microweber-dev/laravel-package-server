@@ -327,6 +327,7 @@ class PackagesJsonController extends Controller
         if (isset($whmcsServer['id'])) {
             $validateLicenses = $this->validateLicenses($request, $whmcsServer['id']);
         }
+
         $hasValidLicenseFromCheck = (!empty($validateLicenses['valid_licenses']) ?? false);
         $allPackages = [];
 

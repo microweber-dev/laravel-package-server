@@ -59,8 +59,13 @@ class LicenseController extends Controller
         try {
             $checkLicense = @file_get_contents('https://microweber.com/license-server/validate-legacy?&local_key=' . $license . '&rel_type=default');
             $checkLicense = json_decode($checkLicense, true);
+
             if (isset($checkLicense['default'])) {
-                if (isset($checkLicense['default']['status']) && $checkLicense['default']['status'] == 'Active') {
+
+                if (isset($checkLicense['default']['status']) && strtolower($checkLicense['default']['status'] )== 'active') {
+                    $checkLicense['default']['local_key'] = $license;
+                    $checkLicense['default']['status'] = 'Active';
+                    $checkLicense['default']['productid'] = '0';
                     return ['valid' => true, 'details' => $checkLicense['default']];
                 }
             }
