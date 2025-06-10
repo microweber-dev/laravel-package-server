@@ -94,12 +94,16 @@ class SatisPackageBuilder
         $satisBuildLog = $saitsRepositoryPath . 'docker-satis-build.log';
 
         $shellFile = dirname(__DIR__) . '/run-docker-satis-build.sh';
-        $shellCommand = $shellFile;
+        $shellCommand = 'sh ' . $shellFile;
         $shellCommand .= ' ' . dirname(__DIR__);
         $shellCommand .= ' ' . $satisConfigFile;
         $shellCommand .= ' ' . $satisRepositoryOutputPath;
         $shellCommand .= ' > ' . $satisBuildLog;
 
+        file_put_contents($saitsRepositoryPath. 'command.txt', $shellCommand);
+
+
+        exec('dos2unix ' . $shellFile);
         exec($shellCommand);
 
         $i = 0;
