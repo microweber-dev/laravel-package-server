@@ -112,7 +112,8 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         $packageModel->clone_status = Package::CLONE_STATUS_RUNNING;
         $packageModel->save();
 
-        $isPrivateRepository = SatisHelper::checkRepositoryIsPrivate($packageModel->repository_url);
+      //  $isPrivateRepository = SatisHelper::checkRepositoryIsPrivate($packageModel->repository_url);
+        $isPrivateRepository = true;
 
 
         $satisContent = [
@@ -172,8 +173,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
         $saitsRepositoryPath = RepositoryPathHelper::getRepositoriesSatisPath($packageModel->id);
         $satisFile = $saitsRepositoryPath . 'satis.json';
         file_put_contents($satisFile, $satisJson);
-
-        try {
+         try {
             $status = SatisPackageBuilder::build($satisFile);
         } catch (\Exception $e) {
 

@@ -12,6 +12,8 @@ class SatisPackageBuilder
 {
     public static function build($file)
     {
+
+
         if (!is_file($file)) {
             throw new \Exception('This is not valid file!');
             return;
@@ -30,6 +32,9 @@ class SatisPackageBuilder
 
         $saitsRepositoryPath = dirname($file) . DIRECTORY_SEPARATOR;
         $satisRepositoryOutputPath = $saitsRepositoryPath . 'output-build';
+
+
+
 
         /*  $signature = false;
           $callbackUrl = false;
@@ -54,36 +59,36 @@ class SatisPackageBuilder
                 $sshKeysDir = $_SERVER['HOME'] . '/.ssh/';
             }
 
-            if(is_dir($sshKeysDir)) {
+            if (is_dir($sshKeysDir)) {
                 $performsSshKeyscan = true;
             } else {
                 mkdir($sshKeysDir, 700, true);
                 shell_exec('echo -e "StrictHostKeyChecking no\n" >> ~/.ssh/config');
             }
 
-            foreach ($satisContent['repositories'] as $repository) {
-                // Accept host key
-                $parseRepositoryUrl = $repository['url'];
-                $parseRepositoryUrl = parse_url($parseRepositoryUrl);
-
-                if (isset($parseRepositoryUrl['host'])) {
-                    $hostname = $parseRepositoryUrl['host'];
-                    if ($hostname != false) {
-                        if ($performsSshKeyscan) {
-                            if (!is_file($sshKeysDir.'known_hosts')) {
-                                $acceptHost = shell_exec('ssh-keyscan ' . $hostname . ' >> '.$sshKeysDir.'known_hosts');
-                            } else {
-                                $acceptHost = shell_exec('
-            if ! grep "$(ssh-keyscan ' . $hostname . ' 2>/dev/null)" '.$sshKeysDir.'known_hosts > /dev/null; then
-                ssh-keyscan ' . $hostname . ' >> '.$sshKeysDir.'known_hosts
-            fi');
-                            }
-                        } else {
-
-                        }
-                    }
-                }
-            }
+//            foreach ($satisContent['repositories'] as $repository) {
+//                // Accept host key
+//                $parseRepositoryUrl = $repository['url'];
+//                $parseRepositoryUrl = parse_url($parseRepositoryUrl);
+//
+//                if (isset($parseRepositoryUrl['host'])) {
+//                    $hostname = $parseRepositoryUrl['host'];
+//                    if ($hostname != false) {
+//                        if ($performsSshKeyscan) {
+//                            if (!is_file($sshKeysDir . 'known_hosts')) {
+//                                $acceptHost = shell_exec('ssh-keyscan ' . $hostname . ' >> ' . $sshKeysDir . 'known_hosts');
+//                            } else {
+//                                $acceptHost = shell_exec('
+//            if ! grep "$(ssh-keyscan ' . $hostname . ' 2>/dev/null)" ' . $sshKeysDir . 'known_hosts > /dev/null; then
+//                ssh-keyscan ' . $hostname . ' >> ' . $sshKeysDir . 'known_hosts
+//            fi');
+//                            }
+//                        } else {
+//
+//                        }
+//                    }
+//                }
+//            }
         }
 
         if (!is_dir($saitsRepositoryPath)) {
@@ -100,11 +105,50 @@ class SatisPackageBuilder
         $shellCommand .= ' ' . $satisRepositoryOutputPath;
         $shellCommand .= ' > ' . $satisBuildLog;
 
-        file_put_contents($saitsRepositoryPath. 'command.txt', $shellCommand);
+
+        $cmdFileInfolder = $saitsRepositoryPath . 'command.sh';
+
+        file_put_contents($cmdFileInfolder, $shellCommand);
 
 
-        exec('dos2unix ' . $shellFile);
+        //exec('dos2unix ' . $shellFile);
+        exec('dos2unix ' . $cmdFileInfolder);
+        exec('chmod +x ' . $cmdFileInfolder);
+
+
+
+      //  return ['output_path' => $satisRepositoryOutputPath];
+
+
+        //  exec('chmod +x ' . $shellFile);
+        // moved to cron
         exec($shellCommand);
+
+
+//        //run withp roc open and inject all env variables
+//        $process = new Process([$cmdFileInfolder]);
+//        $process->setTimeout(0); // No timeout
+//        $process->setWorkingDirectory($saitsRepositoryPath);
+//        $process->setEnv($_ENV);
+//        $process->run(function ($type, $buffer) {
+//            if (Process::ERR === $type) {
+//                echo 'ERR > ' . $buffer;
+//            } else {
+//                echo 'OUT > ' . $buffer;
+//            }
+//        });
+//
+//        if (!$process->isSuccessful()) {
+//            throw new ProcessFailedException($process);
+//        }
+//
+
+
+
+
+
+
+
 
         $i = 0;
         $maxI = 120;
@@ -174,6 +218,6 @@ class SatisPackageBuilder
             ], JSON_PRETTY_PRINT)
         );
 
-        return ['output_path'=>$satisRepositoryOutputPath];
+        return ['output_path' => $satisRepositoryOutputPath];
     }
 }

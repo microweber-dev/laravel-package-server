@@ -10,6 +10,9 @@ echo "satisConfig: $satisConfig"
 echo "satisOutputBuild: $satisOutputBuild"
 
 
+
+
+
 docker run --rm --init --tty \
           --user $(id -u):$(id -g) \
           --volume $(pwd):$mainPath \

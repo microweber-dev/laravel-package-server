@@ -159,7 +159,9 @@ class ProcessPackageSatisGitWorker implements ShouldQueue, ShouldBeUnique
                 if ($packageModel->credential->authentication_type == Credential::TYPE_GITHUB_OAUTH) {
                     if (isset($packageModel->credential->authentication_data['accessToken'])) {
                         $satisContent['config']['github-oauth'] = [
-                            $packageModel->credential->domain => $packageModel->credential->authentication_data['accessToken']
+                            $packageModel->credential->domain => $packageModel->credential->authentication_data['accessToken'],
+                            "raw.githubusercontent.com" => $packageModel->credential->authentication_data['accessToken']
+
                         ];
                     }
                 }
@@ -233,11 +235,11 @@ class ProcessPackageSatisGitWorker implements ShouldQueue, ShouldBeUnique
         ]));
     }
 
-     public function failed($error)
-     {
-         $packageModel = Package::where('id', $this->packageId)->first();
-         $packageModel->clone_log = $error->getMessage();
-         $packageModel->clone_status = Package::CLONE_STATUS_FAILED;
-         $packageModel->save();
-     }
+    public function failed($error)
+    {
+        $packageModel = Package::where('id', $this->packageId)->first();
+        $packageModel->clone_log = $error->getMessage();
+        $packageModel->clone_status = Package::CLONE_STATUS_FAILED;
+        $packageModel->save();
+    }
 }
