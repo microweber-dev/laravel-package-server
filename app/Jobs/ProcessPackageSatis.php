@@ -129,7 +129,7 @@ class ProcessPackageSatis implements ShouldQueue, ShouldBeUnique
             "archive" => [
                 "directory" => "dist",
                 "format" => "zip",
-                "skip-dev" => true,
+                "skip-dev" => false,
                 //"checksum"=> false
             ],
             "config" => [

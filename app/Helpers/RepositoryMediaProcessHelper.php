@@ -16,6 +16,10 @@ class RepositoryMediaProcessHelper
         $distShasumName = str_replace('/', '-', $distShasumName);
         $distShasum = Str::slug($distShasumName, '-') . '/' . Str::slug($packageVersion['version'], '-');
 
+
+
+
+
         $distUrl = $packageVersion['dist']['url'];
         $distUrlParsed = parse_url($distUrl);
         $packageMainUrl = $distUrlParsed['scheme'] . '://'. $distUrlParsed['host'] . '/';

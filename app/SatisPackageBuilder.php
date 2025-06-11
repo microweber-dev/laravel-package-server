@@ -99,7 +99,7 @@ class SatisPackageBuilder
         $satisBuildLog = $saitsRepositoryPath . 'docker-satis-build.log';
 
         $shellFile = dirname(__DIR__) . '/run-docker-satis-build.sh';
-        $shellCommand = 'sh ' . $shellFile;
+        $shellCommand = '' . $shellFile;
         $shellCommand .= ' ' . dirname(__DIR__);
         $shellCommand .= ' ' . $satisConfigFile;
         $shellCommand .= ' ' . $satisRepositoryOutputPath;
@@ -112,7 +112,7 @@ class SatisPackageBuilder
 
 
         //exec('dos2unix ' . $shellFile);
-        exec('dos2unix ' . $cmdFileInfolder);
+        //exec('dos2unix ' . $cmdFileInfolder);
         exec('chmod +x ' . $cmdFileInfolder);
 
 
@@ -191,13 +191,15 @@ class SatisPackageBuilder
             $includedPackageContent = json_decode(file_get_contents($file), true);
 
             $preparedPackages = [];
+
+
             if (!empty($includedPackageContent['packages'])) {
                 foreach ($includedPackageContent['packages'] as $packageKey => $packageVersions) {
                     $preparedPackageVersions = [];
                     foreach ($packageVersions as $packageVersionKey => $packageVersion) {
 
                         if (strpos($packageVersionKey, 'dev') !== false) {
-                            continue;
+                        //    continue;
                         }
 
                         $packageVersion = RepositoryMediaProcessHelper::preparePackageMedia($packageVersion, $satisRepositoryOutputPath);
